@@ -1,10 +1,10 @@
 export interface Review {
   id: string;
-  lawyerId: string;
-  clientName: string;
+  lawyer_id: string;
+  client_name: string;
   rating: number;
   comment: string;
-  date: string;
   status: 'pending' | 'approved' | 'rejected';
-  isPinned?: boolean;
+  is_pinned?: boolean;
+  created_at: string;
 }

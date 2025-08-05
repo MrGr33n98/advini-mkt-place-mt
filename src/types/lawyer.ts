@@ -1,5 +1,6 @@
 export interface Lawyer {
   id: string;
+  user_id?: string;
   name: string;
   specialties: string[];
   latitude: number;
@@ -10,14 +11,10 @@ export interface Lawyer {
   phone?: string;
   email?: string;
   status: 'pending' | 'approved' | 'rejected';
-  whatsappUrl?: string;
-  bannerUrl?: string;
-  logoUrl?: string;
-  subscription?: {
-    tier: 'free' | 'pro';
-    expiresAt: string;
-  };
-  averageRating?: number;
-  totalReviews?: number;
+  whatsapp_url?: string;
+  banner_url?: string;
+  logo_url?: string;
+  average_rating?: number;
+  total_reviews?: number;
   badges?: string[];
 }

@@ -1,20 +1,8 @@
-export type SubscriptionTier = 'free' | 'pro';
-
-export interface SubscriptionFeatures {
-  customWhatsapp: boolean;
-  customBanner: boolean;
-  customLogo: boolean;
-  reviewModeration: boolean;
-  pinnedReviews: boolean;
-  badges: boolean;
-  analytics: boolean;
-}
-
 export interface Subscription {
   id: string;
-  lawyerId: string;
-  tier: SubscriptionTier;
-  features: SubscriptionFeatures;
-  startDate: string;
-  endDate: string;
+  lawyer_id: string;
+  tier: 'free' | 'pro';
+  start_date: string;
+  end_date?: string;
+  features?: Record<string, any>;
 }
