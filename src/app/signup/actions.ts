@@ -5,8 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 import { cookies } from 'next/headers'
 
 export async function signup(prevState: { message: string | null }, formData: FormData) {
-  const cookieStore = cookies()
-  const supabase = createClient(cookieStore)
+  const supabase = createClient(cookies())
 
   const data = {
     email: formData.get('email') as string,
@@ -19,6 +18,5 @@ export async function signup(prevState: { message: string | null }, formData: Fo
     return { message: error.message }
   }
 
-  // Supabase envia um e-mail de confirmação. Vamos redirecionar o usuário.
   redirect('/confirm-email')
 }
