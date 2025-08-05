@@ -3,18 +3,23 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { cookies } from 'next/headers'
-import { RequestCookies } from 'next/dist/server/web/spec-extension/cookies'
 
 export async function signup(prevState: { message: string | null }, formData: FormData) {
-  const cookieStore = cookies() as unknown as RequestCookies
-  const supabase = createClient(cookieStore)
+  const cookieStore = cookies()
+  const supabase = createClient()
 
   const data = {
     email: formData.get('email') as string,
     password: formData.get('password') as string,
   }
 
-  const { error } = await supabase.auth.signUp(data)
+  const { error } = await supabase.auth.signUp({
+    email: data.email,
+    password: data.password,
+    options: {
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/confirm-email`
+    }
+  })
 
   if (error) {
     return { message: error.message }

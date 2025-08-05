@@ -4,11 +4,10 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { cookies } from 'next/headers'
-import { RequestCookies } from 'next/dist/server/web/spec-extension/cookies'
 
 export async function login(prevState: { message: string | null }, formData: FormData) {
-  const cookieStore = cookies() as unknown as RequestCookies
-  const supabase = createClient(cookieStore)
+  const cookieStore = cookies()
+  const supabase = createClient()
 
   const data = {
     email: formData.get('email') as string,
@@ -23,4 +22,14 @@ export async function login(prevState: { message: string | null }, formData: For
 
   revalidatePath('/', 'layout')
   redirect('/dashboard')
+}
+
+export async function logout() {
+  const cookieStore = cookies()
+  const supabase = createClient()
+
+  await supabase.auth.signOut()
+
+  revalidatePath('/', 'layout')
+  redirect('/login')
 }

@@ -1,7 +1,9 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
-import { RequestCookies } from 'next/dist/server/web/spec-extension/cookies'
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 
-export function createClient(cookieStore: RequestCookies) {
+export function createClient() {
+  const cookieStore = cookies()
+
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -10,7 +12,7 @@ export function createClient(cookieStore: RequestCookies) {
         get(name: string) {
           return cookieStore.get(name)?.value
         },
-        set(name: string, value: string, options: CookieOptions) {
+        set(name: string, value: string, options: any) {
           try {
             cookieStore.set({ name, value, ...options })
           } catch (error) {
@@ -19,7 +21,7 @@ export function createClient(cookieStore: RequestCookies) {
             // user sessions.
           }
         },
-        remove(name: string, options: CookieOptions) {
+        remove(name: string, options: any) {
           try {
             cookieStore.set({ name, value: '', ...options })
           } catch (error) {
