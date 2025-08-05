@@ -4,10 +4,23 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight, User, Briefcase } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export default function LawyerListCard({ lawyer }: { lawyer: Lawyer }) {
+interface LawyerListCardProps {
+  lawyer: Lawyer;
+  onSelect: (lawyer: Lawyer) => void;
+  isSelected: boolean;
+}
+
+export default function LawyerListCard({ lawyer, onSelect, isSelected }: LawyerListCardProps) {
   return (
-    <Card>
+    <Card 
+      onClick={() => onSelect(lawyer)}
+      className={cn(
+        "cursor-pointer transition-all",
+        isSelected && "border-primary ring-2 ring-primary ring-offset-2 ring-offset-background"
+      )}
+    >
       <CardHeader>
         <div className="flex items-center gap-3">
           <User className="h-5 w-5 text-muted-foreground" />
@@ -23,7 +36,7 @@ export default function LawyerListCard({ lawyer }: { lawyer: Lawyer }) {
             ))}
           </div>
         </div>
-        <Button asChild className="w-full">
+        <Button asChild className="w-full" onClick={(e) => e.stopPropagation()}>
           <Link href={`/advogados/${lawyer.slug}`}>
             Ver Perfil
             <ArrowRight className="ml-2 h-4 w-4" />

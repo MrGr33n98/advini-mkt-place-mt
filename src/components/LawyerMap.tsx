@@ -7,13 +7,15 @@ import { Lawyer } from '@/types/lawyer';
 
 interface LawyerMapProps {
   lawyers: Lawyer[];
+  center: [number, number];
+  zoom: number;
 }
 
 export default function LawyerMap(props: LawyerMapProps) {
   const Map = useMemo(() => dynamic(
     () => import('@/components/InteractiveLawyerMap'),
     { 
-      loading: () => <Skeleton className="h-[500px] w-full rounded-lg" />,
+      loading: () => <Skeleton className="h-full w-full rounded-lg" />,
       ssr: false
     }
   ), [])

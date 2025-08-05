@@ -1,8 +1,9 @@
 'use client';
 
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Lawyer } from '@/types/lawyer';
+import { useEffect } from 'react';
 
 // Leaflet's default icon needs to be fixed for webpack environments like Next.js
 import L from 'leaflet';
@@ -18,15 +19,38 @@ L.Icon.Default.mergeOptions({
     shadowUrl: markerShadow.src,
 });
 
+// This component will listen for changes and update the map's view.
+function MapViewUpdater({ center, zoom }: { center: [number, number], zoom: number }) {
+  const map = useMap();
+  useEffect(() => {
+    map.setView(center, zoom, {
+      animate: true,
+      pan: {
+        duration: 0.5,
+      }
+    });
+  }, [center, zoom, map]);
+  return null;
+}
 
-export default function InteractiveLawyerMap({ lawyers }: { lawyers: Lawyer[] }) {
+export default function InteractiveLawyerMap({ 
+  lawyers, 
+  center, 
+  zoom 
+}: { 
+  lawyers: Lawyer[], 
+  center: [number, number], 
+  zoom: number 
+}) {
   return (
     <MapContainer 
-      center={[-15.5989, -56.0949]} // Cuiabá
-      zoom={13}
-      style={{ height: '500px', width: '100%' }}
+      center={center} 
+      zoom={zoom}
+      style={{ height: '100%', width: '100%' }}
       className="rounded-lg"
+      scrollWheelZoom={false}
     >
+      <MapViewUpdater center={center} zoom={zoom} />
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
