@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { cookies } from 'next/headers'
+import { RequestCookies } from 'next/dist/server/web/spec-extension/cookies'
 
 export async function signup(prevState: { message: string | null }, formData: FormData) {
   const cookieStore = cookies() as unknown as RequestCookies
