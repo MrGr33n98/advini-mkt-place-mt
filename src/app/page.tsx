@@ -13,9 +13,11 @@ import {
 } from "@/components/ui/select";
 import LawyerListCard from '@/components/LawyerListCard';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Input } from '@/components/ui/input';
 
 export default function Home() {
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   
   const specialties = useMemo(() => {
     const allSpecialties = allLawyers.flatMap(l => l.specialties);
@@ -23,13 +25,24 @@ export default function Home() {
   }, []);
 
   const filteredLawyers = useMemo(() => {
-    if (selectedSpecialty === 'all') {
-      return allLawyers;
+    let lawyers = allLawyers;
+
+    // Filter by specialty
+    if (selectedSpecialty !== 'all') {
+      lawyers = lawyers.filter(lawyer => 
+        lawyer.specialties.includes(selectedSpecialty)
+      );
     }
-    return allLawyers.filter(lawyer => 
-      lawyer.specialties.includes(selectedSpecialty)
-    );
-  }, [selectedSpecialty]);
+
+    // Filter by search query
+    if (searchQuery.trim() !== '') {
+      lawyers = lawyers.filter(lawyer =>
+        lawyer.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    return lawyers;
+  }, [selectedSpecialty, searchQuery]);
 
   const handleSpecialtyChange = (value: string) => {
     setSelectedSpecialty(value);
@@ -50,6 +63,11 @@ export default function Home() {
         <main className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-1 flex flex-col gap-4">
             <h2 className="text-xl font-semibold">Filtros</h2>
+            <Input 
+              placeholder="Buscar por nome..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
             <Select onValueChange={handleSpecialtyChange} defaultValue="all">
               <SelectTrigger>
                 <SelectValue placeholder="Selecione uma especialidade" />
@@ -71,7 +89,7 @@ export default function Home() {
                     <LawyerListCard key={lawyer.id} lawyer={lawyer} />
                   ))
                 ) : (
-                  <p className="text-muted-foreground text-center pt-8">Nenhum advogado encontrado com essa especialidade.</p>
+                  <p className="text-muted-foreground text-center pt-8">Nenhum advogado encontrado com os filtros aplicados.</p>
                 )}
               </div>
             </ScrollArea>
