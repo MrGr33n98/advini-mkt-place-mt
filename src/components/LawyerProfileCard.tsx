@@ -3,15 +3,24 @@
 import { Lawyer } from "@/types/lawyer";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Briefcase, Phone, Mail, Award, MapPin, Copy, Share2 } from "lucide-react";
+import { Briefcase, Phone, Mail, Award, MapPin, Copy, Share2, Star } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import SingleLawyerMap from "./SingleLawyerMap";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
+import { reviews } from "@/data/reviews";
+import { ReviewCard } from "./ReviewCard";
 
 export default function LawyerProfileCard({ lawyer }: { lawyer: Lawyer }) {
+  const lawyerReviews = reviews.filter(
+    (review) => review.lawyerId === lawyer.id && review.status === "approved"
+  );
+
+  const pinnedReviews = lawyerReviews.filter((review) => review.isPinned);
+  const regularReviews = lawyerReviews.filter((review) => !review.isPinned);
+  const allReviews = [...pinnedReviews, ...regularReviews];
 
   const handleCopy = (text: string, type: string) => {
     navigator.clipboard.writeText(text);
@@ -29,7 +38,6 @@ export default function LawyerProfileCard({ lawyer }: { lawyer: Lawyer }) {
         await navigator.share(shareData);
         toast.success("Perfil compartilhado com sucesso!");
       } else {
-        // Fallback for desktop
         navigator.clipboard.writeText(window.location.href);
         toast.success("Link do perfil copiado para a área de transferência!");
       }
@@ -38,6 +46,11 @@ export default function LawyerProfileCard({ lawyer }: { lawyer: Lawyer }) {
       console.error("Error sharing:", error);
     }
   };
+
+  const averageRating = lawyer.averageRating || 
+    (lawyerReviews.length > 0 
+      ? lawyerReviews.reduce((acc, review) => acc + review.rating, 0) / lawyerReviews.length 
+      : 0);
 
   return (
     <Card className="w-full max-w-3xl mx-auto">
@@ -49,7 +62,15 @@ export default function LawyerProfileCard({ lawyer }: { lawyer: Lawyer }) {
             </Avatar>
             <div>
               <CardTitle className="text-2xl">{lawyer.name}</CardTitle>
-              <CardDescription>Advogado(a)</CardDescription>
+              <CardDescription className="flex items-center gap-2">
+                Advogado(a)
+                {averageRating > 0 && (
+                  <span className="flex items-center gap-1">
+                    • <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    {averageRating.toFixed(1)}
+                  </span>
+                )}
+              </CardDescription>
             </div>
           </div>
           <Button variant="outline" size="icon" onClick={handleShare}>
@@ -99,7 +120,9 @@ export default function LawyerProfileCard({ lawyer }: { lawyer: Lawyer }) {
                   <div>
                     <p className="text-sm font-medium">Telefone</p>
                     <a 
-                      href={`tel:${lawyer.phone.replace(/\D/g, '')}`} 
+                      href={lawyer.whatsappUrl || `https://wa.me/${lawyer.phone.replace(/\D/g, '')}`}
+                      target="_blank"
+                      rel="noopener noreferrer" 
                       className="text-sm text-muted-foreground hover:text-primary hover:underline"
                     >
                       {lawyer.phone}
@@ -144,6 +167,22 @@ export default function LawyerProfileCard({ lawyer }: { lawyer: Lawyer }) {
             <SingleLawyerMap latitude={lawyer.latitude} longitude={lawyer.longitude} />
           </div>
         </div>
+
+        {allReviews.length > 0 && (
+          <>
+            <Separator />
+            <div>
+              <h3 className="font-semibold text-lg mb-4">
+                Avaliações dos Clientes ({allReviews.length})
+              </h3>
+              <div className="space-y-4">
+                {allReviews.map((review) => (
+                  <ReviewCard key={review.id} review={review} />
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </CardContent>
     </Card>
   );

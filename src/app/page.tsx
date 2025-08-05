@@ -15,6 +15,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { LawyerFilters } from '@/components/LawyerFilters';
 import { LawyerListCardSkeleton } from '@/components/LawyerListCardSkeleton';
 import Link from 'next/link';
+import { NavigationMenu } from './navigation-menu';
 
 const INITIAL_CENTER: [number, number] = [-15.5989, -56.0949];
 const INITIAL_ZOOM = 13;
@@ -90,6 +91,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
+      <NavigationMenu />
+      
       <div className="container mx-auto p-4 sm:p-8 relative">
         <div className="absolute top-4 right-4 sm:top-8 sm:right-8 z-10 flex items-center gap-2">
           <Button asChild variant="outline">
@@ -100,12 +103,13 @@ export default function Home() {
           </Button>
           <ThemeToggle />
         </div>
-        <header className="text-center mb-8">
+        
+        <header className="text-center mb-8 pt-16">
           <h1 className="text-4xl font-bold tracking-tight">
             Encontre um Advogado em Cuiabá-MT
           </h1>
           <p className="text-muted-foreground mt-2">
-            Selecione um advogado na lista para vê-lo no mapa.
+            Conectamos você aos melhores profissionais da área jurídica.
           </p>
         </header>
 
