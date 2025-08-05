@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Lawyer } from '@/types/lawyer';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
-import { List, Map as MapIcon } from 'lucide-react';
+import { List, Map as MapIcon, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const INITIAL_CENTER: [number, number] = [-15.5989, -56.0949];
@@ -74,6 +74,15 @@ export default function Home() {
     }
   };
 
+  const handleClearFilters = () => {
+    setSearchQuery('');
+    setSelectedSpecialty('all');
+    setMapView({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM });
+    setSelectedLawyerId(null);
+  };
+
+  const areFiltersActive = searchQuery.trim() !== '' || selectedSpecialty !== 'all';
+
   return (
     <div className="min-h-screen bg-background font-[family-name:var(--font-geist-sans)]">
       <div className="container mx-auto p-4 sm:p-8">
@@ -91,13 +100,21 @@ export default function Home() {
             "lg:col-span-1 flex flex-col gap-4",
             isMobile && mobileView !== 'list' && "hidden"
           )}>
-            <h2 className="text-xl font-semibold">Filtros</h2>
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-semibold">Filtros</h2>
+              {areFiltersActive && (
+                <Button variant="ghost" size="sm" onClick={handleClearFilters}>
+                  <X className="mr-2 h-4 w-4" />
+                  Limpar
+                </Button>
+              )}
+            </div>
             <Input 
               placeholder="Buscar por nome..."
               value={searchQuery}
               onChange={handleSearchChange}
             />
-            <Select onValueChange={handleSpecialtyChange} defaultValue="all">
+            <Select onValueChange={handleSpecialtyChange} value={selectedSpecialty}>
               <SelectTrigger>
                 <SelectValue placeholder="Selecione uma especialidade" />
               </SelectTrigger>
