@@ -27,9 +27,7 @@ function MapViewUpdater({ center, zoom }: { center: [number, number], zoom: numb
   useEffect(() => {
     map.setView(center, zoom, {
       animate: true,
-      pan: {
-        duration: 0.5,
-      }
+      duration: 0.5,
     });
   }, [center, zoom, map]);
   return null;

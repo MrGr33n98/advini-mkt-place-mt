@@ -1,18 +1,30 @@
+'use client';
+
 import { Lawyer } from "@/types/lawyer";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { User, Briefcase, Phone, Mail, Award, MapPin } from "lucide-react";
+import { Briefcase, Phone, Mail, Award, MapPin, Copy } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import SingleLawyerMap from "./SingleLawyerMap";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { getInitials } from "@/lib/utils";
+import { Button } from "./ui/button";
+import { toast } from "sonner";
 
 export default function LawyerProfileCard({ lawyer }: { lawyer: Lawyer }) {
+
+  const handleCopy = (text: string, type: string) => {
+    navigator.clipboard.writeText(text);
+    toast.success(`${type} copiado para a área de transferência!`);
+  };
+
   return (
     <Card className="w-full max-w-3xl mx-auto">
       <CardHeader>
         <div className="flex items-center gap-4">
-          <div className="bg-muted rounded-full p-3">
-            <User className="h-8 w-8 text-muted-foreground" />
-          </div>
+          <Avatar className="h-16 w-16 text-xl">
+            <AvatarFallback>{getInitials(lawyer.name)}</AvatarFallback>
+          </Avatar>
           <div>
             <CardTitle className="text-2xl">{lawyer.name}</CardTitle>
             <CardDescription>Advogado(a)</CardDescription>
@@ -43,7 +55,7 @@ export default function LawyerProfileCard({ lawyer }: { lawyer: Lawyer }) {
 
         <div>
           <h3 className="font-semibold text-lg mb-4">Informações de Contato</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
             {lawyer.oab && (
               <div className="flex items-center gap-3">
                 <Award className="h-5 w-5 text-muted-foreground flex-shrink-0" />
@@ -54,31 +66,41 @@ export default function LawyerProfileCard({ lawyer }: { lawyer: Lawyer }) {
               </div>
             )}
             {lawyer.phone && (
-              <div className="flex items-center gap-3">
-                <Phone className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                <div>
-                  <p className="text-sm font-medium">Telefone</p>
-                  <a 
-                    href={`tel:${lawyer.phone.replace(/\D/g, '')}`} 
-                    className="text-sm text-muted-foreground hover:text-primary hover:underline"
-                  >
-                    {lawyer.phone}
-                  </a>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Phone className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium">Telefone</p>
+                    <a 
+                      href={`tel:${lawyer.phone.replace(/\D/g, '')}`} 
+                      className="text-sm text-muted-foreground hover:text-primary hover:underline"
+                    >
+                      {lawyer.phone}
+                    </a>
+                  </div>
                 </div>
+                <Button variant="ghost" size="icon" onClick={() => handleCopy(lawyer.phone!, 'Telefone')}>
+                  <Copy className="h-4 w-4" />
+                </Button>
               </div>
             )}
             {lawyer.email && (
-              <div className="flex items-center gap-3 col-span-1 md:col-span-2">
-                <Mail className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                <div>
-                  <p className="text-sm font-medium">Email</p>
-                  <a 
-                    href={`mailto:${lawyer.email}`} 
-                    className="text-sm text-muted-foreground hover:text-primary hover:underline"
-                  >
-                    {lawyer.email}
-                  </a>
+              <div className="flex items-center justify-between col-span-1 md:col-span-2">
+                <div className="flex items-center gap-3">
+                  <Mail className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium">Email</p>
+                    <a 
+                      href={`mailto:${lawyer.email}`} 
+                      className="text-sm text-muted-foreground hover:text-primary hover:underline"
+                    >
+                      {lawyer.email}
+                    </a>
+                  </div>
                 </div>
+                <Button variant="ghost" size="icon" onClick={() => handleCopy(lawyer.email!, 'Email')}>
+                  <Copy className="h-4 w-4" />
+                </Button>
               </div>
             )}
           </div>

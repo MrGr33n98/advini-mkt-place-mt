@@ -1,10 +1,13 @@
+'use client';
+
 import { Lawyer } from "@/types/lawyer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowRight, User, Briefcase } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ArrowRight, Briefcase } from "lucide-react";
+import { cn, getInitials } from "@/lib/utils";
+import { Avatar, AvatarFallback } from "./ui/avatar";
 
 interface LawyerListCardProps {
   lawyer: Lawyer;
@@ -23,7 +26,9 @@ export default function LawyerListCard({ lawyer, onSelect, isSelected }: LawyerL
     >
       <CardHeader>
         <div className="flex items-center gap-3">
-          <User className="h-5 w-5 text-muted-foreground" />
+          <Avatar>
+            <AvatarFallback>{getInitials(lawyer.name)}</AvatarFallback>
+          </Avatar>
           <CardTitle className="text-lg">{lawyer.name}</CardTitle>
         </div>
       </CardHeader>

@@ -20,27 +20,14 @@ export async function generateStaticParams() {
   }));
 }
 
-// This function fetches the data for a single lawyer
-async function getLawyer(slug: string): Promise<Lawyer | null> {
-  // In a real app, this would be an absolute URL to your deployed API
-  const baseUrl = process.env.VERCEL_URL 
-    ? `https://${process.env.VERCEL_URL}` 
-    : 'http://localhost:3000';
-  
-  const res = await fetch(`${baseUrl}/api/advogados/${slug}`, {
-    // Revalidate every hour
-    next: { revalidate: 3600 },
-  });
-
-  if (!res.ok) {
-    return null;
-  }
-  
-  return res.json();
+// This function gets the data for a single lawyer directly from the data source.
+// This is more efficient than the server fetching from its own API route.
+function getLawyer(slug: string): Lawyer | undefined {
+  return lawyers.find((l) => l.slug === slug);
 }
 
-export default async function LawyerProfilePage({ params }: LawyerProfilePageProps) {
-  const lawyer = await getLawyer(params.slug);
+export default function LawyerProfilePage({ params }: LawyerProfilePageProps) {
+  const lawyer = getLawyer(params.slug);
 
   if (!lawyer) {
     notFound();

@@ -4,22 +4,15 @@ import { useState, useMemo } from 'react';
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import LawyerMap from "@/components/LawyerMap";
 import { lawyers as allLawyers } from "@/data/lawyers";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import LawyerListCard from '@/components/LawyerListCard';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Input } from '@/components/ui/input';
 import { Lawyer } from '@/types/lawyer';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
-import { List, Map as MapIcon, X } from 'lucide-react';
+import { List, Map as MapIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { LawyerFilters } from '@/components/LawyerFilters';
 
 const INITIAL_CENTER: [number, number] = [-15.5989, -56.0949];
 const INITIAL_ZOOM = 13;
@@ -104,32 +97,15 @@ export default function Home() {
             "lg:col-span-1 flex flex-col gap-4",
             isMobile && mobileView !== 'list' && "hidden"
           )}>
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-semibold">Filtros</h2>
-              {areFiltersActive && (
-                <Button variant="ghost" size="sm" onClick={handleClearFilters}>
-                  <X className="mr-2 h-4 w-4" />
-                  Limpar
-                </Button>
-              )}
-            </div>
-            <Input 
-              placeholder="Buscar por nome..."
-              value={searchQuery}
-              onChange={handleSearchChange}
+            <LawyerFilters
+              searchQuery={searchQuery}
+              onSearchChange={handleSearchChange}
+              selectedSpecialty={selectedSpecialty}
+              onSpecialtyChange={handleSpecialtyChange}
+              specialties={specialties}
+              onClearFilters={handleClearFilters}
+              areFiltersActive={areFiltersActive}
             />
-            <Select onValueChange={handleSpecialtyChange} value={selectedSpecialty}>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione uma especialidade" />
-              </SelectTrigger>
-              <SelectContent>
-                {specialties.map(spec => (
-                  <SelectItem key={spec} value={spec}>
-                    {spec === 'all' ? 'Todas as Especialidades' : spec}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
             
             <h2 className="text-xl font-semibold mt-4">Resultados ({filteredLawyers.length})</h2>
             <ScrollArea className={cn(
