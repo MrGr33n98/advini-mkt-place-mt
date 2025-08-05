@@ -1,12 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useAuth } from '@/hooks/use-auth'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { NavigationMenu } from '@/app/navigation-menu'
 import { MadeWithDyad } from '@/components/made-with-dyad'
-import { createClient } from '@/lib/supabase/client'
 import { Star, Trash2, CheckCircle, XCircle } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -19,79 +17,40 @@ interface Review {
   created_at: string
 }
 
+const mockReviews: Review[] = [
+  {
+    id: '1',
+    client_name: 'Pedro Santos',
+    rating: 5,
+    comment: 'Excelente profissional! Me ajudou muito com meu caso.',
+    status: 'pending',
+    created_at: '2024-03-15T10:00:00Z'
+  },
+  {
+    id: '2',
+    client_name: 'Maria Silva',
+    rating: 4,
+    comment: 'Muito atencioso e dedicado.',
+    status: 'approved',
+    created_at: '2024-03-10T14:30:00Z'
+  }
+]
+
 export default function ReviewsPage() {
-  const { user, loading } = useAuth()
-  const [reviews, setReviews] = useState<Review[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    async function fetchReviews() {
-      if (!user) return
-
-      const supabase = createClient()
-      
-      try {
-        const { data, error } = await supabase
-          .from('reviews')
-          .select('*')
-          .eq('lawyer_id', user.id)
-
-        if (error) throw error
-
-        setReviews(data || [])
-      } catch (error) {
-        console.error('Erro ao buscar reviews:', error)
-        toast.error('Não foi possível carregar as avaliações')
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchReviews()
-  }, [user])
+  const [reviews, setReviews] = useState<Review[]>(mockReviews)
 
   const handleReviewAction = async (reviewId: string, action: 'approve' | 'reject' | 'delete') => {
-    const supabase = createClient()
-
-    try {
-      if (action === 'delete') {
-        const { error } = await supabase
-          .from('reviews')
-          .delete()
-          .eq('id', reviewId)
-
-        if (error) throw error
-        
-        setReviews(prev => prev.filter(review => review.id !== reviewId))
-        toast.success('Avaliação removida com sucesso')
-      } else {
-        const { error } = await supabase
-          .from('reviews')
-          .update({ status: action === 'approve' ? 'approved' : 'rejected' })
-          .eq('id', reviewId)
-
-        if (error) throw error
-
-        setReviews(prev => prev.map(review => 
-          review.id === reviewId 
-            ? { ...review, status: action === 'approve' ? 'approved' : 'rejected' } 
-            : review
-        ))
-        
-        toast.success(`Avaliação ${action === 'approve' ? 'aprovada' : 'rejeitada'}`)
-      }
-    } catch (error) {
-      console.error(`Erro ao ${action} review:`, error)
-      toast.error('Não foi possível realizar a ação')
+    if (action === 'delete') {
+      setReviews(prev => prev.filter(review => review.id !== reviewId))
+      toast.success('Avaliação removida com sucesso')
+    } else {
+      setReviews(prev => prev.map(review => 
+        review.id === reviewId 
+          ? { ...review, status: action === 'approve' ? 'approved' : 'rejected' } 
+          : review
+      ))
+      toast.success(`Avaliação ${action === 'approve' ? 'aprovada' : 'rejeitada'}`)
     }
-  }
-
-  if (loading || isLoading) {
-    return <div>Carregando...</div>
-  }
-
-  if (!user) {
-    return <div>Faça login para acessar as avaliações</div>
   }
 
   return (

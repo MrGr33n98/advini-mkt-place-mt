@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useAuth } from '@/hooks/use-auth'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -10,16 +9,14 @@ import { Textarea } from '@/components/ui/textarea'
 import { NavigationMenu } from '@/app/navigation-menu'
 import { MadeWithDyad } from '@/components/made-with-dyad'
 import { toast } from 'sonner'
-import { createClient } from '@/lib/supabase/client'
 
 export default function ProfilePage() {
-  const { user, loading } = useAuth()
   const [formData, setFormData] = useState({
-    name: '',
-    oab: '',
-    phone: '',
-    specialties: '',
-    bio: ''
+    name: 'Dr. João da Silva',
+    oab: 'MT-12345',
+    phone: '(65) 99999-1234',
+    specialties: 'Direito Civil, Direito de Família',
+    bio: 'Advogado especialista em direito civil e de família com mais de 15 anos de experiência.'
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -32,32 +29,11 @@ export default function ProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const supabase = createClient()
-
-    try {
-      const { error } = await supabase
-        .from('lawyers')
-        .upsert({
-          user_id: user?.id,
-          ...formData,
-          specialties: formData.specialties.split(',').map(s => s.trim())
-        })
-
-      if (error) throw error
-
+    
+    // Simular salvamento
+    setTimeout(() => {
       toast.success('Perfil atualizado com sucesso!')
-    } catch (error) {
-      console.error('Erro ao atualizar perfil:', error)
-      toast.error('Não foi possível atualizar o perfil')
-    }
-  }
-
-  if (loading) {
-    return <div>Carregando...</div>
-  }
-
-  if (!user) {
-    return <div>Faça login para acessar o perfil</div>
+    }, 500)
   }
 
   return (

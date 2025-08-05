@@ -5,7 +5,7 @@ export const lawyerProfileSchema = z.object({
   oab: z.string().regex(/^[A-Z]{2}-\d{4,6}$/, "OAB inválido. Use o formato XX-12345"),
   phone: z.string().regex(/^\(\d{2}\)\s*\d{4,5}-\d{4}$/, "Telefone inválido. Use o formato (XX) 9999-9999"),
   specialties: z.array(z.string()).min(1, "Selecione pelo menos uma especialidade"),
-  bio: z.string().optional().max(500, "Biografia muito longa")
+  bio: z.string().max(500, "Biografia muito longa").optional()
 })
 
 export const reviewSchema = z.object({

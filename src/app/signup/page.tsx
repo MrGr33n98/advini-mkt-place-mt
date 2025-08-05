@@ -1,24 +1,29 @@
 'use client'
 
-import { useFormState, useFormStatus } from 'react-dom'
-import { signup } from './actions'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
-
-const initialState: { message: string | null } = {
-  message: null,
-}
-
-function SignupButton() {
-  const { pending } = useFormStatus()
-  return <Button className="w-full" type="submit" aria-disabled={pending}>{pending ? 'Criando conta...' : 'Criar conta'}</Button>
-}
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 export default function SignupPage() {
-  const [state, formAction] = useFormState(signup, initialState)
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setIsLoading(true)
+
+    // Simular cadastro
+    setTimeout(() => {
+      toast.success('Conta criada com sucesso!')
+      router.push('/dashboard')
+      setIsLoading(false)
+    }, 1000)
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -30,7 +35,7 @@ export default function SignupPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={formAction} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" name="email" type="email" placeholder="seu@email.com" required />
@@ -39,10 +44,9 @@ export default function SignupPage() {
               <Label htmlFor="password">Senha</Label>
               <Input id="password" name="password" type="password" placeholder="••••••••" minLength={6} required />
             </div>
-            {state?.message && (
-              <p className="text-sm text-destructive">{state.message}</p>
-            )}
-            <SignupButton />
+            <Button className="w-full" type="submit" disabled={isLoading}>
+              {isLoading ? 'Criando conta...' : 'Criar conta'}
+            </Button>
           </form>
           <div className="mt-4 text-center text-sm">
             Já tem uma conta?{' '}
