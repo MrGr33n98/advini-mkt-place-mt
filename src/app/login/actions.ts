@@ -6,7 +6,8 @@ import { createClient } from '@/lib/supabase/server'
 import { cookies } from 'next/headers'
 
 export async function login(prevState: { message: string | null }, formData: FormData) {
-  const supabase = createClient(cookies())
+  const cookieStore = cookies() as unknown as RequestCookies
+  const supabase = createClient(cookieStore)
 
   const data = {
     email: formData.get('email') as string,
