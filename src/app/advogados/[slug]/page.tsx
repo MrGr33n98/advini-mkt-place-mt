@@ -6,24 +6,25 @@ import { ArrowLeft } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import { Lawyer } from '@/types/lawyer';
 import { lawyers } from '@/data/lawyers';
+import { ReviewForm } from '@/components/ReviewForm';
 
 type Props = {
   params: { slug: string };
 };
 
-// This function tells Next.js which pages to pre-render at build time
+// Esta função diz ao Next.js quais páginas pré-renderizar no momento da construção
 export async function generateStaticParams() {
   return lawyers.map((lawyer) => ({
     slug: lawyer.slug,
   }));
 }
 
-// This function gets the data for a single lawyer directly from the data source.
+// Esta função obtém os dados de um único advogado diretamente da fonte de dados.
 function getLawyer(slug: string): Lawyer | undefined {
   return lawyers.find((l) => l.slug === slug);
 }
 
-export default async function LawyerProfilePage({ params }: Props) {
+export default function LawyerProfilePage({ params }: Props) {
   const lawyer = getLawyer(params.slug);
 
   if (!lawyer) {
@@ -42,8 +43,12 @@ export default async function LawyerProfilePage({ params }: Props) {
           </Button>
         </header>
 
-        <main>
+        <main className="space-y-8">
           <LawyerProfileCard lawyer={lawyer} />
+          
+          <div className="max-w-3xl mx-auto">
+            <ReviewForm lawyerId={lawyer.id} />
+          </div>
         </main>
       </div>
       <MadeWithDyad />

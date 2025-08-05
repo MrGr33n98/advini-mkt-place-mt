@@ -16,7 +16,7 @@ export default function ProfilePage() {
     oab: 'MT-12345',
     phone: '(65) 99999-1234',
     specialties: 'Direito Civil, Direito de Família',
-    bio: 'Advogado especialista em direito civil e de família com mais de 15 anos de experiência.'
+    bio: 'Com mais de 15 anos de experiência, sou especialista em direito civil e de família, ajudando centenas de clientes a resolverem suas questões com profissionalismo e dedicação.'
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -31,9 +31,7 @@ export default function ProfilePage() {
     e.preventDefault()
     
     // Simular salvamento
-    setTimeout(() => {
-      toast.success('Perfil atualizado com sucesso!')
-    }, 500)
+    toast.success('Perfil atualizado com sucesso!')
   }
 
   return (

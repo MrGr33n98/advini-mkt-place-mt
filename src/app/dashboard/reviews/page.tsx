@@ -8,48 +8,62 @@ import { MadeWithDyad } from '@/components/made-with-dyad'
 import { Star, Trash2, CheckCircle, XCircle } from 'lucide-react'
 import { toast } from 'sonner'
 
-interface Review {
-  id: string
-  client_name: string
-  rating: number
-  comment: string
-  status: 'pending' | 'approved' | 'rejected'
-  created_at: string
-}
-
-const mockReviews: Review[] = [
+// Dados mockados de avaliações
+const mockReviews = [
   {
-    id: '1',
-    client_name: 'Pedro Santos',
+    id: "1",
+    client_name: "Pedro Santos",
     rating: 5,
-    comment: 'Excelente profissional! Me ajudou muito com meu caso.',
-    status: 'pending',
-    created_at: '2024-03-15T10:00:00Z'
+    comment: "Excelente profissional! Me ajudou muito com meu caso de divórcio.",
+    status: "approved",
+    created_at: "2024-03-15T10:00:00Z",
+    is_pinned: true
   },
   {
-    id: '2',
-    client_name: 'Maria Silva',
+    id: "2",
+    client_name: "Maria Oliveira",
     rating: 4,
-    comment: 'Muito atencioso e dedicado.',
-    status: 'approved',
-    created_at: '2024-03-10T14:30:00Z'
+    comment: "Muito atencioso e profissional.",
+    status: "approved",
+    created_at: "2024-03-10T14:30:00Z"
+  },
+  {
+    id: "3",
+    client_name: "Carlos Mendes",
+    rating: 5,
+    comment: "Resolveu meu processo com muita competência e agilidade.",
+    status: "pending",
+    created_at: "2024-03-18T09:15:00Z"
+  },
+  {
+    id: "4",
+    client_name: "Ana Clara",
+    rating: 4,
+    comment: "Ótimo atendimento e dedicação ao caso.",
+    status: "pending",
+    created_at: "2024-03-08T16:45:00Z"
   }
-]
+];
 
 export default function ReviewsPage() {
-  const [reviews, setReviews] = useState<Review[]>(mockReviews)
+  const [reviews, setReviews] = useState(mockReviews);
 
-  const handleReviewAction = async (reviewId: string, action: 'approve' | 'reject' | 'delete') => {
-    if (action === 'delete') {
-      setReviews(prev => prev.filter(review => review.id !== reviewId))
-      toast.success('Avaliação removida com sucesso')
-    } else {
-      setReviews(prev => prev.map(review => 
-        review.id === reviewId 
-          ? { ...review, status: action === 'approve' ? 'approved' : 'rejected' } 
-          : review
-      ))
-      toast.success(`Avaliação ${action === 'approve' ? 'aprovada' : 'rejeitada'}`)
+  const handleReviewAction = (reviewId: string, action: 'approve' | 'reject' | 'delete') => {
+    try {
+      if (action === 'delete') {
+        setReviews(prev => prev.filter(review => review.id !== reviewId));
+        toast.success('Avaliação removida com sucesso');
+      } else {
+        setReviews(prev => prev.map(review => 
+          review.id === reviewId 
+            ? { ...review, status: action === 'approve' ? 'approved' : 'rejected' } 
+            : review
+        ));
+        
+        toast.success(`Avaliação ${action === 'approve' ? 'aprovada' : 'rejeitada'}`);
+      }
+    } catch (error) {
+      toast.error('Não foi possível realizar a ação');
     }
   }
 

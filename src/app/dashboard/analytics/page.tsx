@@ -6,17 +6,23 @@ import { MadeWithDyad } from '@/components/made-with-dyad'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 import { Eye, Star, ThumbsUp } from 'lucide-react'
 
+// Dados mockados para o gráfico
+const mockMonthlyViews = [
+  { month: 'Jan', views: 45 },
+  { month: 'Fev', views: 52 },
+  { month: 'Mar', views: 78 },
+  { month: 'Abr', views: 90 },
+  { month: 'Mai', views: 81 },
+  { month: 'Jun', views: 56 }
+];
+
+// Dados mockados para as métricas
 const mockAnalytics = {
-  profile_views: 245,
+  profile_views: 402,
   total_reviews: 12,
-  average_rating: 4.8,
-  monthly_views: [
-    { month: 'Jan', views: 45 },
-    { month: 'Fev', views: 52 },
-    { month: 'Mar', views: 67 },
-    { month: 'Abr', views: 81 }
-  ]
-}
+  average_rating: 4.7,
+  monthly_views: mockMonthlyViews
+};
 
 export default function AnalyticsPage() {
   return (

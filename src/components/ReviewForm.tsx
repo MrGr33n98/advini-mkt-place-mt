@@ -23,14 +23,8 @@ export function ReviewForm({ lawyerId, onReviewSubmitted }: ReviewFormProps) {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const formData = new FormData(e.currentTarget);
-    formData.append('rating', rating.toString());
-
-    try {
-      // Here you would call your server action
-      // const result = await createReview(lawyerId, { message: null }, formData);
-      
-      // For now, just show success message
+    // Simular envio de avaliação
+    setTimeout(() => {
       toast.success('Avaliação enviada com sucesso! Aguardando aprovação.');
       
       // Reset form
@@ -38,11 +32,8 @@ export function ReviewForm({ lawyerId, onReviewSubmitted }: ReviewFormProps) {
       (e.target as HTMLFormElement).reset();
       
       onReviewSubmitted?.();
-    } catch (error) {
-      toast.error('Não foi possível enviar a avaliação.');
-    } finally {
       setIsSubmitting(false);
-    }
+    }, 1000);
   };
 
   return (
