@@ -16,11 +16,23 @@ interface LawyerListCardProps {
 }
 
 export default function LawyerListCard({ lawyer, onSelect, isSelected }: LawyerListCardProps) {
+  
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      onSelect(lawyer);
+    }
+  };
+
   return (
     <Card 
       onClick={() => onSelect(lawyer)}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+      role="button"
+      aria-pressed={isSelected}
       className={cn(
-        "cursor-pointer transition-all",
+        "cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
         isSelected && "border-primary ring-2 ring-primary ring-offset-2 ring-offset-background"
       )}
     >

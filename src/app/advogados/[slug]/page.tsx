@@ -7,12 +7,6 @@ import { MadeWithDyad } from '@/components/made-with-dyad';
 import { Lawyer } from '@/types/lawyer';
 import { lawyers } from '@/data/lawyers';
 
-interface LawyerProfilePageProps {
-  params: {
-    slug: string;
-  };
-}
-
 // This function tells Next.js which pages to pre-render at build time
 export async function generateStaticParams() {
   return lawyers.map((lawyer) => ({
@@ -21,12 +15,11 @@ export async function generateStaticParams() {
 }
 
 // This function gets the data for a single lawyer directly from the data source.
-// This is more efficient than the server fetching from its own API route.
 function getLawyer(slug: string): Lawyer | undefined {
   return lawyers.find((l) => l.slug === slug);
 }
 
-export default function LawyerProfilePage({ params }: LawyerProfilePageProps) {
+export default async function LawyerProfilePage({ params }: { params: { slug: string } }) {
   const lawyer = getLawyer(params.slug);
 
   if (!lawyer) {

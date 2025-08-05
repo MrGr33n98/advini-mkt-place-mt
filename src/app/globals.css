@@ -187,4 +187,22 @@
       box-shadow: 0 0 0 0 hsla(var(--destructive) / 0);
     }
   }
+
+  /* Custom Popup Styles */
+  .leaflet-popup-content-wrapper {
+    @apply bg-card text-card-foreground rounded-lg shadow-lg border-none p-0;
+  }
+
+  .leaflet-popup-content {
+    @apply text-sm m-0;
+    min-width: 150px;
+  }
+  
+  .leaflet-popup-tip-container {
+    display: none;
+  }
+
+  .leaflet-popup-close-button {
+    @apply text-foreground/70 hover:text-foreground top-2 right-2;
+  }
 }

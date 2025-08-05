@@ -65,14 +65,14 @@ export default function InteractiveLawyerMap({
           icon={lawyer.id === selectedLawyerId ? selectedIcon : defaultIcon}
         >
           <Popup>
-            <div className="p-1">
-              <h3 className="font-bold text-base">{lawyer.name}</h3>
-              <p className="text-sm">{lawyer.specialties.join(', ')}</p>
+            <div className="p-2 font-sans">
+              <h3 className="font-bold text-base mb-1">{lawyer.name}</h3>
+              <p className="text-muted-foreground text-xs mb-2 line-clamp-1">{lawyer.specialties.join(', ')}</p>
               <a 
                 href={`/advogados/${lawyer.slug}`}
-                className="text-blue-600 hover:underline text-sm"
+                className="text-primary font-semibold hover:underline text-sm"
               >
-                Ver perfil
+                Ver perfil &rarr;
               </a>
             </div>
           </Popup>
