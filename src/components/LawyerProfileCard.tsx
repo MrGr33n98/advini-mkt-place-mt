@@ -3,7 +3,7 @@
 import { Lawyer } from "@/types/lawyer";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Briefcase, Phone, Mail, Award, MapPin, Copy } from "lucide-react";
+import { Briefcase, Phone, Mail, Award, MapPin, Copy, Share2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import SingleLawyerMap from "./SingleLawyerMap";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -18,17 +18,44 @@ export default function LawyerProfileCard({ lawyer }: { lawyer: Lawyer }) {
     toast.success(`${type} copiado para a área de transferência!`);
   };
 
+  const handleShare = async () => {
+    const shareData = {
+      title: `Perfil de ${lawyer.name}`,
+      text: `Confira o perfil de ${lawyer.name}, especialista em ${lawyer.specialties.join(', ')}.`,
+      url: window.location.href,
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        toast.success("Perfil compartilhado com sucesso!");
+      } else {
+        // Fallback for desktop
+        navigator.clipboard.writeText(window.location.href);
+        toast.success("Link do perfil copiado para a área de transferência!");
+      }
+    } catch (error) {
+      toast.error("Não foi possível compartilhar o perfil.");
+      console.error("Error sharing:", error);
+    }
+  };
+
   return (
     <Card className="w-full max-w-3xl mx-auto">
       <CardHeader>
-        <div className="flex items-center gap-4">
-          <Avatar className="h-16 w-16 text-xl">
-            <AvatarFallback>{getInitials(lawyer.name)}</AvatarFallback>
-          </Avatar>
-          <div>
-            <CardTitle className="text-2xl">{lawyer.name}</CardTitle>
-            <CardDescription>Advogado(a)</CardDescription>
+        <div className="flex justify-between items-start">
+          <div className="flex items-center gap-4">
+            <Avatar className="h-16 w-16 text-xl">
+              <AvatarFallback>{getInitials(lawyer.name)}</AvatarFallback>
+            </Avatar>
+            <div>
+              <CardTitle className="text-2xl">{lawyer.name}</CardTitle>
+              <CardDescription>Advogado(a)</CardDescription>
+            </div>
           </div>
+          <Button variant="outline" size="icon" onClick={handleShare}>
+            <Share2 className="h-5 w-5" />
+            <span className="sr-only">Compartilhar</span>
+          </Button>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">

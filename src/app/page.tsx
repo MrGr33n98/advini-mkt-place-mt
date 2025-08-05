@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import LawyerMap from "@/components/LawyerMap";
 import { lawyers as allLawyers } from "@/data/lawyers";
@@ -13,11 +13,13 @@ import { List, Map as MapIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LawyerFilters } from '@/components/LawyerFilters';
+import { LawyerListCardSkeleton } from '@/components/LawyerListCardSkeleton';
 
 const INITIAL_CENTER: [number, number] = [-15.5989, -56.0949];
 const INITIAL_ZOOM = 13;
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [mapView, setMapView] = useState({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM });
@@ -25,6 +27,14 @@ export default function Home() {
   
   const [mobileView, setMobileView] = useState<'list' | 'map'>('list');
   const isMobile = useIsMobile();
+
+  useEffect(() => {
+    // Simulate data fetching
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const specialties = useMemo(() => {
     const allSpecialties = allLawyers.flatMap(l => l.specialties);
@@ -107,13 +117,15 @@ export default function Home() {
               areFiltersActive={areFiltersActive}
             />
             
-            <h2 className="text-xl font-semibold mt-4">Resultados ({filteredLawyers.length})</h2>
+            <h2 className="text-xl font-semibold mt-4">Resultados ({isLoading ? '...' : filteredLawyers.length})</h2>
             <ScrollArea className={cn(
               "pr-4",
               isMobile ? "h-[calc(100vh-340px)]" : "h-[calc(750px-180px)]"
             )}>
               <div className="space-y-4">
-                {filteredLawyers.length > 0 ? (
+                {isLoading ? (
+                  Array.from({ length: 5 }).map((_, index) => <LawyerListCardSkeleton key={index} />)
+                ) : filteredLawyers.length > 0 ? (
                   filteredLawyers.map(lawyer => (
                     <LawyerListCard 
                       key={lawyer.id} 
