@@ -1,8 +1,9 @@
 import { Lawyer } from "@/types/lawyer";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { User, Briefcase, Phone, Mail, Award } from "lucide-react";
+import { User, Briefcase, Phone, Mail, Award, MapPin } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import SingleLawyerMap from "./SingleLawyerMap";
 
 export default function LawyerProfileCard({ lawyer }: { lawyer: Lawyer }) {
   return (
@@ -80,6 +81,18 @@ export default function LawyerProfileCard({ lawyer }: { lawyer: Lawyer }) {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+
+        <Separator />
+
+        <div>
+          <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+            <MapPin className="h-5 w-5" />
+            Localização
+          </h3>
+          <div className="overflow-hidden rounded-lg">
+            <SingleLawyerMap latitude={lawyer.latitude} longitude={lawyer.longitude} />
           </div>
         </div>
       </CardContent>

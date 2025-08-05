@@ -73,6 +73,13 @@ export default function LoadingLawyerProfile() {
                   </div>
                 </div>
               </div>
+
+              <Separator />
+
+              <div>
+                <Skeleton className="h-6 w-32 mb-4" />
+                <Skeleton className="h-[200px] w-full rounded-lg" />
+              </div>
             </CardContent>
           </Card>
         </main>
