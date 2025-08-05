@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { MadeWithDyad } from "@/components/made-with-dyad";
+import { Separator } from "@/components/ui/separator";
 
 export default function LoadingLawyerProfile() {
   return (
@@ -28,7 +29,7 @@ export default function LoadingLawyerProfile() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <Skeleton className="h-6 w-40 mb-4" />
+                <Skeleton className="h-6 w-40 mb-3" />
                 <div className="flex flex-wrap gap-2">
                   <Skeleton className="h-6 w-28 rounded-md" />
                   <Skeleton className="h-6 w-32 rounded-md" />
@@ -44,26 +45,31 @@ export default function LoadingLawyerProfile() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-                <div className="flex items-center gap-3">
-                  <Skeleton className="h-5 w-5 rounded-full" />
-                  <div className="space-y-1">
-                    <Skeleton className="h-4 w-8" />
-                    <Skeleton className="h-4 w-24" />
+              <Separator />
+
+              <div>
+                <Skeleton className="h-6 w-52 mb-4" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="h-5 w-5" />
+                    <div className="space-y-1.5">
+                      <Skeleton className="h-4 w-8" />
+                      <Skeleton className="h-4 w-24" />
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Skeleton className="h-5 w-5 rounded-full" />
-                  <div className="space-y-1">
-                    <Skeleton className="h-4 w-16" />
-                    <Skeleton className="h-4 w-32" />
+                  <div className="flex items-center gap-3">
+                    <Skeleton className="h-5 w-5" />
+                    <div className="space-y-1.5">
+                      <Skeleton className="h-4 w-16" />
+                      <Skeleton className="h-4 w-32" />
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-3 col-span-1 md:col-span-2">
-                  <Skeleton className="h-5 w-5 rounded-full" />
-                  <div className="space-y-1">
-                    <Skeleton className="h-4 w-12" />
-                    <Skeleton className="h-4 w-48" />
+                  <div className="flex items-center gap-3 col-span-1 md:col-span-2">
+                    <Skeleton className="h-5 w-5" />
+                    <div className="space-y-1.5">
+                      <Skeleton className="h-4 w-12" />
+                      <Skeleton className="h-4 w-48" />
+                    </div>
                   </div>
                 </div>
               </div>
