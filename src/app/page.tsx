@@ -9,11 +9,12 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Lawyer } from '@/types/lawyer';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
-import { List, Map as MapIcon } from 'lucide-react';
+import { List, Map as MapIcon, LogIn } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LawyerFilters } from '@/components/LawyerFilters';
 import { LawyerListCardSkeleton } from '@/components/LawyerListCardSkeleton';
+import Link from 'next/link';
 
 const INITIAL_CENTER: [number, number] = [-15.5989, -56.0949];
 const INITIAL_ZOOM = 13;
@@ -90,7 +91,13 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto p-4 sm:p-8 relative">
-        <div className="absolute top-4 right-4 sm:top-8 sm:right-8 z-10">
+        <div className="absolute top-4 right-4 sm:top-8 sm:right-8 z-10 flex items-center gap-2">
+          <Button asChild variant="outline">
+            <Link href="/login">
+              <LogIn className="mr-2 h-4 w-4" />
+              Área do Advogado
+            </Link>
+          </Button>
           <ThemeToggle />
         </div>
         <header className="text-center mb-8">
