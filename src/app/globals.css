@@ -151,3 +151,40 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .leaflet-marker-icon.default-marker {
+    background-color: hsl(var(--primary));
+    border: 2px solid hsl(var(--background));
+    border-radius: 9999px;
+    width: 1rem !important;
+    height: 1rem !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+
+  .leaflet-marker-icon.selected-marker {
+    background-color: hsl(var(--destructive));
+    border: 2px solid hsl(var(--background));
+    border-radius: 9999px;
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+    z-index: 1000 !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 hsla(var(--destructive) / 0.7);
+    }
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 10px hsla(var(--destructive) / 0);
+    }
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 hsla(var(--destructive) / 0);
+    }
+  }
+}

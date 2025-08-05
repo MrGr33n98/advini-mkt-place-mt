@@ -158,6 +158,7 @@ export default function Home() {
               lawyers={filteredLawyers} 
               center={mapView.center}
               zoom={mapView.zoom}
+              selectedLawyerId={selectedLawyerId}
             />
           </div>
 

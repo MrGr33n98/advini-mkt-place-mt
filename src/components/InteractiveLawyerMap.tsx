@@ -4,19 +4,21 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Lawyer } from '@/types/lawyer';
 import { useEffect } from 'react';
-
-// Leaflet's default icon needs to be fixed for webpack environments like Next.js
 import L from 'leaflet';
-import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
-import markerIcon from 'leaflet/dist/images/marker-icon.png';
-import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 
-// @ts-ignore
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-    iconUrl: markerIcon.src,
-    iconRetinaUrl: markerIcon2x.src,
-    shadowUrl: markerShadow.src,
+// Custom icons using divIcon for CSS styling
+const defaultIcon = new L.DivIcon({
+  className: 'default-marker',
+  iconSize: [16, 16],
+  iconAnchor: [8, 8],
+  popupAnchor: [0, -8]
+});
+
+const selectedIcon = new L.DivIcon({
+  className: 'selected-marker',
+  iconSize: [20, 20],
+  iconAnchor: [10, 10],
+  popupAnchor: [0, -10]
 });
 
 // This component will listen for changes and update the map's view.
@@ -36,11 +38,13 @@ function MapViewUpdater({ center, zoom }: { center: [number, number], zoom: numb
 export default function InteractiveLawyerMap({ 
   lawyers, 
   center, 
-  zoom 
+  zoom,
+  selectedLawyerId
 }: { 
   lawyers: Lawyer[], 
   center: [number, number], 
-  zoom: number 
+  zoom: number,
+  selectedLawyerId?: string | null
 }) {
   return (
     <MapContainer 
@@ -60,6 +64,7 @@ export default function InteractiveLawyerMap({
         <Marker
           key={lawyer.id}
           position={[lawyer.latitude, lawyer.longitude]}
+          icon={lawyer.id === selectedLawyerId ? selectedIcon : defaultIcon}
         >
           <Popup>
             <div className="p-1">

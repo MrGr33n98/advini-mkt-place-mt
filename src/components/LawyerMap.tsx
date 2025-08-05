@@ -9,6 +9,7 @@ interface LawyerMapProps {
   lawyers: Lawyer[];
   center: [number, number];
   zoom: number;
+  selectedLawyerId?: string | null;
 }
 
 export default function LawyerMap(props: LawyerMapProps) {
