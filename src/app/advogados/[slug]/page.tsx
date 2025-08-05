@@ -9,11 +9,10 @@ import { lawyers } from '@/data/lawyers';
 
 type Props = {
   params: { slug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
 };
 
 // This function tells Next.js which pages to pre-render at build time
-export function generateStaticParams() {
+export async function generateStaticParams() {
   return lawyers.map((lawyer) => ({
     slug: lawyer.slug,
   }));
@@ -24,7 +23,7 @@ function getLawyer(slug: string): Lawyer | undefined {
   return lawyers.find((l) => l.slug === slug);
 }
 
-export default function LawyerProfilePage({ params }: Props) {
+export default async function LawyerProfilePage({ params }: Props) {
   const lawyer = getLawyer(params.slug);
 
   if (!lawyer) {
