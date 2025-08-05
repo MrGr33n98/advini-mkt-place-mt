@@ -12,6 +12,9 @@ export const lawyers: Lawyer[] = [
     oab: "MT-12345",
     phone: "(65) 99999-1234",
     email: "joao.silva@email.com",
+    status: 'approved',
+    average_rating: 4.8,
+    total_reviews: 12,
   },
   {
     id: "2",
@@ -24,6 +27,9 @@ export const lawyers: Lawyer[] = [
     oab: "MT-54321",
     phone: "(65) 98888-5678",
     email: "maria.oliveira@email.com",
+    status: 'approved',
+    average_rating: 4.9,
+    total_reviews: 8,
   },
   {
     id: "3",
@@ -36,6 +42,9 @@ export const lawyers: Lawyer[] = [
     oab: "MT-67890",
     phone: "(65) 97777-9012",
     email: "carlos.pereira@email.com",
+    status: 'approved',
+    average_rating: 4.7,
+    total_reviews: 15,
   },
   {
     id: "4",
@@ -48,6 +57,9 @@ export const lawyers: Lawyer[] = [
     oab: "MT-13579",
     phone: "(65) 96666-1357",
     email: "ana.costa@email.com",
+    status: 'approved',
+    average_rating: 4.6,
+    total_reviews: 6,
   },
   {
     id: "5",
@@ -60,6 +72,9 @@ export const lawyers: Lawyer[] = [
     oab: "MT-24680",
     phone: "(65) 95555-2468",
     email: "lucas.martins@email.com",
+    status: 'approved',
+    average_rating: 4.5,
+    total_reviews: 10,
   },
   {
     id: "6",
@@ -72,5 +87,8 @@ export const lawyers: Lawyer[] = [
     oab: "MT-97531",
     phone: "(65) 94444-9753",
     email: "beatriz.lima@email.com",
+    status: 'approved',
+    average_rating: 4.9,
+    total_reviews: 14,
   }
 ];

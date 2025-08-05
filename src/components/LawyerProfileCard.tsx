@@ -15,11 +15,11 @@ import { ReviewCard } from "./ReviewCard";
 
 export default function LawyerProfileCard({ lawyer }: { lawyer: Lawyer }) {
   const lawyerReviews = reviews.filter(
-    (review) => review.lawyerId === lawyer.id && review.status === "approved"
+    (review) => review.lawyer_id === lawyer.id && review.status === "approved"
   );
 
-  const pinnedReviews = lawyerReviews.filter((review) => review.isPinned);
-  const regularReviews = lawyerReviews.filter((review) => !review.isPinned);
+  const pinnedReviews = lawyerReviews.filter((review) => review.is_pinned);
+  const regularReviews = lawyerReviews.filter((review) => !review.is_pinned);
   const allReviews = [...pinnedReviews, ...regularReviews];
 
   const handleCopy = (text: string, type: string) => {
@@ -47,7 +47,7 @@ export default function LawyerProfileCard({ lawyer }: { lawyer: Lawyer }) {
     }
   };
 
-  const averageRating = lawyer.averageRating || 
+  const averageRating = lawyer.average_rating || 
     (lawyerReviews.length > 0 
       ? lawyerReviews.reduce((acc, review) => acc + review.rating, 0) / lawyerReviews.length 
       : 0);
@@ -120,7 +120,7 @@ export default function LawyerProfileCard({ lawyer }: { lawyer: Lawyer }) {
                   <div>
                     <p className="text-sm font-medium">Telefone</p>
                     <a 
-                      href={lawyer.whatsappUrl || `https://wa.me/${lawyer.phone.replace(/\D/g, '')}`}
+                      href={lawyer.whatsapp_url || `https://wa.me/${lawyer.phone.replace(/\D/g, '')}`}
                       target="_blank"
                       rel="noopener noreferrer" 
                       className="text-sm text-muted-foreground hover:text-primary hover:underline"

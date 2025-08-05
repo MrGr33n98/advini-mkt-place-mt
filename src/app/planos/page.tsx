@@ -4,6 +4,7 @@ import { Check } from "lucide-react";
 import Link from "next/link";
 import { NavigationMenu } from "../navigation-menu";
 import { MadeWithDyad } from "@/components/made-with-dyad";
+import { cn } from "@/lib/utils";
 
 const plans = [
   {

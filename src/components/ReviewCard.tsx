@@ -11,14 +11,14 @@ interface ReviewCardProps {
 export function ReviewCard({ review }: ReviewCardProps) {
   return (
     <Card className="relative">
-      {review.isPinned && (
+      {review.is_pinned && (
         <div className="absolute top-2 right-2">
           <Pin className="h-4 w-4 text-primary" />
         </div>
       )}
       <CardHeader className="space-y-1">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold">{review.clientName}</h3>
+          <h3 className="font-semibold">{review.client_name}</h3>
           <div className="flex items-center">
             {Array.from({ length: 5 }).map((_, i) => (
               <Star
@@ -31,7 +31,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
           </div>
         </div>
         <p className="text-sm text-muted-foreground">
-          {format(new Date(review.date), "d 'de' MMMM 'de' yyyy", { locale: ptBR })}
+          {format(new Date(review.created_at), "d 'de' MMMM 'de' yyyy", { locale: ptBR })}
         </p>
       </CardHeader>
       <CardContent>
