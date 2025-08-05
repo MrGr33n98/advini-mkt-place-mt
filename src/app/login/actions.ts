@@ -3,9 +3,11 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { cookies } from 'next/headers'
 
-export async function login(prevState: any, formData: FormData) {
-  const supabase = createClient()
+export async function login(prevState: { message: string | null }, formData: FormData) {
+  const cookieStore = cookies()
+  const supabase = createClient(cookieStore)
 
   const data = {
     email: formData.get('email') as string,

@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
 
-const initialState = {
+const initialState: { message: string | null } = {
   message: null,
 }
 
