@@ -12,7 +12,7 @@ export default function Home() {
           </h1>
           <p className="text-muted-foreground mt-2">
             Navegue pelo mapa para encontrar especialistas perto de você.
-          p>
+          </p>
         </header>
 
         <main className="flex flex-col gap-8 items-center">
