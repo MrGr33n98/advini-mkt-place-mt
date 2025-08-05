@@ -1,0 +1,40 @@
+import { Lawyer } from "@/types/lawyer";
+
+export const lawyers: Lawyer[] = [
+  {
+    id: "1",
+    name: "Dr. João da Silva",
+    specialties: ["Direito Civil", "Direito de Família"],
+    latitude: -15.59,
+    longitude: -56.09,
+    slug: "joao-da-silva",
+    bio: "Com mais de 15 anos de experiência, Dr. João é um especialista renomado em direito civil e de família, ajudando centenas de clientes a resolverem suas questões com profissionalismo e dedicação.",
+    oab: "MT-12345",
+    phone: "(65) 99999-1234",
+    email: "joao.silva@email.com",
+  },
+  {
+    id: "2",
+    name: "Dra. Maria Oliveira",
+    specialties: ["Direito Penal", "Direito Trabalhista"],
+    latitude: -15.61,
+    longitude: -56.1,
+    slug: "maria-oliveira",
+    bio: "Dra. Maria é uma defensora apaixonada pelos direitos de seus clientes, com vasta experiência em casos criminais e trabalhistas. Sua abordagem é estratégica e focada em resultados.",
+    oab: "MT-54321",
+    phone: "(65) 98888-5678",
+    email: "maria.oliveira@email.com",
+  },
+  {
+    id: "3",
+    name: "Dr. Carlos Pereira",
+    specialties: ["Direito Tributário", "Direito Empresarial"],
+    latitude: -15.585,
+    longitude: -56.08,
+    slug: "carlos-pereira",
+    bio: "Especialista em legislação tributária e empresarial, Dr. Carlos auxilia empresas a navegarem no complexo sistema fiscal brasileiro, otimizando cargas tributárias e garantindo conformidade.",
+    oab: "MT-67890",
+    phone: "(65) 97777-9012",
+    email: "carlos.pereira@email.com",
+  },
+];

@@ -5,4 +5,8 @@ export interface Lawyer {
   latitude: number;
   longitude: number;
   slug: string;
+  bio?: string;
+  oab?: string;
+  phone?: string;
+  email?: string;
 }
