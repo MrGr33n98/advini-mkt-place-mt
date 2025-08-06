@@ -9,7 +9,6 @@ import {
   MessageSquare, ExternalLink, Building2, Shield,
   Award, CheckCircle
 } from "lucide-react";
-import Link from "next/link";
 import { reviews } from "@/data/reviews";
 
 interface EnhancedOfficeListCardProps {
@@ -34,6 +33,16 @@ export default function EnhancedOfficeListCard({ office }: EnhancedOfficeListCar
     }
   };
 
+  const handleCardClick = () => {
+    window.location.href = `/escritorios/${office.slug}`;
+  };
+
+  const handleViewProfile = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    window.location.href = `/escritorios/${office.slug}`;
+  };
+
   const getPlanBadgeColor = (tier: string) => {
     switch (tier) {
       case 'gold': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
@@ -51,8 +60,10 @@ export default function EnhancedOfficeListCard({ office }: EnhancedOfficeListCar
   };
 
   return (
-    <Link href={`/escritorios/${office.slug}`}>
-      <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-2 hover:border-primary/20">
+      <Card 
+        className="group hover:shadow-lg transition-all duration-300 cursor-pointer border-2 hover:border-primary/20"
+        onClick={handleCardClick}
+      >
         <CardHeader className="pb-3">
           <div className="flex items-start gap-4">
             <div className="relative">
@@ -186,6 +197,7 @@ export default function EnhancedOfficeListCard({ office }: EnhancedOfficeListCar
             <Button 
               size="sm" 
               className="flex-1 group-hover:bg-primary group-hover:text-primary-foreground"
+              onClick={handleViewProfile}
             >
               Ver Perfil
               <ExternalLink className="h-4 w-4 ml-2" />
@@ -193,6 +205,5 @@ export default function EnhancedOfficeListCard({ office }: EnhancedOfficeListCar
           </div>
         </CardContent>
       </Card>
-    </Link>
   );
 }
