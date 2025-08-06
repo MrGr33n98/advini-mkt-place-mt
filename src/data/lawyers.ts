@@ -15,6 +15,8 @@ export const lawyers: Lawyer[] = [
     status: 'approved',
     average_rating: 4.8,
     total_reviews: 12,
+    hourly_rate: 350,
+    consultation_fee: 200,
   },
   {
     id: "2",
@@ -30,6 +32,8 @@ export const lawyers: Lawyer[] = [
     status: 'approved',
     average_rating: 4.9,
     total_reviews: 8,
+    hourly_rate: 450,
+    consultation_fee: 250,
   },
   {
     id: "3",
@@ -45,6 +49,8 @@ export const lawyers: Lawyer[] = [
     status: 'approved',
     average_rating: 4.7,
     total_reviews: 15,
+    hourly_rate: 500,
+    consultation_fee: 300,
   },
   {
     id: "4",
@@ -60,6 +66,8 @@ export const lawyers: Lawyer[] = [
     status: 'approved',
     average_rating: 4.6,
     total_reviews: 6,
+    hourly_rate: 280,
+    consultation_fee: 150,
   },
   {
     id: "5",
@@ -75,6 +83,8 @@ export const lawyers: Lawyer[] = [
     status: 'approved',
     average_rating: 4.5,
     total_reviews: 10,
+    hourly_rate: 320,
+    consultation_fee: 180,
   },
   {
     id: "6",
@@ -90,5 +100,7 @@ export const lawyers: Lawyer[] = [
     status: 'approved',
     average_rating: 4.9,
     total_reviews: 14,
+    hourly_rate: 380,
+    consultation_fee: 220,
   }
 ];

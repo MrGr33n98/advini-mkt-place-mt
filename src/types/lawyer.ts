@@ -17,4 +17,6 @@ export interface Lawyer {
   average_rating?: number;
   total_reviews?: number;
   badges?: string[];
+  hourly_rate?: number; // Valor por hora em R$
+  consultation_fee?: number; // Taxa de consulta em R$
 }

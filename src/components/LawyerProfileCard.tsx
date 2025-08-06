@@ -3,7 +3,7 @@
 import { Lawyer } from "@/types/lawyer";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Briefcase, Phone, Mail, Award, MapPin, Copy, Share2, Star, Calendar, Clock, FileText, MessageSquare, Globe, CheckCircle } from "lucide-react";
+import { Briefcase, Phone, Mail, Award, MapPin, Copy, Share2, Star, Calendar, Clock, FileText, MessageSquare, Globe, CheckCircle, DollarSign } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import SingleLawyerMap from "./SingleLawyerMap";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -203,6 +203,34 @@ export default function LawyerProfileCard({ lawyer }: { lawyer: Lawyer }) {
                   </div>
                 )}
               </div>
+            </div>
+
+            <Separator />
+
+            <div>
+              <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                <DollarSign className="h-5 w-5" />
+                Honorários
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col items-center p-4 bg-muted/50 rounded-lg">
+                  <Clock className="h-8 w-8 text-primary mb-2" />
+                  <p className="font-medium">Consulta</p>
+                  <p className="text-lg font-semibold text-primary">
+                    R$ {lawyer.consultation_fee?.toLocaleString('pt-BR')}
+                  </p>
+                </div>
+                <div className="flex flex-col items-center p-4 bg-muted/50 rounded-lg">
+                  <FileText className="h-8 w-8 text-primary mb-2" />
+                  <p className="font-medium">Hora/Aula</p>
+                  <p className="text-lg font-semibold text-primary">
+                    R$ {lawyer.hourly_rate?.toLocaleString('pt-BR')}
+                  </p>
+                </div>
+              </div>
+              <p className="text-sm text-muted-foreground mt-2 text-center">
+                * Valores podem variar conforme a complexidade do caso
+              </p>
             </div>
 
             <Separator />

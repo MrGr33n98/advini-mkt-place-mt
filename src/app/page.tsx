@@ -13,7 +13,7 @@ import { List, Map as MapIcon, Users, Star, Award } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { LawyerFilters } from '@/components/LawyerFilters';
 import { LawyerListCardSkeleton } from '@/components/LawyerListCardSkeleton';
-import Link from 'next/link';
+
 import { NavigationMenu } from './navigation-menu';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -24,6 +24,10 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedRating, setSelectedRating] = useState<number>(0);
+  const [selectedSortBy, setSelectedSortBy] = useState<string>('relevance');
+  const [selectedLocation, setSelectedLocation] = useState<string>('all');
+  const [selectedPriceRange, setSelectedPriceRange] = useState<string>('all');
   const [mapView, setMapView] = useState({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM });
   const [selectedLawyerId, setSelectedLawyerId] = useState<string | null>(null);
   
@@ -46,20 +50,72 @@ export default function Home() {
   const filteredLawyers = useMemo(() => {
     let lawyers = allLawyers;
 
+    // Filtro por especialidade
     if (selectedSpecialty !== 'all') {
       lawyers = lawyers.filter(lawyer => 
         lawyer.specialties.includes(selectedSpecialty)
       );
     }
 
+    // Filtro por busca de texto
     if (searchQuery.trim() !== '') {
       lawyers = lawyers.filter(lawyer =>
-        lawyer.name.toLowerCase().includes(searchQuery.toLowerCase())
+        lawyer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        lawyer.specialties.some(spec => spec.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        lawyer.bio?.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
+    // Filtro por avaliação
+    if (selectedRating !== 'all') {
+      const minRating = parseFloat(selectedRating);
+      lawyers = lawyers.filter(lawyer => 
+        (lawyer.average_rating || 0) >= minRating
+      );
+    }
+
+    // Filtro por faixa de preço
+    if (selectedPriceRange !== 'all') {
+      switch (selectedPriceRange) {
+        case '0-200':
+          lawyers = lawyers.filter(lawyer => lawyer.consultation_fee <= 200);
+          break;
+        case '200-500':
+          lawyers = lawyers.filter(lawyer => lawyer.consultation_fee > 200 && lawyer.consultation_fee <= 500);
+          break;
+        case '500-1000':
+          lawyers = lawyers.filter(lawyer => lawyer.consultation_fee > 500 && lawyer.consultation_fee <= 1000);
+          break;
+        case '1000-2000':
+          lawyers = lawyers.filter(lawyer => lawyer.consultation_fee > 1000 && lawyer.consultation_fee <= 2000);
+          break;
+        case '2000+':
+          lawyers = lawyers.filter(lawyer => lawyer.consultation_fee > 2000);
+          break;
+      }
+    }
+
+    // Ordenação
+    switch (selectedSortBy) {
+      case 'rating':
+        lawyers.sort((a, b) => (b.average_rating || 0) - (a.average_rating || 0));
+        break;
+      case 'name':
+        lawyers.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case 'reviews':
+        lawyers.sort((a, b) => (b.total_reviews || 0) - (a.total_reviews || 0));
+        break;
+      case 'price':
+        lawyers.sort((a, b) => a.consultation_fee - b.consultation_fee);
+        break;
+      default: // relevance
+        // Manter ordem original ou implementar lógica de relevância
+        break;
+    }
+
     return lawyers;
-  }, [selectedSpecialty, searchQuery]);
+  }, [selectedSpecialty, searchQuery, selectedRating, selectedSortBy, selectedPriceRange]);
 
   const handleSpecialtyChange = (value: string) => {
     setSelectedSpecialty(value);
@@ -80,14 +136,38 @@ export default function Home() {
     }
   };
 
+  const handleRatingChange = (value: string) => {
+    setSelectedRating(value);
+    setSelectedLawyerId(null);
+  };
+
+  const handleSortByChange = (value: string) => {
+    setSelectedSortBy(value);
+    setSelectedLawyerId(null);
+  };
+
+  const handleLocationChange = (value: string) => {
+    setSelectedLocation(value);
+    setSelectedLawyerId(null);
+  };
+
+  const handlePriceRangeChange = (value: string) => {
+    setSelectedPriceRange(value);
+    setSelectedLawyerId(null);
+  };
+
   const handleClearFilters = () => {
     setSearchQuery('');
     setSelectedSpecialty('all');
+    setSelectedRating('all');
+    setSelectedSortBy('relevance');
+    setSelectedLocation('all');
+    setSelectedPriceRange('all');
     setMapView({ center: INITIAL_CENTER, zoom: INITIAL_ZOOM });
     setSelectedLawyerId(null);
   };
 
-  const areFiltersActive = searchQuery.trim() !== '' || selectedSpecialty !== 'all';
+  const areFiltersActive = searchQuery.trim() !== '' || selectedSpecialty !== 'all' || selectedRating !== 'all' || selectedSortBy !== 'relevance' || selectedLocation !== 'all' || selectedPriceRange !== 'all';
 
   // Advogados em destaque (com maior avaliação)
   const featuredLawyers = useMemo(() => {
@@ -179,6 +259,14 @@ export default function Home() {
               specialties={specialties}
               onClearFilters={handleClearFilters}
               areFiltersActive={areFiltersActive}
+              selectedRating={selectedRating}
+              onRatingChange={handleRatingChange}
+              selectedSortBy={selectedSortBy}
+              onSortByChange={handleSortByChange}
+              selectedLocation={selectedLocation}
+              onLocationChange={handleLocationChange}
+              selectedPriceRange={selectedPriceRange}
+              onPriceRangeChange={handlePriceRangeChange}
             />
             
             <h2 className="text-xl font-semibold mt-4">Resultados ({isLoading ? '...' : filteredLawyers.length})</h2>

@@ -24,14 +24,14 @@ O projeto já possui uma base sólida com:
 
 ### 1. Melhorias na Interface de Busca e Listagem
 
-- [ ] 1.1 Aprimorar página de busca de advogados
-  - Implementar filtros avançados com estado persistente (especialidade, localização, avaliação, preço)
-  - Adicionar busca por texto livre com debounce
-  - Criar sistema de ordenação (relevância, distância, avaliação, preço)
-  - Implementar paginação infinita ou numerada
-  - _Requisitos: 6.1, 6.2, 6.3, 6.4_
+- [X] 1.1 Aprimorar página de busca de advogados
+  [X] - Implementar filtros avançados com estado persistente (especialidade, localização, avaliação, preço)
+  [X]- Adicionar busca por texto livre com debounce
+  [X]- Criar sistema de ordenação (relevância, distância, avaliação, preço)
+  [X]- Implementar paginação infinita ou numerada
+  [X]- _Requisitos: 6.1, 6.2, 6.3, 6.4_
 
-- [ ] 1.2 Melhorar cards de advogados na listagem
+- [ ] 1.2 Melhorar cards de advogados na listagem, alem de criar cards para escritorios
   - Adicionar badges de plano (Basic, Silver, Gold)
   - Implementar sistema de destaque para planos pagos
   - Melhorar layout responsivo dos cards

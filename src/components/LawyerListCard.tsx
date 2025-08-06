@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowRight, Briefcase } from "lucide-react";
+import { ArrowRight, Briefcase, DollarSign } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 
@@ -53,6 +53,19 @@ export default function LawyerListCard({ lawyer, onSelect, isSelected }: LawyerL
             ))}
           </div>
         </div>
+        
+        {lawyer.consultation_fee && (
+          <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+            <DollarSign className="h-5 w-5 text-primary flex-shrink-0" />
+            <div>
+              <p className="text-sm font-medium">Consulta a partir de</p>
+              <p className="text-lg font-semibold text-primary">
+                R$ {lawyer.consultation_fee.toLocaleString('pt-BR')}
+              </p>
+            </div>
+          </div>
+        )}
+        
         <Button asChild className="w-full" onClick={(e) => e.stopPropagation()}>
           <Link href={`/advogados/${lawyer.slug}`}>
             Ver Perfil
