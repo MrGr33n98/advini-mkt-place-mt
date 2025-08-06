@@ -8,19 +8,36 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { ReviewForm } from '@/components/ReviewForm';
+import type { Metadata } from 'next';
 
 type Props = {
   params: { slug: string };
 };
 
+function getOffice(slug: string): Office | undefined {
+  return offices.find((o) => o.slug === slug);
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const office = getOffice(params.slug);
+
+  if (!office) {
+    return {
+      title: "Escritório não encontrado",
+      description: "A página que você está procurando não existe.",
+    };
+  }
+
+  return {
+    title: `${office.name} | Escritório de Advocacia em Cuiabá-MT`,
+    description: `Perfil do escritório ${office.name}, especializado em ${office.specialties.join(', ')}. Encontre advogados, informações de contato e avaliações.`,
+  };
+}
+
 export async function generateStaticParams() {
   return offices.map((office) => ({
     slug: office.slug,
   }));
-}
-
-function getOffice(slug: string): Office | undefined {
-  return offices.find((o) => o.slug === slug);
 }
 
 export default function OfficeProfilePage({ params }: Props) {

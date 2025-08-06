@@ -177,197 +177,81 @@ export default function Home() {
           </div>
         )}
 
-        <Tabs defaultValue="map" className="mb-8">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
-            <TabsTrigger value="map">
-              <MapIcon className="mr-2 h-4 w-4" />
-              Mapa Interativo
-            </TabsTrigger>
-            <TabsTrigger value="search">
-              <Search className="mr-2 h-4 w-4" />
-              Busca Avançada
-            </TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="map" className="mt-6">
-            <main className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className={cn(
-                "lg:col-span-1 flex flex-col gap-4",
-                isMobile && mobileView !== 'list' && "hidden"
-              )}>
-                <LawyerFilters
-                  searchQuery={searchQuery}
-                  onSearchChange={handleSearchChange}
-                  selectedSpecialty={selectedSpecialty}
-                  onSpecialtyChange={handleSpecialtyChange}
-                  specialties={specialties}
-                  onClearFilters={handleClearFilters}
-                  areFiltersActive={areFiltersActive}
-                />
-                
-                <h2 className="text-xl font-semibold mt-4">Resultados ({isLoading ? '...' : filteredLawyers.length})</h2>
-                <ScrollArea className={cn(
-                  "pr-4",
-                  isMobile ? "h-[calc(100vh-340px)]" : "h-[calc(750px-180px)]"
-                )}>
-                  <div className="space-y-4">
-                    {isLoading ? (
-                      Array.from({ length: 5 }).map((_, index) => <LawyerListCardSkeleton key={index} />)
-                    ) : filteredLawyers.length > 0 ? (
-                      filteredLawyers.map(lawyer => (
-                        <LawyerListCard 
-                          key={lawyer.id} 
-                          lawyer={lawyer}
-                          onSelect={handleLawyerSelect}
-                          isSelected={lawyer.id === selectedLawyerId}
-                        />
-                      ))
-                    ) : (
-                      <p className="text-muted-foreground text-center pt-8">Nenhum advogado encontrado com os filtros aplicados.</p>
-                    )}
-                  </div>
-                </ScrollArea>
+        <main className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className={cn(
+            "lg:col-span-1 flex flex-col gap-4",
+            isMobile && mobileView !== 'list' && "hidden"
+          )}>
+            <LawyerFilters
+              searchQuery={searchQuery}
+              onSearchChange={handleSearchChange}
+              selectedSpecialty={selectedSpecialty}
+              onSpecialtyChange={handleSpecialtyChange}
+              specialties={specialties}
+              onClearFilters={handleClearFilters}
+              areFiltersActive={areFiltersActive}
+            />
+            
+            <h2 className="text-xl font-semibold mt-4">Resultados ({isLoading ? '...' : filteredLawyers.length})</h2>
+            <ScrollArea className={cn(
+              "pr-4",
+              isMobile ? "h-[calc(100vh-340px)]" : "h-[calc(750px-180px)]"
+            )}>
+              <div className="space-y-4">
+                {isLoading ? (
+                  Array.from({ length: 5 }).map((_, index) => <LawyerListCardSkeleton key={index} />)
+                ) : filteredLawyers.length > 0 ? (
+                  filteredLawyers.map(lawyer => (
+                    <LawyerListCard 
+                      key={lawyer.id} 
+                      lawyer={lawyer}
+                      onSelect={handleLawyerSelect}
+                      isSelected={lawyer.id === selectedLawyerId}
+                    />
+                  ))
+                ) : (
+                  <p className="text-muted-foreground text-center pt-8">Nenhum advogado encontrado com os filtros aplicados.</p>
+                )}
               </div>
+            </ScrollArea>
+          </div>
 
-              <div className={cn(
-                "lg:col-span-2 h-[500px] lg:h-[750px]",
-                isMobile && mobileView !== 'map' && "hidden",
-                isMobile && mobileView === 'map' && "h-[calc(100vh-220px)]"
-              )}>
-                <LawyerMap 
-                  lawyers={filteredLawyers} 
-                  center={mapView.center}
-                  zoom={mapView.zoom}
-                  selectedLawyerId={selectedLawyerId}
-                />
-              </div>
+          <div className={cn(
+            "lg:col-span-2 h-[500px] lg:h-[750px]",
+            isMobile && mobileView !== 'map' && "hidden",
+            isMobile && mobileView === 'map' && "h-[calc(100vh-220px)]"
+          )}>
+            <LawyerMap 
+              lawyers={filteredLawyers} 
+              center={mapView.center}
+              zoom={mapView.zoom}
+              selectedLawyerId={selectedLawyerId}
+            />
+          </div>
 
-              {isMobile && (
-                <div className="fixed bottom-6 left-1/2 z-20 flex -translate-x-1/2 gap-2 rounded-full border bg-background p-1.5 shadow-lg">
-                  <Button
-                    variant={mobileView === 'list' ? 'secondary' : 'ghost'}
-                    size="sm"
-                    className="rounded-full px-4 py-2"
-                    onClick={() => setMobileView('list')}
-                  >
-                    <List className="mr-2 h-4 w-4" />
-                    Lista
-                  </Button>
-                  <Button
-                    variant={mobileView === 'map' ? 'secondary' : 'ghost'}
-                    size="sm"
-                    className="rounded-full px-4 py-2"
-                    onClick={() => setMobileView('map')}
-                  >
-                    <MapIcon className="mr-2 h-4 w-4" />
-                    Mapa
-                  </Button>
-                </div>
-              )}
-            </main>
-          </TabsContent>
-          
-          <TabsContent value="search" className="mt-6">
-            <div className="max-w-3xl mx-auto">
-              <Card>
-                <CardContent className="p-6">
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="text-lg font-medium mb-2">Busca Avançada</h3>
-                      <p className="text-muted-foreground mb-4">
-                        Utilize os filtros abaixo para encontrar o advogado ideal para seu caso.
-                      </p>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Nome do Advogado</label>
-                        <div className="relative">
-                          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-                          <input 
-                            className="pl-9 w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                            placeholder="Buscar por nome..."
-                            value={searchQuery}
-                            onChange={handleSearchChange}
-                          />
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Especialidade</label>
-                        <select 
-                          className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                          value={selectedSpecialty}
-                          onChange={(e) => handleSpecialtyChange(e.target.value)}
-                        >
-                          {specialties.map(spec => (
-                            <option key={spec} value={spec}>
-                              {spec === 'all' ? 'Todas as Especialidades' : spec}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Avaliação Mínima</label>
-                        <select 
-                          className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                        >
-                          <option value="0">Qualquer avaliação</option>
-                          <option value="3">3 estrelas ou mais</option>
-                          <option value="4">4 estrelas ou mais</option>
-                          <option value="5">5 estrelas</option>
-                        </select>
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <label className="text-sm font-medium">Ordenar por</label>
-                        <select 
-                          className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                        >
-                          <option value="relevance">Relevância</option>
-                          <option value="rating">Melhor avaliação</option>
-                          <option value="name">Nome (A-Z)</option>
-                        </select>
-                      </div>
-                    </div>
-                    
-                    <div className="flex justify-between">
-                      <Button variant="outline" onClick={handleClearFilters}>
-                        <Filter className="mr-2 h-4 w-4" />
-                        Limpar Filtros
-                      </Button>
-                      <Button>
-                        <Search className="mr-2 h-4 w-4" />
-                        Buscar Advogados
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <div className="mt-8">
-                <h3 className="text-xl font-semibold mb-4">Resultados da Busca ({filteredLawyers.length})</h3>
-                <div className="space-y-4">
-                  {filteredLawyers.length > 0 ? (
-                    filteredLawyers.map(lawyer => (
-                      <LawyerListCard 
-                        key={lawyer.id} 
-                        lawyer={lawyer}
-                        onSelect={handleLawyerSelect}
-                        isSelected={lawyer.id === selectedLawyerId}
-                      />
-                    ))
-                  ) : (
-                    <p className="text-muted-foreground text-center py-8">Nenhum advogado encontrado com os filtros aplicados.</p>
-                  )}
-                </div>
-              </div>
+          {isMobile && (
+            <div className="fixed bottom-6 left-1/2 z-20 flex -translate-x-1/2 gap-2 rounded-full border bg-background p-1.5 shadow-lg">
+              <Button
+                variant={mobileView === 'list' ? 'secondary' : 'ghost'}
+                size="sm"
+                className="rounded-full px-4 py-2"
+                onClick={() => setMobileView('list')}
+              >
+                <List className="mr-2 h-4 w-4" />
+                Lista
+              </Button>
+              <Button
+                variant={mobileView === 'map' ? 'secondary' : 'ghost'}
+                size="sm"
+                className="rounded-full px-4 py-2"
+                onClick={() => setMobileView('map')}
+              >
+                <MapIcon className="mr-2 h-4 w-4" />
+                Mapa
+              </Button>
             </div>
-          </TabsContent>
-        </Tabs>
+          )}
+        </main>
       </div>
       <MadeWithDyad />
     </div>

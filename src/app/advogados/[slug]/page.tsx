@@ -7,21 +7,36 @@ import { MadeWithDyad } from '@/components/made-with-dyad';
 import { Lawyer } from '@/types/lawyer';
 import { lawyers } from '@/data/lawyers';
 import { ReviewForm } from '@/components/ReviewForm';
+import type { Metadata } from 'next';
 
 type Props = {
   params: { slug: string };
 };
 
-// Esta função diz ao Next.js quais páginas pré-renderizar no momento da construção
+function getLawyer(slug: string): Lawyer | undefined {
+  return lawyers.find((l) => l.slug === slug);
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const lawyer = getLawyer(params.slug);
+
+  if (!lawyer) {
+    return {
+      title: "Advogado não encontrado",
+      description: "A página que você está procurando não existe.",
+    };
+  }
+
+  return {
+    title: `${lawyer.name} | Advogado(a) em Cuiabá-MT`,
+    description: `Perfil de ${lawyer.name}, especialista em ${lawyer.specialties.join(', ')}. Encontre informações de contato, avaliações e mais.`,
+  };
+}
+
 export async function generateStaticParams() {
   return lawyers.map((lawyer) => ({
     slug: lawyer.slug,
   }));
-}
-
-// Esta função obtém os dados de um único advogado diretamente da fonte de dados.
-function getLawyer(slug: string): Lawyer | undefined {
-  return lawyers.find((l) => l.slug === slug);
 }
 
 export default function LawyerProfilePage({ params }: Props) {
@@ -32,13 +47,13 @@ export default function LawyerProfilePage({ params }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-background font-[family-name:var(--font-geist-sans)]">
+    <div className="min-h-screen bg-background font-sans">
       <div className="container mx-auto p-4 sm:p-8">
         <header className="mb-8">
           <Button asChild variant="outline">
             <Link href="/">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Voltar para o mapa
+              Voltar para a busca
             </Link>
           </Button>
         </header>
