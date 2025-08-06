@@ -24,7 +24,14 @@ export function NavigationMenu() {
             <NavigationMenuItem>
               <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
                 <Link href="/">
-                  Início
+                  Advogados
+                </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                <Link href="/escritorios">
+                  Escritórios
                 </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
