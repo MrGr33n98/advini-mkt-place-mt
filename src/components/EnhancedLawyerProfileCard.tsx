@@ -6,7 +6,7 @@ import { ProfessionalInfo } from "./ProfessionalInfo";
 import { WorkingHours } from "./WorkingHours";
 import { CertificationGallery } from "./CertificationGallery";
 import { AchievementsList } from "./AchievementsList";
-import { ReviewCard } from "./ReviewCard";
+import { EnhancedReviewSection } from "@/components/EnhancedReviewSection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -169,33 +169,11 @@ export function EnhancedLawyerProfileCard({ lawyer }: EnhancedLawyerProfileCardP
 
           {/* Aba Avaliações */}
           <TabsContent value="avaliacoes" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MessageSquare className="w-5 h-5" />
-                  Avaliações dos Clientes
-                  {allReviews.length > 0 && (
-                    <Badge variant="secondary" className="ml-auto">
-                      {allReviews.length} avaliação{allReviews.length > 1 ? 'ões' : ''}
-                    </Badge>
-                  )}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {allReviews.length > 0 ? (
-                  <div className="space-y-4">
-                    {allReviews.map((review) => (
-                      <ReviewCard key={review.id} review={review} />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    <MessageSquare className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                    <p>Ainda não há avaliações para este advogado.</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <EnhancedReviewSection 
+              reviews={allReviews}
+              lawyerId={lawyer.id}
+              allowNewReviews={true}
+            />
           </TabsContent>
 
           {/* Aba Localização */}

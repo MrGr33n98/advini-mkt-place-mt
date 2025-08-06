@@ -54,11 +54,11 @@ O projeto já possui uma base sólida com:
   - [x] Implementar seção de horários de atendimento
   - _Requisitos: 6.1, 6.2_
 
-- [ ] 2.2 Aprimorar sistema de avaliações na página do advogado
-  - Implementar componente de avaliações com paginação
-  - Adicionar filtros por nota e data
-  - Criar sistema de resposta do advogado às avaliações
-  - Implementar botão de "avaliar" para clientes
+- [x] 2.2 Aprimorar sistema de avaliações na página do advogado
+  - [x] Implementar componente de avaliações com paginação
+  - [x] Adicionar filtros por nota e data
+  - [x] Criar sistema de resposta do advogado às avaliações
+  - [x] Implementar botão de "avaliar" para clientes
   - _Requisitos: 5.1, 5.2, 5.3_
 
 - [ ] 2.3 Desenvolver página de escritórios

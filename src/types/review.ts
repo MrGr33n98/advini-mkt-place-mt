@@ -8,4 +8,10 @@ export interface Review {
   status: 'pending' | 'approved' | 'rejected';
   is_pinned?: boolean;
   created_at: string;
+  lawyer_response?: {
+    message: string;
+    created_at: string;
+  };
+  helpful_votes?: number;
+  case_type?: string;
 }
