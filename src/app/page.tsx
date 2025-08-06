@@ -2,7 +2,8 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { MadeWithDyad } from "@/components/made-with-dyad";
-import LawyerMap from "@/components/LawyerMap";
+import EnhancedLawyerMap from "@/components/EnhancedLawyerMap";
+import { MapControls } from "@/components/MapControls";
 import { lawyers as allLawyers } from "@/data/lawyers";
 import { lawFirms } from '@/data/lawfirms';
 import LawyerListCard from '@/components/LawyerListCard';
@@ -342,16 +343,37 @@ export default function Home() {
           </div>
 
           <div className={cn(
-            "lg:col-span-2 h-[500px] lg:h-[750px]",
+            "lg:col-span-2 h-[500px] lg:h-[750px] relative",
             isMobile && mobileView !== 'map' && "hidden",
             isMobile && mobileView === 'map' && "h-[calc(100vh-220px)]"
           )}>
-            <LawyerMap 
+            <EnhancedLawyerMap 
               lawyers={filteredLawyers} 
               center={mapView.center}
               zoom={mapView.zoom}
               selectedLawyerId={selectedLawyerId}
+              onMarkerClick={handleLawyerSelect}
             />
+            
+            {/* Map controls - only show on larger screens */}
+            {!isMobile && (
+              <MapControls
+                lawyers={allLawyers}
+                filteredLawyers={filteredLawyers}
+                selectedSpecialty={selectedSpecialty}
+                selectedRating={selectedRating}
+                selectedPriceRange={selectedPriceRange}
+                onSpecialtyChange={handleSpecialtyChange}
+                onRatingChange={handleRatingChange}
+                onPriceRangeChange={handlePriceRangeChange}
+                onClearFilters={handleClearFilters}
+                areFiltersActive={areFiltersActive}
+                onLocationRequest={() => {
+                  // This will be handled by the geolocation control in the map
+                }}
+                isLocationLoading={false}
+              />
+            )}
           </div>
 
           {isMobile && (

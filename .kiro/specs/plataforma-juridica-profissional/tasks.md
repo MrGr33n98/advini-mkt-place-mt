@@ -38,12 +38,12 @@ O projeto já possui uma base sólida com:
   [x] - Adicionar preview de informações ao hover
   [x] - _Requisitos: 6.5, 6.6_
 
-- [ ] 1.3 Otimizar integração com mapas
-  - Implementar clustering de marcadores para performance
-  - Adicionar filtros no mapa sincronizados com a lista
-  - Criar popup melhorado com informações do advogado
-  - Implementar geolocalização do usuário
-  - _Requisitos: 6.1, 6.4_
+- [x] 1.3 Otimizar integração com mapas
+  [x] - Implementar clustering de marcadores para performance
+  [x] - Adicionar filtros no mapa sincronizados com a lista
+  [x] - Criar popup melhorado com informações do advogado
+  [x] - Implementar geolocalização do usuário
+  [x] - _Requisitos: 6.1, 6.4_
 
 ### 2. Páginas de Perfil de Advogados e Escritórios
 
