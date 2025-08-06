@@ -18,7 +18,7 @@ function getOffice(slug: string): Office | undefined {
   return offices.find((o) => o.slug === slug);
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export function generateMetadata({ params }: Props): Metadata {
   const office = getOffice(params.slug);
 
   if (!office) {
@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export async function generateStaticParams() {
+export function generateStaticParams() {
   return offices.map((office) => ({
     slug: office.slug,
   }));

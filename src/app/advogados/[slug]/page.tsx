@@ -17,7 +17,7 @@ function getLawyer(slug: string): Lawyer | undefined {
   return lawyers.find((l) => l.slug === slug);
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export function generateMetadata({ params }: Props): Metadata {
   const lawyer = getLawyer(params.slug);
 
   if (!lawyer) {
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export async function generateStaticParams() {
+export function generateStaticParams() {
   return lawyers.map((lawyer) => ({
     slug: lawyer.slug,
   }));
