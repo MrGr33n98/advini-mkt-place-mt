@@ -4,12 +4,14 @@ import { useState, useMemo, useEffect } from 'react';
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import LawyerMap from "@/components/LawyerMap";
 import { lawyers as allLawyers } from "@/data/lawyers";
+import { lawFirms } from '@/data/lawfirms';
 import LawyerListCard from '@/components/LawyerListCard';
+import { LawFirmCard } from '@/components/LawFirmCard';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Lawyer } from '@/types/lawyer';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
-import { List, Map as MapIcon, Users, Star, Award } from 'lucide-react';
+import { List, Map as MapIcon, Users, Star, Award, Building2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { LawyerFilters } from '@/components/LawyerFilters';
 import { LawyerListCardSkeleton } from '@/components/LawyerListCardSkeleton';
@@ -95,24 +97,36 @@ export default function Home() {
       }
     }
 
-    // Ordenação
-    switch (selectedSortBy) {
-      case 'rating':
-        lawyers.sort((a, b) => (b.average_rating || 0) - (a.average_rating || 0));
-        break;
-      case 'name':
-        lawyers.sort((a, b) => a.name.localeCompare(b.name));
-        break;
-      case 'reviews':
-        lawyers.sort((a, b) => (b.total_reviews || 0) - (a.total_reviews || 0));
-        break;
-      case 'price':
-        lawyers.sort((a, b) => a.consultation_fee - b.consultation_fee);
-        break;
-      default: // relevance
-        // Manter ordem original ou implementar lógica de relevância
-        break;
-    }
+    // Ordenação com prioridade para advogados em destaque e planos premium
+    const sortLawyers = (lawyers: Lawyer[]) => {
+      return lawyers.sort((a, b) => {
+        // Primeiro critério: advogados em destaque
+        if (a.is_featured && !b.is_featured) return -1;
+        if (!a.is_featured && b.is_featured) return 1;
+        
+        // Segundo critério: planos premium (Gold > Silver > Basic)
+        const planPriority = { gold: 3, silver: 2, basic: 1 };
+        const planDiff = planPriority[b.plan] - planPriority[a.plan];
+        if (planDiff !== 0) return planDiff;
+        
+        // Terceiro critério: ordenação específica selecionada
+        switch (selectedSortBy) {
+          case 'rating':
+            return (b.average_rating || 0) - (a.average_rating || 0);
+          case 'name':
+            return a.name.localeCompare(b.name);
+          case 'reviews':
+            return (b.total_reviews || 0) - (a.total_reviews || 0);
+          case 'price':
+            return (a.consultation_fee || 0) - (b.consultation_fee || 0);
+          default: // relevance
+            // Para relevância, usar avaliação como critério final
+            return (b.average_rating || 0) - (a.average_rating || 0);
+        }
+      });
+    };
+
+    lawyers = sortLawyers(lawyers);
 
     return lawyers;
   }, [selectedSpecialty, searchQuery, selectedRating, selectedSortBy, selectedPriceRange]);
@@ -176,6 +190,14 @@ export default function Home() {
       .slice(0, 3);
   }, []);
 
+  // Escritórios em destaque
+  const featuredLawFirms = useMemo(() => {
+    return [...lawFirms]
+      .filter(firm => firm.is_featured)
+      .sort((a, b) => (b.average_rating || 0) - (a.average_rating || 0))
+      .slice(0, 2);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       <NavigationMenu />
@@ -193,7 +215,7 @@ export default function Home() {
         </header>
 
         {/* Estatísticas */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
           <Card>
             <CardContent className="p-6 flex items-center gap-4">
               <div className="bg-primary/10 p-3 rounded-full">
@@ -201,7 +223,18 @@ export default function Home() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{allLawyers.length}+</p>
-                <p className="text-muted-foreground">Advogados Cadastrados</p>
+                <p className="text-muted-foreground">Advogados</p>
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-6 flex items-center gap-4">
+              <div className="bg-primary/10 p-3 rounded-full">
+                <Building2 className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{lawFirms.length}+</p>
+                <p className="text-muted-foreground">Escritórios</p>
               </div>
             </CardContent>
           </Card>
@@ -240,6 +273,21 @@ export default function Home() {
                   lawyer={lawyer}
                   onSelect={handleLawyerSelect}
                   isSelected={lawyer.id === selectedLawyerId}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Escritórios em destaque (apenas em telas maiores) */}
+        {!isMobile && featuredLawFirms.length > 0 && (
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold mb-6">Escritórios em Destaque</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {featuredLawFirms.map(lawFirm => (
+                <LawFirmCard 
+                  key={lawFirm.id} 
+                  lawFirm={lawFirm}
                 />
               ))}
             </div>

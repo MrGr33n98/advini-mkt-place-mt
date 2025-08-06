@@ -31,12 +31,12 @@ O projeto já possui uma base sólida com:
   [X]- Implementar paginação infinita ou numerada
   [X]- _Requisitos: 6.1, 6.2, 6.3, 6.4_
 
-- [ ] 1.2 Melhorar cards de advogados na listagem, alem de criar cards para escritorios
-  - Adicionar badges de plano (Basic, Silver, Gold)
-  - Implementar sistema de destaque para planos pagos
-  - Melhorar layout responsivo dos cards
-  - Adicionar preview de informações ao hover
-  - _Requisitos: 6.5, 6.6_
+- [x]  1.2 Melhorar cards de advogados na listagem, alem de criar cards para escritorios
+  [x] - Adicionar badges de plano (Basic, Silver, Gold)
+  [x] - Implementar sistema de destaque para planos pagos
+  [x] - Melhorar layout responsivo dos cards
+  [x] - Adicionar preview de informações ao hover
+  [x] - _Requisitos: 6.5, 6.6_
 
 - [ ] 1.3 Otimizar integração com mapas
   - Implementar clustering de marcadores para performance

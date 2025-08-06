@@ -13,8 +13,9 @@ function getLawyer(slug: string): Lawyer | undefined {
   return lawyers.find((l) => l.slug === slug);
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const lawyer = getLawyer(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const lawyer = getLawyer(slug);
 
   if (!lawyer) {
     return {
@@ -35,8 +36,9 @@ export function generateStaticParams(): { slug: string }[] {
   }));
 }
 
-export default function LawyerProfilePage({ params }: { params: { slug: string } }) {
-  const lawyer = getLawyer(params.slug);
+export default async function LawyerProfilePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const lawyer = getLawyer(slug);
 
   if (!lawyer) {
     notFound();

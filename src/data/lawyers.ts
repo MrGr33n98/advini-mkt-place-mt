@@ -17,6 +17,9 @@ export const lawyers: Lawyer[] = [
     total_reviews: 12,
     hourly_rate: 350,
     consultation_fee: 200,
+    plan: 'gold',
+    is_featured: true,
+    plan_expires_at: '2024-12-31',
   },
   {
     id: "2",
@@ -34,6 +37,9 @@ export const lawyers: Lawyer[] = [
     total_reviews: 8,
     hourly_rate: 450,
     consultation_fee: 250,
+    plan: 'silver',
+    is_featured: false,
+    plan_expires_at: '2024-11-30',
   },
   {
     id: "3",
@@ -51,6 +57,9 @@ export const lawyers: Lawyer[] = [
     total_reviews: 15,
     hourly_rate: 500,
     consultation_fee: 300,
+    plan: 'gold',
+    is_featured: true,
+    plan_expires_at: '2025-01-15',
   },
   {
     id: "4",
@@ -68,6 +77,9 @@ export const lawyers: Lawyer[] = [
     total_reviews: 6,
     hourly_rate: 280,
     consultation_fee: 150,
+    plan: 'basic',
+    is_featured: false,
+    plan_expires_at: '2024-10-30',
   },
   {
     id: "5",
@@ -85,6 +97,9 @@ export const lawyers: Lawyer[] = [
     total_reviews: 10,
     hourly_rate: 320,
     consultation_fee: 180,
+    plan: 'silver',
+    is_featured: false,
+    plan_expires_at: '2024-12-15',
   },
   {
     id: "6",
@@ -102,5 +117,8 @@ export const lawyers: Lawyer[] = [
     total_reviews: 14,
     hourly_rate: 380,
     consultation_fee: 220,
+    plan: 'basic',
+    is_featured: false,
+    plan_expires_at: '2024-11-10',
   }
 ];
