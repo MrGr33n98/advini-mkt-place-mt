@@ -47,11 +47,11 @@ O projeto já possui uma base sólida com:
 
 ### 2. Páginas de Perfil de Advogados e Escritórios
 
-- [ ] 2.1 Melhorar página individual do advogado
-  - Implementar layout profissional com banner e foto
-  - Adicionar seção de especialidades com badges
-  - Criar galeria de certificações e conquistas
-  - Implementar seção de horários de atendimento
+- [x] 2.1 Melhorar página individual do advogado
+  - [x] Implementar layout profissional com banner e foto
+  - [x] Adicionar seção de especialidades com badges
+  - [x] Criar galeria de certificações e conquistas
+  - [x] Implementar seção de horários de atendimento
   - _Requisitos: 6.1, 6.2_
 
 - [ ] 2.2 Aprimorar sistema de avaliações na página do advogado

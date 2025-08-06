@@ -20,6 +20,55 @@ export const lawyers: Lawyer[] = [
     plan: 'gold',
     is_featured: true,
     plan_expires_at: '2024-12-31',
+    banner_url: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=1200&h=400&fit=crop",
+    profile_image_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=face",
+    years_of_experience: 15,
+    education: ["Bacharel em Direito - USP", "Pós-graduação em Direito Civil - PUC"],
+    languages: ["Português", "Inglês", "Espanhol"],
+    office_address: "Av. Getúlio Vargas, 123 - Centro, Cuiabá - MT",
+    working_hours: [
+      { day: "Segunda", start: "08:00", end: "18:00", isOpen: true },
+      { day: "Terça", start: "08:00", end: "18:00", isOpen: true },
+      { day: "Quarta", start: "08:00", end: "18:00", isOpen: true },
+      { day: "Quinta", start: "08:00", end: "18:00", isOpen: true },
+      { day: "Sexta", start: "08:00", end: "17:00", isOpen: true },
+      { day: "Sábado", start: "09:00", end: "12:00", isOpen: true },
+      { day: "Domingo", start: "", end: "", isOpen: false }
+    ],
+    certifications: [
+      {
+        id: "1",
+        title: "Especialização em Direito Civil",
+        institution: "PUC-SP",
+        year: 2015,
+        image_url: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=300&h=200&fit=crop",
+        description: "Especialização focada em contratos e responsabilidade civil"
+      },
+      {
+        id: "2",
+        title: "Mediação Familiar",
+        institution: "CNJ",
+        year: 2018,
+        image_url: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=300&h=200&fit=crop",
+        description: "Certificação em mediação e resolução de conflitos familiares"
+      }
+    ],
+    achievements: [
+      {
+        id: "1",
+        title: "Advogado do Ano 2023",
+        description: "Reconhecimento pela OAB-MT por excelência em atendimento",
+        date: "2023-12-01",
+        icon: "trophy"
+      },
+      {
+        id: "2",
+        title: "100+ Casos Resolvidos",
+        description: "Marco de 100 casos bem-sucedidos em direito de família",
+        date: "2023-06-15",
+        icon: "star"
+      }
+    ]
   },
   {
     id: "2",
@@ -40,6 +89,40 @@ export const lawyers: Lawyer[] = [
     plan: 'silver',
     is_featured: false,
     plan_expires_at: '2024-11-30',
+    banner_url: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?w=1200&h=400&fit=crop",
+    profile_image_url: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=200&h=200&fit=crop&crop=face",
+    years_of_experience: 12,
+    education: ["Bacharel em Direito - UFMT", "Mestrado em Direito Penal - UnB"],
+    languages: ["Português", "Inglês"],
+    office_address: "Rua das Flores, 456 - Jardim Europa, Cuiabá - MT",
+    working_hours: [
+      { day: "Segunda", start: "09:00", end: "18:00", isOpen: true },
+      { day: "Terça", start: "09:00", end: "18:00", isOpen: true },
+      { day: "Quarta", start: "09:00", end: "18:00", isOpen: true },
+      { day: "Quinta", start: "09:00", end: "18:00", isOpen: true },
+      { day: "Sexta", start: "09:00", end: "17:00", isOpen: true },
+      { day: "Sábado", start: "", end: "", isOpen: false },
+      { day: "Domingo", start: "", end: "", isOpen: false }
+    ],
+    certifications: [
+      {
+        id: "1",
+        title: "Especialização em Direito Penal",
+        institution: "UnB",
+        year: 2017,
+        image_url: "https://images.unsplash.com/photo-1589994965851-a8f479c573a9?w=300&h=200&fit=crop",
+        description: "Especialização em direito penal e processo penal"
+      }
+    ],
+    achievements: [
+      {
+        id: "1",
+        title: "Melhor Defesa Criminal 2022",
+        description: "Reconhecimento por defesa exemplar em caso de grande repercussão",
+        date: "2022-11-20",
+        icon: "shield"
+      }
+    ]
   },
   {
     id: "3",

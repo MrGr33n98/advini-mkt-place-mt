@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import LawyerProfileCard from '@/components/LawyerProfileCard';
+import { EnhancedLawyerProfileCard } from '@/components/EnhancedLawyerProfileCard';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
@@ -57,7 +57,7 @@ export default async function LawyerProfilePage({ params }: { params: Promise<{ 
         </header>
 
         <main className="space-y-8">
-          <LawyerProfileCard lawyer={lawyer} />
+          <EnhancedLawyerProfileCard lawyer={lawyer} />
           
           <div className="max-w-3xl mx-auto">
             <ReviewForm lawyerId={lawyer.id} />
