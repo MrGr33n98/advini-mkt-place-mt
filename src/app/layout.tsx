@@ -1,24 +1,24 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 import { Footer } from "@/components/footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
   subsets: ["latin"],
+  variable: "--font-inter",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
+  variable: "--font-playfair-display",
 });
 
 export const metadata: Metadata = {
-  title: "Encontre seu Advogado | Cuiabá-MT",
-  description: "Plataforma para encontrar advogados especialistas em Cuiabá-MT.",
+  title: "Guia de Advogados | Encontre Especialistas em Cuiabá-MT",
+  description: "A plataforma definitiva para encontrar advogados e escritórios de advocacia em Cuiabá-MT. Busque por especialidade e avaliações.",
 };
 
 export default function RootLayout({
@@ -31,8 +31,8 @@ export default function RootLayout({
       <body
         className={cn(
           "min-h-screen bg-background font-sans antialiased flex flex-col",
-          geistSans.variable,
-          geistMono.variable
+          inter.variable,
+          playfairDisplay.variable
         )}
       >
         <ThemeProvider

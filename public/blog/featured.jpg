@@ -1,0 +1,5 @@
+<svg width="800" height="400" viewBox="0 0 800 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="800" height="400" fill="#1e40af"/>
+<rect x="250" y="150" width="300" height="100" fill="white" opacity="0.9"/>
+<text x="400" y="210" text-anchor="middle" fill="#1e40af" font-family="Arial" font-size="18" font-weight="bold">Featured Article</text>
+</svg>

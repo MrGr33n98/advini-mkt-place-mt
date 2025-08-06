@@ -10,56 +10,51 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const plans = [
   {
-    name: "Gratuito",
+    name: "Basic",
     price: "R$ 0",
-    description: "Para advogados iniciando sua presença online",
+    description: "Para advogados iniciando sua presença online.",
     features: [
-      "Perfil básico",
+      "Perfil individual básico",
       "Listagem no mapa",
-      "Recebimento de avaliações",
-      "Contato via WhatsApp",
+      "Recebimento de até 5 avaliações/mês",
     ],
     limitations: [
-      "Sem moderação de avaliações",
+      "Sem destaque na busca",
       "Sem analytics",
-      "Sem personalização",
-      "Sem destaque nos resultados"
+      "Sem perfil de escritório",
     ]
   },
   {
-    name: "Pro",
-    price: "R$ 99,90",
+    name: "Silver",
+    price: "R$ 79,90",
     period: "/mês",
-    description: "Para advogados que querem mais visibilidade e controle",
+    description: "Para advogados que querem mais visibilidade e controle.",
     features: [
-      "Todas as features do plano Gratuito",
-      "URL personalizada do WhatsApp",
-      "Banner e logo personalizados",
+      "Todas as features do plano Basic",
+      "Perfil individual completo",
       "Moderação de avaliações",
-      "Fixação dos melhores reviews",
-      "Selos de destaque",
-      "Analytics completo",
-      "Suporte prioritário",
+      "Analytics de visualizações",
+      "Suporte via email",
     ],
     highlight: true,
   },
   {
-    name: "Premium",
-    price: "R$ 199,90",
+    name: "Gold",
+    price: "R$ 159,90",
     period: "/mês",
-    description: "Para escritórios e advogados que buscam máxima exposição",
+    description: "Para escritórios e advogados que buscam máxima exposição.",
     features: [
-      "Todas as features do plano Pro",
-      "Destaque nos resultados de busca",
-      "Perfil de múltiplos advogados",
-      "Integração com agenda",
-      "Página personalizada",
-      "Consultoria de marketing",
-      "Suporte VIP 24/7",
+      "Todas as features do plano Silver",
+      "Página de Escritório",
+      "Perfis para até 5 advogados",
+      "Destaque nos resultados de busca (Sponsored)",
+      "Analytics completo de leads",
+      "Suporte prioritário via WhatsApp",
     ],
   },
 ];
 
+// ... (restante do arquivo permanece o mesmo, apenas atualize os textos se necessário)
 const faqItems = [
   {
     question: "Como funciona o período de teste?",
@@ -133,7 +128,7 @@ export default function PlanosPage() {
                   key={plan.name}
                   className={cn(
                     "flex flex-col",
-                    plan.highlight && "border-primary shadow-lg md:scale-105 z-10"
+                    plan.highlight && "border-secondary shadow-lg md:scale-105 z-10"
                   )}
                 >
                   <CardHeader>
@@ -154,7 +149,7 @@ export default function PlanosPage() {
                     <ul className="space-y-3">
                       {plan.features.map((feature) => (
                         <li key={feature} className="flex items-center gap-2">
-                          <Check className="h-5 w-5 text-primary flex-shrink-0" />
+                          <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
                           <span className="text-muted-foreground">{feature}</span>
                         </li>
                       ))}
@@ -168,9 +163,9 @@ export default function PlanosPage() {
                     </ul>
                   </CardContent>
                   <CardFooter>
-                    <Button className="w-full" asChild variant={plan.highlight ? "default" : "outline"}>
+                    <Button className="w-full" asChild variant={plan.highlight ? "secondary" : "outline"}>
                       <Link href="/signup">
-                        {plan.name === "Gratuito" ? "Começar Agora" : `Escolher ${plan.name}`}
+                        {plan.name === "Basic" ? "Começar Agora" : `Escolher ${plan.name}`}
                       </Link>
                     </Button>
                   </CardFooter>
@@ -185,9 +180,9 @@ export default function PlanosPage() {
                 <thead>
                   <tr>
                     <th className="text-left p-3 border-b">Recursos</th>
-                    <th className="text-center p-3 border-b">Gratuito</th>
-                    <th className="text-center p-3 border-b bg-primary/5">Pro</th>
-                    <th className="text-center p-3 border-b">Premium</th>
+                    <th className="text-center p-3 border-b">Basic</th>
+                    <th className="text-center p-3 border-b bg-secondary/10">Silver</th>
+                    <th className="text-center p-3 border-b">Gold</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -201,7 +196,7 @@ export default function PlanosPage() {
                           <X className="h-5 w-5 text-muted-foreground mx-auto" />
                         )}
                       </td>
-                      <td className="text-center p-3 border-b bg-primary/5">
+                      <td className="text-center p-3 border-b bg-secondary/10">
                         {feature.pro ? (
                           <Check className="h-5 w-5 text-green-500 mx-auto" />
                         ) : (

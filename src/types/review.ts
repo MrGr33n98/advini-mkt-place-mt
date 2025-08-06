@@ -1,6 +1,7 @@
 export interface Review {
   id: string;
-  lawyer_id: string;
+  lawyer_id?: string;
+  office_id?: string;
   client_name: string;
   rating: number;
   comment: string;

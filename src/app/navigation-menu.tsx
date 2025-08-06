@@ -22,32 +22,32 @@ export function NavigationMenu() {
         <NavigationMenuRoot>
           <NavigationMenuList>
             <NavigationMenuItem>
-              <Link href="/" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                <Link href="/">
                   Início
-                </NavigationMenuLink>
-              </Link>
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link href="/sobre" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                <Link href="/sobre">
                   Sobre Nós
-                </NavigationMenuLink>
-              </Link>
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link href="/planos" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                <Link href="/planos">
                   Planos
-                </NavigationMenuLink>
-              </Link>
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
             <NavigationMenuItem>
-              <Link href="/contato" legacyBehavior passHref>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                <Link href="/contato">
                   Contato
-                </NavigationMenuLink>
-              </Link>
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenuRoot>
