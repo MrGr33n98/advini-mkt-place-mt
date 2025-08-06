@@ -9,15 +9,11 @@ import { lawyers } from '@/data/lawyers';
 import { ReviewForm } from '@/components/ReviewForm';
 import type { Metadata } from 'next';
 
-type Props = {
-  params: { slug: string };
-};
-
 function getLawyer(slug: string): Lawyer | undefined {
   return lawyers.find((l) => l.slug === slug);
 }
 
-export function generateMetadata({ params }: Props): Metadata {
+export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const lawyer = getLawyer(params.slug);
 
   if (!lawyer) {
@@ -33,13 +29,13 @@ export function generateMetadata({ params }: Props): Metadata {
   };
 }
 
-export function generateStaticParams() {
+export function generateStaticParams(): { slug: string }[] {
   return lawyers.map((lawyer) => ({
     slug: lawyer.slug,
   }));
 }
 
-export default function LawyerProfilePage({ params }: Props) {
+export default function LawyerProfilePage({ params }: { params: { slug: string } }) {
   const lawyer = getLawyer(params.slug);
 
   if (!lawyer) {

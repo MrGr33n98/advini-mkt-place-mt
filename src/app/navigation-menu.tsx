@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
 import { LogIn } from "lucide-react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function NavigationMenu() {
   return (
@@ -66,6 +67,7 @@ export function NavigationMenu() {
               Área do Advogado
             </Link>
           </Button>
+          <ThemeToggle />
         </div>
       </div>
     </div>

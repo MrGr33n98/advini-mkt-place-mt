@@ -10,15 +10,11 @@ import { ArrowLeft } from 'lucide-react';
 import { ReviewForm } from '@/components/ReviewForm';
 import type { Metadata } from 'next';
 
-type Props = {
-  params: { slug: string };
-};
-
 function getOffice(slug: string): Office | undefined {
   return offices.find((o) => o.slug === slug);
 }
 
-export function generateMetadata({ params }: Props): Metadata {
+export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const office = getOffice(params.slug);
 
   if (!office) {
@@ -34,13 +30,13 @@ export function generateMetadata({ params }: Props): Metadata {
   };
 }
 
-export function generateStaticParams() {
+export function generateStaticParams(): { slug: string }[] {
   return offices.map((office) => ({
     slug: office.slug,
   }));
 }
 
-export default function OfficeProfilePage({ params }: Props) {
+export default function OfficeProfilePage({ params }: { params: { slug: string } }) {
   const office = getOffice(params.slug);
 
   if (!office) {
