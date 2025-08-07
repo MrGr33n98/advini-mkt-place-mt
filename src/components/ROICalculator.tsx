@@ -11,7 +11,6 @@ import { Calculator, TrendingUp, DollarSign, Users, Clock, Target } from "lucide
 import { cn } from "@/lib/utils";
 
 interface ROIData {
-  monthlyInvestment: number;
   averageClientValue: number;
   currentClients: number;
   expectedGrowth: number;
@@ -29,7 +28,6 @@ interface ROIResults {
 
 export function ROICalculator() {
   const [data, setData] = useState<ROIData>({
-    monthlyInvestment: 159.90,
     averageClientValue: 2500,
     currentClients: 10,
     expectedGrowth: 30,
@@ -54,7 +52,7 @@ export function ROICalculator() {
 
   useEffect(() => {
     calculateROI();
-  }, [data, selectedPlan]);
+  }, [data.averageClientValue, data.currentClients, data.conversionRate, selectedPlan]);
 
   const calculateROI = () => {
     const plan = plans[selectedPlan];
@@ -79,8 +77,6 @@ export function ROICalculator() {
       paybackPeriod: Math.max(0.1, paybackPeriod),
       profitMargin
     });
-
-    setData(prev => ({ ...prev, monthlyInvestment }));
   };
 
   const formatCurrency = (value: number) => {
@@ -258,7 +254,7 @@ export function ROICalculator() {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span>Investimento total:</span>
-                  <span className="font-medium">{formatCurrency(data.monthlyInvestment * 12)}</span>
+                  <span className="font-medium">{formatCurrency(plans[selectedPlan].price * 12)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Receita adicional:</span>
@@ -267,7 +263,7 @@ export function ROICalculator() {
                 <div className="flex justify-between border-t pt-2">
                   <span className="font-semibold">Lucro líquido:</span>
                   <span className="font-bold text-green-600">
-                    {formatCurrency((results.additionalRevenue - data.monthlyInvestment) * 12)}
+                    {formatCurrency((results.additionalRevenue - plans[selectedPlan].price) * 12)}
                   </span>
                 </div>
               </div>

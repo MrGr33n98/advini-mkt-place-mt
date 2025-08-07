@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -174,6 +174,11 @@ export function InteractiveFAQ() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [helpfulVotes, setHelpfulVotes] = useState<Record<string, boolean>>({});
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const filteredFAQs = faqData.filter(faq => {
     const matchesSearch = faq.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -200,7 +205,7 @@ export function InteractiveFAQ() {
     <div className="w-full max-w-6xl mx-auto space-y-8">
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center gap-2 mb-4">
-          <HelpCircle className="h-8 w-8 text-primary" />
+          {isClient && <HelpCircle className="h-8 w-8 text-primary" />}
           <h2 className="text-3xl font-bold">Central de Ajuda</h2>
         </div>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -212,12 +217,12 @@ export function InteractiveFAQ() {
       <Card>
         <CardContent className="pt-6">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            {isClient && <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />}
             <Input
               placeholder="Digite sua dúvida aqui..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 h-12 text-lg"
+              className={cn("h-12 text-lg", isClient ? "pl-10" : "pl-4")}
             />
           </div>
         </CardContent>
@@ -226,14 +231,14 @@ export function InteractiveFAQ() {
       <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="w-full">
         <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="all" className="flex items-center gap-2">
-            <HelpCircle className="h-4 w-4" />
+            {isClient && <HelpCircle className="h-4 w-4" />}
             Todas
           </TabsTrigger>
           {categories.map((category) => {
             const Icon = category.icon;
             return (
               <TabsTrigger key={category.id} value={category.id} className="flex items-center gap-2">
-                <Icon className="h-4 w-4" />
+                {isClient && <Icon className="h-4 w-4" />}
                 {category.name}
               </TabsTrigger>
             );
@@ -280,7 +285,7 @@ export function InteractiveFAQ() {
                   <AccordionItem key={faq.id} value={faq.id} className="border rounded-lg px-4">
                     <AccordionTrigger className="text-left hover:no-underline">
                       <div className="flex items-start gap-3 w-full">
-                        <Icon className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
+                        {isClient && <Icon className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />}
                         <div className="flex-1">
                           <h3 className="font-medium">{faq.question}</h3>
                           <div className="flex items-center gap-4 mt-2">
@@ -311,7 +316,7 @@ export function InteractiveFAQ() {
                               onClick={() => handleHelpfulVote(faq.id)}
                               className="h-8"
                             >
-                              <CheckCircle className="h-3 w-3 mr-1" />
+                              {isClient && <CheckCircle className="h-3 w-3 mr-1" />}
                               Sim ({faq.helpful + (helpfulVotes[faq.id] ? 1 : 0)})
                             </Button>
                           </div>
@@ -333,7 +338,7 @@ export function InteractiveFAQ() {
           ) : (
             <Card>
               <CardContent className="text-center py-12">
-                <HelpCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                {isClient && <HelpCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4" />}
                 <h3 className="text-lg font-semibold mb-2">Nenhuma pergunta encontrada</h3>
                 <p className="text-muted-foreground mb-6">
                   Não encontramos resultados para "{searchTerm}". Tente outros termos ou entre em contato conosco.
@@ -356,17 +361,17 @@ export function InteractiveFAQ() {
         <CardContent>
           <div className="grid md:grid-cols-3 gap-4">
             <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
-              <MessageCircle className="h-6 w-6" />
+              {isClient && <MessageCircle className="h-6 w-6" />}
               <span className="font-medium">Chat Online</span>
               <span className="text-xs text-muted-foreground">Resposta imediata</span>
             </Button>
             <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
-              <Mail className="h-6 w-6" />
+              {isClient && <Mail className="h-6 w-6" />}
               <span className="font-medium">Email</span>
               <span className="text-xs text-muted-foreground">Até 24h</span>
             </Button>
             <Button variant="outline" className="h-auto p-4 flex flex-col items-center gap-2">
-              <Phone className="h-6 w-6" />
+              {isClient && <Phone className="h-6 w-6" />}
               <span className="font-medium">WhatsApp</span>
               <span className="text-xs text-muted-foreground">Clientes Gold</span>
             </Button>
