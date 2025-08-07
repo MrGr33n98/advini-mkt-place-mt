@@ -84,7 +84,7 @@ O projeto já possui uma base sólida com:
   - Criar página de confirmação de cadastro
   - _Requisitos: 1.2, 1.6_
 
-- [ ] 3.3 Implementar sistema de recuperação de senha
+- [x] 3.3 Implementar sistema de recuperação de senha
   - Criar página de recuperação de senha
   - Implementar envio de email com link de reset
   - Adicionar página de redefinição de senha
