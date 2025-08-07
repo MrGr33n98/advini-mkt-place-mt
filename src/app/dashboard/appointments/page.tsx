@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Calendar as CalendarIcon, Clock, User, MapPin, FileText, Check, X, Plus, Filter } from 'lucide-react'
+import { Calendar as CalendarIcon, Clock, User, MapPin, FileText, Check, X, Plus, Filter, ChevronLeft, ChevronRight, Mail, Phone } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -12,6 +12,62 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import * as DialogPrimitive from "@radix-ui/react-dialog"
+import { cn } from "@/lib/utils"
+
+// Componentes Dialog customizados
+const Dialog = DialogPrimitive.Root
+const DialogTrigger = DialogPrimitive.Trigger
+const DialogPortal = DialogPrimitive.Portal
+
+const DialogOverlay = ({ className, ...props }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>) => (
+  <DialogPrimitive.Overlay
+    className={cn(
+      "fixed inset-0 z-50 bg-background/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      className
+    )}
+    {...props}
+  />
+)
+
+const DialogContent = ({ className, children, ...props }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>) => (
+  <DialogPortal>
+    <DialogOverlay />
+    <DialogPrimitive.Content
+      className={cn(
+        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg",
+        className
+      )}
+      {...props}
+    >
+      {children}
+    </DialogPrimitive.Content>
+  </DialogPortal>
+)
+
+const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div className={cn("flex flex-col space-y-1.5 text-center sm:text-left", className)} {...props} />
+)
+
+const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+  <div className={cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className)} {...props} />
+)
+
+const DialogTitle = ({ className, ...props }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>) => (
+  <DialogPrimitive.Title
+    className={cn("text-lg font-semibold leading-none tracking-tight", className)}
+    {...props}
+  />
+)
+
+const DialogDescription = ({ className, ...props }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>) => (
+  <DialogPrimitive.Description
+    className={cn("text-sm text-muted-foreground", className)}
+    {...props}
+  />
+)
 
 // Dados mockados para os agendamentos
 const mockAppointments = [
@@ -36,43 +92,97 @@ const mockAppointments = [
     status: "pending",
     location: "Online (Zoom)",
     notes: "Acompanhamento do processo trabalhista."
+  },
+  {
+    id: "3",
+    clientName: "Ana Paula",
+    clientEmail: "ana@email.com",
+    clientPhone: "(65) 99999-6666",
+    date: "2024-05-15T16:00:00",
+    type: "Consulta Inicial",
+    status: "confirmed",
+    location: "Escritório",
+    notes: "Cliente quer discutir um contrato de aluguel."
+  },
+  {
+    id: "4",
+    clientName: "Roberto Almeida",
+    clientEmail: "roberto@email.com",
+    clientPhone: "(65) 99999-5555",
+    date: "2024-05-18T11:00:00",
+    type: "Assinatura de Documentos",
+    status: "confirmed",
+    location: "Escritório",
+    notes: "Assinatura de procuração e contrato."
+  },
+  {
+    id: "5",
+    clientName: "Fernanda Lima",
+    clientEmail: "fernanda@email.com",
+    clientPhone: "(65) 99999-4444",
+    date: "2024-05-20T15:00:00",
+    type: "Acompanhamento",
+    status: "cancelled",
+    location: "Online (Zoom)",
+    notes: "Cliente cancelou por motivos pessoais."
   }
-]
+];
+
+// Tipos de agendamento
+const appointmentTypes = [
+  "Consulta Inicial",
+  "Acompanhamento",
+  "Assinatura de Documentos",
+  "Audiência",
+  "Reunião"
+];
+
+// Locais de agendamento
+const appointmentLocations = [
+  "Escritório",
+  "Online (Zoom)",
+  "Online (Google Meet)",
+  "Fórum",
+  "Outro"
+];
 
 export default function AppointmentsPage() {
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [appointments, setAppointments] = useState(mockAppointments)
+  const [selectedAppointment, setSelectedAppointment] = useState<any>(null)
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false)
+  const [isNewAppointmentOpen, setIsNewAppointmentOpen] = useState(false)
   const [filter, setFilter] = useState('all')
 
   // Formatador de data
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return format(date, "d 'de' MMMM 'de' yyyy", { locale: ptBR })
-  }
+    const date = new Date(dateString);
+    return format(date, "d 'de' MMMM 'de' yyyy", { locale: ptBR });
+  };
 
   // Formatador de hora
   const formatTime = (dateString: string) => {
-    const date = new Date(dateString)
-    return format(date, "HH:mm", { locale: ptBR })
-  }
+    const date = new Date(dateString);
+    return format(date, "HH:mm", { locale: ptBR });
+  };
 
   // Filtrar agendamentos por data
   const getAppointmentsForDate = (date: Date | undefined) => {
-    if (!date) return []
+    if (!date) return [];
     
-    const dateString = format(date, 'yyyy-MM-dd')
+    const dateString = format(date, 'yyyy-MM-dd');
     
     return appointments.filter(appointment => {
-      const appointmentDate = format(new Date(appointment.date), 'yyyy-MM-dd')
-      return appointmentDate === dateString
-    })
-  }
+      const appointmentDate = format(new Date(appointment.date), 'yyyy-MM-dd');
+      return appointmentDate === dateString;
+    });
+  };
 
   // Filtrar agendamentos por status
   const getFilteredAppointments = () => {
-    if (filter === 'all') return appointments
-    return appointments.filter(appointment => appointment.status === filter)
-  }
+    if (filter === 'all') return appointments;
+    return appointments.filter(appointment => appointment.status === filter);
+  };
 
   // Manipular confirmação de agendamento
   const handleConfirmAppointment = (id: string) => {
@@ -82,9 +192,9 @@ export default function AppointmentsPage() {
           ? { ...appointment, status: 'confirmed' } 
           : appointment
       )
-    )
-    toast.success('Agendamento confirmado com sucesso!')
-  }
+    );
+    toast.success('Agendamento confirmado com sucesso!');
+  };
 
   // Manipular cancelamento de agendamento
   const handleCancelAppointment = (id: string) => {
@@ -94,37 +204,45 @@ export default function AppointmentsPage() {
           ? { ...appointment, status: 'cancelled' } 
           : appointment
       )
-    )
-    toast.success('Agendamento cancelado com sucesso!')
-  }
+    );
+    toast.success('Agendamento cancelado com sucesso!');
+  };
+
+  // Manipular criação de novo agendamento
+  const handleCreateAppointment = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Aqui você implementaria a lógica para criar um novo agendamento
+    toast.success('Agendamento criado com sucesso!');
+    setIsNewAppointmentOpen(false);
+  };
 
   // Obter a cor do badge com base no status
   const getStatusBadgeVariant = (status: string) => {
     switch (status) {
       case 'confirmed':
-        return 'default'
+        return 'default';
       case 'pending':
-        return 'secondary'
+        return 'secondary';
       case 'cancelled':
-        return 'destructive'
+        return 'destructive';
       default:
-        return 'outline'
+        return 'outline';
     }
-  }
+  };
 
   // Obter o texto do status
   const getStatusText = (status: string) => {
     switch (status) {
       case 'confirmed':
-        return 'Confirmado'
+        return 'Confirmado';
       case 'pending':
-        return 'Pendente'
+        return 'Pendente';
       case 'cancelled':
-        return 'Cancelado'
+        return 'Cancelado';
       default:
-        return status
+        return status;
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
@@ -137,10 +255,112 @@ export default function AppointmentsPage() {
             <p className="text-muted-foreground mt-2">Gerencie seus agendamentos de forma eficiente</p>
           </div>
           <div className="flex gap-3">
-            <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
-              <Plus className="mr-2 h-4 w-4" />
-              Novo Agendamento
-            </Button>
+            <Dialog open={isNewAppointmentOpen} onOpenChange={setIsNewAppointmentOpen}>
+              <DialogTrigger asChild>
+                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Novo Agendamento
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[500px]">
+                <DialogHeader>
+                  <DialogTitle>Novo Agendamento</DialogTitle>
+                  <DialogDescription>
+                    Crie um novo agendamento para um cliente.
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleCreateAppointment} className="space-y-4 mt-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Nome do Cliente</label>
+                      <Input required />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Email do Cliente</label>
+                      <Input type="email" required />
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Telefone do Cliente</label>
+                      <Input type="tel" required />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Tipo de Agendamento</label>
+                      <Select>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione um tipo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {appointmentTypes.map(type => (
+                            <SelectItem key={type} value={type}>{type}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Data</label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" className="w-full justify-start text-left">
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {date ? format(date, "PPP", { locale: ptBR }) : "Selecione uma data"}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={date}
+                            onSelect={setDate}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Horário</label>
+                      <Select>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione um horário" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {Array.from({ length: 10 }, (_, i) => i + 8).map(hour => (
+                            <SelectItem key={hour} value={`${hour}:00`}>{`${hour}:00`}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Local</label>
+                    <Select>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione um local" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {appointmentLocations.map(location => (
+                          <SelectItem key={location} value={location}>{location}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Observações</label>
+                    <Textarea placeholder="Adicione informações relevantes sobre o agendamento" />
+                  </div>
+                  
+                  <DialogFooter>
+                    <Button type="submit">Criar Agendamento</Button>
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
 
@@ -196,7 +416,7 @@ export default function AppointmentsPage() {
                                     <h3 className="font-medium">{appointment.clientName}</h3>
                                     <p className="text-sm text-muted-foreground">{appointment.type}</p>
                                   </div>
-                                  <Badge variant={getStatusBadgeVariant(appointment.status) as any}>
+                                  <Badge variant={getStatusBadgeVariant(appointment.status)}>
                                     {getStatusText(appointment.status)}
                                   </Badge>
                                 </div>
@@ -216,7 +436,14 @@ export default function AppointmentsPage() {
                                   </p>
                                 )}
                                 <div className="flex justify-end mt-4 gap-2">
-                                  <Button variant="outline" size="sm">
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm"
+                                    onClick={() => {
+                                      setSelectedAppointment(appointment);
+                                      setIsDetailsOpen(true);
+                                    }}
+                                  >
                                     Detalhes
                                   </Button>
                                   {appointment.status === 'pending' && (
@@ -252,7 +479,7 @@ export default function AppointmentsPage() {
                       <p className="text-muted-foreground">
                         Não há agendamentos para esta data.
                       </p>
-                      <Button className="mt-4">
+                      <Button className="mt-4" onClick={() => setIsNewAppointmentOpen(true)}>
                         <Plus className="mr-2 h-4 w-4" />
                         Criar Agendamento
                       </Button>
@@ -304,7 +531,7 @@ export default function AppointmentsPage() {
                                   <h3 className="font-medium">{appointment.clientName}</h3>
                                   <p className="text-sm text-muted-foreground">{appointment.type}</p>
                                 </div>
-                                <Badge variant={getStatusBadgeVariant(appointment.status) as any}>
+                                <Badge variant={getStatusBadgeVariant(appointment.status)}>
                                   {getStatusText(appointment.status)}
                                 </Badge>
                               </div>
@@ -328,7 +555,14 @@ export default function AppointmentsPage() {
                                 </p>
                               )}
                               <div className="flex justify-end mt-4 gap-2">
-                                <Button variant="outline" size="sm">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => {
+                                    setSelectedAppointment(appointment);
+                                    setIsDetailsOpen(true);
+                                  }}
+                                >
                                   Detalhes
                                 </Button>
                                 {appointment.status === 'pending' && (
@@ -370,7 +604,116 @@ export default function AppointmentsPage() {
             </Card>
           </TabsContent>
         </Tabs>
-      </div>
+
+        {/* Dialog de Detalhes do Agendamento */}
+        <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+          <DialogContent className="sm:max-w-[500px]">
+            {selectedAppointment && (
+              <>
+                <DialogHeader>
+                  <DialogTitle>Detalhes do Agendamento</DialogTitle>
+                  <DialogDescription>
+                    Informações completas sobre o agendamento.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 mt-4">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-lg font-medium">{selectedAppointment.clientName}</h3>
+                    <Badge variant={getStatusBadgeVariant(selectedAppointment.status)}>
+                      {getStatusText(selectedAppointment.status)}
+                    </Badge>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm font-medium">Data</p>
+                      <p className="text-sm text-muted-foreground">
+                        {formatDate(selectedAppointment.date)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">Horário</p>
+                      <p className="text-sm text-muted-foreground">
+                        {formatTime(selectedAppointment.date)}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">Tipo</p>
+                      <p className="text-sm text-muted-foreground">
+                        {selectedAppointment.type}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium">Local</p>
+                      <p className="text-sm text-muted-foreground">
+                        {selectedAppointment.location}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium">Informações de Contato</p>
+                    <div className="grid grid-cols-1 gap-2">
+                      <div className="flex items-center gap-2">
+                        <User className="h-4 w-4 text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground">
+                          {selectedAppointment.clientName}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Mail className="h-4 w-4 text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground">
+                          {selectedAppointment.clientEmail}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Phone className="h-4 w-4 text-muted-foreground" />
+                        <p className="text-sm text-muted-foreground">
+                          {selectedAppointment.clientPhone}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {selectedAppointment.notes && (
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">Observações</p>
+                      <p className="text-sm text-muted-foreground">
+                        {selectedAppointment.notes}
+                      </p>
+                    </div>
+                  )}
+                  
+                  <div className="flex justify-end gap-2 mt-6">
+                    {selectedAppointment.status === 'pending' && (
+                      <Button 
+                        onClick={() => {
+                          handleConfirmAppointment(selectedAppointment.id);
+                          setIsDetailsOpen(false);
+                        }}
+                      >
+                        <Check className="mr-1 h-4 w-4" />
+                        Confirmar
+                      </Button>
+                    )}
+                    {selectedAppointment.status !== 'cancelled' && (
+                      <Button 
+                        variant="destructive"
+                        onClick={() => {
+                          handleCancelAppointment(selectedAppointment.id);
+                          setIsDetailsOpen(false);
+                        }}
+                      >
+                        <X className="mr-1 h-4 w-4" />
+                        Cancelar
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
     </div>
   )
 }

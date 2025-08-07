@@ -21,6 +21,19 @@ const nextConfig = {
     }
     return config;
   },
+  // Rails API proxy configuration
+  async rewrites() {
+    return [
+      {
+        source: '/rails-api/:path*',
+        destination: 'http://localhost:3001/api/v1/:path*',
+      },
+      {
+        source: '/rails-admin/:path*',
+        destination: 'http://localhost:3001/admin/:path*',
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
