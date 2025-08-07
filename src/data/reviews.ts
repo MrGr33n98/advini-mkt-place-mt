@@ -15,7 +15,8 @@ export const reviews: Review[] = [
     source: "website",
     lawyer_response: {
       message: "Muito obrigado pelo feedback, Pedro! Foi um prazer ajudá-lo neste momento importante. Desejo muito sucesso em sua nova fase!",
-      created_at: "2024-03-16T09:30:00Z"
+      created_at: "2024-03-16T09:30:00Z",
+      is_public: true
     }
   },
   {
@@ -44,7 +45,8 @@ export const reviews: Review[] = [
     source: "website",
     lawyer_response: {
       message: "Fico muito feliz em ter ajudado você, João Paulo! Casos trabalhistas exigem dedicação e estou satisfeita com o resultado alcançado.",
-      created_at: "2024-03-13T11:20:00Z"
+      created_at: "2024-03-13T11:20:00Z",
+      is_public: true
     }
   },
   {
@@ -84,7 +86,8 @@ export const reviews: Review[] = [
     source: "manual",
     lawyer_response: {
       message: "Obrigada pelo feedback, Fernanda. Entendo sua preocupação com o tempo. Alguns processos realmente demandam mais tempo devido à complexidade, mas sempre me esforço para ser transparente sobre os prazos.",
-      created_at: "2024-02-21T10:45:00Z"
+      created_at: "2024-02-21T10:45:00Z",
+      is_public: true
     }
   },
   {

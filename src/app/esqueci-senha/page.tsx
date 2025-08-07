@@ -16,18 +16,20 @@ export default function ForgotPasswordPage() {
 
   const {
     values,
-    errors,
-    isValidating,
-    handleChange,
+    validation,
     isFormValid,
-  } = useFormValidation<ForgotPasswordFormData>(forgotPasswordSchema, {
-    email: '',
+    updateField,
+    getFieldValidation,
+  } = useFormValidation({
+    rules: [
+      { field: 'email', schema: forgotPasswordSchema.shape.email }
+    ]
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!isFormValid()) {
+    if (!isFormValid) {
       return;
     }
 
@@ -134,10 +136,10 @@ export default function ForgotPasswordPage() {
                 label="Email"
                 type="email"
                 placeholder="seu@email.com"
-                value={values.email}
-                onChange={(value) => handleChange('email', value)}
-                error={errors.email}
-                isValidating={isValidating.email}
+                value={values.email || ''}
+                onChange={(value) => updateField('email', value)}
+                error={getFieldValidation('email').error}
+                isValidating={getFieldValidation('email').isValidating}
                 required
               />
             </div>
@@ -145,7 +147,7 @@ export default function ForgotPasswordPage() {
             <Button
               type="submit"
               className="w-full"
-              disabled={!isFormValid() || isLoading}
+              disabled={!isFormValid || isLoading}
             >
               {isLoading ? (
                 <>

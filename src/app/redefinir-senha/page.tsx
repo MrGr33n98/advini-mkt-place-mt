@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ValidatedInput } from '@/components/ui/validated-input';
 import { useFormValidation } from '@/hooks/use-form-validation';
 import { resetPasswordSchema, type ResetPasswordFormData } from '@/lib/auth-validation';
+import { z } from 'zod';
 
 function ResetPasswordForm() {
   const router = useRouter();
@@ -24,15 +25,38 @@ function ResetPasswordForm() {
 
   const {
     values,
-    errors,
-    isValidating,
-    handleChange,
+    validation,
     isFormValid,
-  } = useFormValidation<ResetPasswordFormData>(resetPasswordSchema, {
-    token: token || '',
-    password: '',
-    confirmPassword: '',
+    updateField,
+    getFieldValidation,
+  } = useFormValidation({
+    rules: [
+      {
+        field: 'token',
+        schema: z.string().min(1, 'Token é obrigatório'),
+      },
+      {
+        field: 'password',
+        schema: z.string()
+          .min(8, 'Senha deve ter pelo menos 8 caracteres')
+          .regex(/[A-Z]/, 'Senha deve conter pelo menos uma letra maiúscula')
+          .regex(/[a-z]/, 'Senha deve conter pelo menos uma letra minúscula')
+          .regex(/\d/, 'Senha deve conter pelo menos um número')
+          .regex(/[^A-Za-z0-9]/, 'Senha deve conter pelo menos um caractere especial'),
+      },
+      {
+        field: 'confirmPassword',
+        schema: z.string().min(1, 'Confirmação de senha é obrigatória'),
+      },
+    ],
   });
+
+  // Inicializar valores
+  useEffect(() => {
+    updateField('token', token || '');
+    updateField('password', '');
+    updateField('confirmPassword', '');
+  }, [token, updateField]);
 
   useEffect(() => {
     if (!token) {
@@ -50,7 +74,7 @@ function ResetPasswordForm() {
         setTokenValid(isValid);
         
         if (isValid) {
-          handleChange('token', token);
+          updateField('token', token);
         }
       } catch (err) {
         setTokenValid(false);
@@ -58,12 +82,18 @@ function ResetPasswordForm() {
     };
 
     validateToken();
-  }, [token, handleChange]);
+  }, [token, updateField]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!isFormValid() || !tokenValid) {
+    if (!isFormValid || !tokenValid) {
+      return;
+    }
+
+    // Verificar se as senhas coincidem
+    if (values.password !== values.confirmPassword) {
+      setError('As senhas não coincidem');
       return;
     }
 
@@ -216,10 +246,10 @@ function ResetPasswordForm() {
                   label="Nova Senha"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Digite sua nova senha"
-                  value={values.password}
-                  onChange={(value) => handleChange('password', value)}
-                  error={errors.password}
-                  isValidating={isValidating.password}
+                  value={values.password || ''}
+                  onChange={(value) => updateField('password', value)}
+                  error={getFieldValidation('password').error}
+                  isValidating={getFieldValidation('password').isValidating}
                   required
                 />
                 <button
@@ -236,10 +266,10 @@ function ResetPasswordForm() {
                   label="Confirmar Nova Senha"
                   type={showConfirmPassword ? 'text' : 'password'}
                   placeholder="Confirme sua nova senha"
-                  value={values.confirmPassword}
-                  onChange={(value) => handleChange('confirmPassword', value)}
-                  error={errors.confirmPassword}
-                  isValidating={isValidating.confirmPassword}
+                  value={values.confirmPassword || ''}
+                  onChange={(value) => updateField('confirmPassword', value)}
+                  error={getFieldValidation('confirmPassword').error}
+                  isValidating={getFieldValidation('confirmPassword').isValidating}
                   required
                 />
                 <button
@@ -268,7 +298,7 @@ function ResetPasswordForm() {
             <Button
               type="submit"
               className="w-full"
-              disabled={!isFormValid() || isLoading}
+              disabled={!isFormValid || isLoading}
             >
               {isLoading ? (
                 <>

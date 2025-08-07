@@ -162,7 +162,7 @@ O projeto já possui uma base sólida com:
 
 ### 7. Sistema de Planos e Assinaturas - Interface
 
-- [ ] 7.1 Aprimorar página de planos
+- [x] 7.1 Aprimorar página de planos
   - Melhorar design da página de comparação de planos
   - Implementar calculadora de ROI para advogados
   - Adicionar depoimentos e cases de sucesso

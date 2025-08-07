@@ -15,6 +15,7 @@ import { CalendarIcon, Filter, X, Search, Star } from 'lucide-react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { ReviewFilters } from '@/types/review'
+import { DateRange } from 'react-day-picker'
 
 interface ReviewFiltersProps {
   filters: ReviewFilters;
@@ -39,14 +40,19 @@ export function ReviewFiltersComponent({ filters, onFiltersChange, onClearFilter
     });
   };
 
-  const handleDateRangeChange = (range: { from: Date | undefined; to: Date | undefined }) => {
-    setDateRange(range);
-    if (range.from && range.to) {
-      handleFilterChange('date_range', {
-        start: range.from.toISOString(),
-        end: range.to.toISOString(),
-      });
+  const handleDateRangeChange = (range: DateRange | undefined) => {
+    if (range) {
+      setDateRange({ from: range.from, to: range.to });
+      if (range.from && range.to) {
+        handleFilterChange('date_range', {
+          start: range.from.toISOString(),
+          end: range.to.toISOString(),
+        });
+      } else {
+        handleFilterChange('date_range', undefined);
+      }
     } else {
+      setDateRange({ from: undefined, to: undefined });
       handleFilterChange('date_range', undefined);
     }
   };

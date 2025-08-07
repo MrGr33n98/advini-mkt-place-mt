@@ -46,7 +46,7 @@ import {
 import { Calendar as CalendarComponent } from "@/components/ui/calendar"
 import { Switch } from "@/components/ui/switch"
 import { Separator } from "@/components/ui/separator"
-import { toast } from "@/components/ui/use-toast"
+import { useNotificationHelpers } from "@/components/ui/notification-system"
 
 interface TimeBlock {
   id: string
@@ -128,6 +128,7 @@ export function TimeBlocking({
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [editingBlock, setEditingBlock] = useState<TimeBlock | null>(null)
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
+  const { notifySuccess, notifyError } = useNotificationHelpers()
 
   // Form state
   const [formData, setFormData] = useState({
@@ -158,11 +159,7 @@ export function TimeBlocking({
 
   const handleCreateBlock = () => {
     if (!formData.title.trim()) {
-      toast({
-        title: "Erro",
-        description: "O título é obrigatório",
-        variant: "destructive"
-      })
+      notifyError("Erro", "O título é obrigatório")
       return
     }
 
@@ -177,10 +174,7 @@ export function TimeBlocking({
     setIsCreateDialogOpen(false)
     resetForm()
     
-    toast({
-      title: "Sucesso",
-      description: "Bloqueio de horário criado com sucesso"
-    })
+    notifySuccess("Sucesso", "Bloqueio de horário criado com sucesso")
   }
 
   const handleUpdateBlock = () => {
@@ -199,20 +193,14 @@ export function TimeBlocking({
     setEditingBlock(null)
     resetForm()
     
-    toast({
-      title: "Sucesso",
-      description: "Bloqueio de horário atualizado com sucesso"
-    })
+    notifySuccess("Sucesso", "Bloqueio de horário atualizado com sucesso")
   }
 
   const handleDeleteBlock = (blockId: string) => {
     setBlocks(blocks.filter(block => block.id !== blockId))
     onTimeBlockDelete?.(blockId)
     
-    toast({
-      title: "Sucesso",
-      description: "Bloqueio de horário removido com sucesso"
-    })
+    notifySuccess("Sucesso", "Bloqueio de horário removido com sucesso")
   }
 
   const startEdit = (block: TimeBlock) => {

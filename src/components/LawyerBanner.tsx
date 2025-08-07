@@ -124,17 +124,19 @@ export function LawyerBanner({ lawyer }: LawyerBannerProps) {
                 {/* Sharing and Referral Buttons */}
                 <div className="flex gap-2">
                   <SocialShareButtons
-                    url={`${typeof window !== 'undefined' ? window.location.origin : ''}/advogados/${lawyer.slug}`}
-                    title={`Conheça ${lawyer.name} - Advogado especialista`}
-                    description={`${lawyer.name} - ${lawyer.specialties.join(', ')}. ${lawyer.years_of_experience} anos de experiência.`}
-                    profileId={lawyer.id}
-                    profileType="lawyer"
+                    shareData={{
+                      url: `${typeof window !== 'undefined' ? window.location.origin : ''}/advogados/${lawyer.slug}`,
+                      title: `Conheça ${lawyer.name} - Advogado especialista`,
+                      description: `${lawyer.name} - ${lawyer.specialties.join(', ')}. ${lawyer.years_of_experience} anos de experiência.`
+                    }}
+                    trackingId={lawyer.id}
+                    variant="compact"
                   />
                   
                   <CustomProfileLink
-                    profileId={lawyer.id}
-                    profileType="lawyer"
-                    profileName={lawyer.name}
+                    lawyerId={lawyer.id}
+                    lawyerName={lawyer.name}
+                    originalUrl={`${typeof window !== 'undefined' ? window.location.origin : ''}/advogados/${lawyer.slug}`}
                   />
                   
                   <ReferralSystem

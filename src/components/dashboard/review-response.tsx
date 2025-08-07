@@ -221,7 +221,7 @@ export function ReviewResponseComponent({ review, onClose, onSubmit }: ReviewRes
             <Checkbox
               id="is_public"
               checked={isPublic}
-              onCheckedChange={setIsPublic}
+              onCheckedChange={(checked) => setIsPublic(checked === true)}
             />
             <Label htmlFor="is_public" className="flex items-center space-x-2">
               {isPublic ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}

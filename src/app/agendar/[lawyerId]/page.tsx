@@ -44,14 +44,13 @@ const mockLawyer: Lawyer = {
   phone: "(65) 99999-9999",
   email: "joao@email.com",
   bio: "Advogado especialista em Direito Civil e de Família com mais de 10 anos de experiência.",
-  photo: "/placeholder-lawyer.jpg",
-  rating: 4.8,
-  reviewCount: 127,
+  profile_image_url: "/placeholder-lawyer.jpg",
+  average_rating: 4.8,
+  total_reviews: 127,
   plan: "gold",
-  isVerified: true,
-  address: "Rua das Flores, 123 - Centro, Cuiabá - MT",
-  website: "https://joaosilva.adv.br",
-  workingHours: [
+  status: "approved",
+  office_address: "Rua das Flores, 123 - Centro, Cuiabá - MT",
+  working_hours: [
     { day: "Segunda", start: "08:00", end: "18:00", isOpen: true },
     { day: "Terça", start: "08:00", end: "18:00", isOpen: true },
     { day: "Quarta", start: "08:00", end: "18:00", isOpen: true },
@@ -111,12 +110,15 @@ export default function ScheduleAppointmentPage() {
     clientName: "",
     clientEmail: "",
     clientPhone: "",
+    clientCpf: "",
     appointmentType: "",
-    date: undefined,
-    timeSlot: "",
-    location: "",
-    notes: "",
-    urgency: "medium"
+    description: "",
+    urgency: "media",
+    preferredContact: "email",
+    hasDocuments: false,
+    documentsDescription: "",
+    acceptTerms: false,
+    acceptPrivacy: false
   })
 
   // Gerar horários disponíveis quando a data é selecionada
@@ -262,7 +264,7 @@ export default function ScheduleAppointmentPage() {
           
           <div className="flex items-center gap-4 mb-6">
             <Avatar className="w-16 h-16">
-              <AvatarImage src={mockLawyer.photo} alt={mockLawyer.name} />
+              <AvatarImage src={mockLawyer.profile_image_url} alt={mockLawyer.name} />
               <AvatarFallback>{mockLawyer.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
             </Avatar>
             <div>
@@ -275,10 +277,10 @@ export default function ScheduleAppointmentPage() {
               <div className="flex items-center gap-2 mt-1">
                 <div className="flex items-center gap-1">
                   <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  <span className="text-sm font-medium">{mockLawyer.rating}</span>
+                  <span className="text-sm font-medium">{mockLawyer.average_rating}</span>
                 </div>
-                <span className="text-sm text-gray-500">({mockLawyer.reviewCount} avaliações)</span>
-                {mockLawyer.isVerified && (
+                <span className="text-sm text-gray-500">({mockLawyer.total_reviews} avaliações)</span>
+                {mockLawyer.status === 'approved' && (
                   <Badge variant="secondary" className="text-xs">
                     <CheckCircle className="w-3 h-3 mr-1" />
                     Verificado
@@ -479,28 +481,28 @@ export default function ScheduleAppointmentPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="location">Local da Consulta</Label>
-                      <Select value={formData.location} onValueChange={(value) => handleInputChange('location', value)}>
+                      <Label htmlFor="preferredContact">Forma de Contato Preferida</Label>
+                      <Select value={formData.preferredContact} onValueChange={(value) => handleInputChange('preferredContact', value)}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione o local" />
+                          <SelectValue placeholder="Selecione a forma de contato" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="office">
+                          <SelectItem value="email">
                             <div className="flex items-center gap-2">
                               <Building className="w-4 h-4" />
-                              Escritório
-                            </div>
-                          </SelectItem>
-                          <SelectItem value="online">
-                            <div className="flex items-center gap-2">
-                              <Video className="w-4 h-4" />
-                              Online (Videochamada)
+                              Email
                             </div>
                           </SelectItem>
                           <SelectItem value="phone">
                             <div className="flex items-center gap-2">
                               <Phone className="w-4 h-4" />
                               Telefone
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="whatsapp">
+                            <div className="flex items-center gap-2">
+                              <Video className="w-4 h-4" />
+                              WhatsApp
                             </div>
                           </SelectItem>
                         </SelectContent>
@@ -515,19 +517,19 @@ export default function ScheduleAppointmentPage() {
                         <SelectValue placeholder="Selecione a urgência" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="low">Baixa - Posso aguardar</SelectItem>
-                        <SelectItem value="medium">Média - Preciso de orientação</SelectItem>
-                        <SelectItem value="high">Alta - Caso urgente</SelectItem>
+                        <SelectItem value="baixa">Baixa - Posso aguardar</SelectItem>
+                        <SelectItem value="media">Média - Preciso de orientação</SelectItem>
+                        <SelectItem value="alta">Alta - Caso urgente</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="notes">Observações</Label>
+                    <Label htmlFor="description">Descrição do Caso</Label>
                     <Textarea
-                      id="notes"
-                      value={formData.notes}
-                      onChange={(e) => handleInputChange('notes', e.target.value)}
+                      id="description"
+                      value={formData.description}
+                      onChange={(e) => handleInputChange('description', e.target.value)}
                       placeholder="Descreva brevemente seu caso ou dúvidas..."
                       rows={4}
                     />
@@ -617,7 +619,7 @@ export default function ScheduleAppointmentPage() {
                     <p>{mockLawyer.oab}</p>
                     <p className="flex items-center gap-1">
                       <MapPin className="w-3 h-3" />
-                      {mockLawyer.address}
+                      {mockLawyer.office_address}
                     </p>
                   </div>
                 </div>

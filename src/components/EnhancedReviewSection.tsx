@@ -121,7 +121,7 @@ export function EnhancedReviewSection({
           <CardContent className="p-6">
             <ReviewForm
               lawyerId={lawyerId}
-              onSubmitSuccess={() => setShowReviewForm(false)}
+              onReviewSubmitted={() => setShowReviewForm(false)}
             />
           </CardContent>
         </Card>

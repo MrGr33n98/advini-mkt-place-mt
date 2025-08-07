@@ -168,14 +168,14 @@ export default function LawyersPage() {
     }
 
     // Filtro por especialidade
-    if (selectedSpecialty) {
+    if (selectedSpecialty && selectedSpecialty !== 'all') {
       filtered = filtered.filter(lawyer => 
         lawyer.specialties.includes(selectedSpecialty)
       )
     }
 
     // Filtro por plano
-    if (selectedPlan) {
+    if (selectedPlan && selectedPlan !== 'all') {
       filtered = filtered.filter(lawyer => lawyer.plan === selectedPlan)
     }
 
@@ -208,8 +208,8 @@ export default function LawyersPage() {
 
   const clearFilters = () => {
     setSearchQuery('')
-    setSelectedSpecialty('')
-    setSelectedPlan('')
+    setSelectedSpecialty('all')
+    setSelectedPlan('all')
     setSortBy('rating')
   }
 
@@ -280,7 +280,7 @@ export default function LawyersPage() {
                       <SelectValue placeholder="Todas as especialidades" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Todas as especialidades</SelectItem>
+                      <SelectItem value="all">Todas as especialidades</SelectItem>
                       {specialties.map((specialty) => (
                         <SelectItem key={specialty} value={specialty}>
                           {specialty}
@@ -298,7 +298,7 @@ export default function LawyersPage() {
                       <SelectValue placeholder="Todos os planos" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Todos os planos</SelectItem>
+                      <SelectItem value="all">Todos os planos</SelectItem>
                       <SelectItem value="basic">Básico</SelectItem>
                       <SelectItem value="silver">Prata</SelectItem>
                       <SelectItem value="gold">Ouro</SelectItem>

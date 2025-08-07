@@ -32,7 +32,7 @@ export default function OfficesPage() {
       const matchesRegions = selectedRegions.length === 0 || 
         selectedRegions.some(region => office.address.includes(region));
       
-      const matchesRating = office.rating >= minRating;
+      const matchesRating = (office.rating || 0) >= minRating;
       
       const matchesPlanTiers = planTiers.length === 0 || 
         planTiers.includes(office.plan_tier);
@@ -46,7 +46,7 @@ export default function OfficesPage() {
     // Sorting
     switch (sortBy) {
       case "rating":
-        filtered.sort((a, b) => b.rating - a.rating);
+        filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
         break;
       case "name":
         filtered.sort((a, b) => a.name.localeCompare(b.name));
@@ -64,7 +64,7 @@ export default function OfficesPage() {
         filtered.sort((a, b) => {
           if (a.is_sponsored && !b.is_sponsored) return -1;
           if (!a.is_sponsored && b.is_sponsored) return 1;
-          return b.rating - a.rating;
+          return (b.rating || 0) - (a.rating || 0);
         });
         break;
     }
@@ -92,7 +92,7 @@ export default function OfficesPage() {
     total: offices.length,
     sponsored: offices.filter(o => o.is_sponsored).length,
     goldPlan: offices.filter(o => o.plan_tier === 'gold').length,
-    highRated: offices.filter(o => o.rating >= 4.5).length
+    highRated: offices.filter(o => (o.rating || 0) >= 4.5).length
   };
 
   return (

@@ -20,37 +20,43 @@ interface AppointmentCalendarProps {
 // Mock data para disponibilidade do advogado
 const mockAvailability: LawyerAvailability[] = [
   {
-    date: new Date(),
+    lawyerId: '',
+    date: new Date().toISOString().split('T')[0],
     timeSlots: [
-      { time: '09:00', available: true, duration: 60 },
-      { time: '10:00', available: false, duration: 60 },
-      { time: '11:00', available: true, duration: 60 },
-      { time: '14:00', available: true, duration: 60 },
-      { time: '15:00', available: true, duration: 60 },
-      { time: '16:00', available: false, duration: 60 },
-    ]
+      { id: '1', time: '09:00', available: true, duration: 60 },
+      { id: '2', time: '10:00', available: false, duration: 60 },
+      { id: '3', time: '11:00', available: true, duration: 60 },
+      { id: '4', time: '14:00', available: true, duration: 60 },
+      { id: '5', time: '15:00', available: true, duration: 60 },
+      { id: '6', time: '16:00', available: false, duration: 60 },
+    ],
+    appointmentTypes: []
   },
   {
-    date: addDays(new Date(), 1),
+    lawyerId: '',
+    date: addDays(new Date(), 1).toISOString().split('T')[0],
     timeSlots: [
-      { time: '09:00', available: true, duration: 60 },
-      { time: '10:00', available: true, duration: 60 },
-      { time: '11:00', available: false, duration: 60 },
-      { time: '14:00', available: true, duration: 60 },
-      { time: '15:00', available: true, duration: 60 },
-      { time: '16:00', available: true, duration: 60 },
-    ]
+      { id: '7', time: '09:00', available: true, duration: 60 },
+      { id: '8', time: '10:00', available: true, duration: 60 },
+      { id: '9', time: '11:00', available: false, duration: 60 },
+      { id: '10', time: '14:00', available: true, duration: 60 },
+      { id: '11', time: '15:00', available: true, duration: 60 },
+      { id: '12', time: '16:00', available: true, duration: 60 },
+    ],
+    appointmentTypes: []
   },
   {
-    date: addDays(new Date(), 2),
+    lawyerId: '',
+    date: addDays(new Date(), 2).toISOString().split('T')[0],
     timeSlots: [
-      { time: '09:00', available: false, duration: 60 },
-      { time: '10:00', available: true, duration: 60 },
-      { time: '11:00', available: true, duration: 60 },
-      { time: '14:00', available: false, duration: 60 },
-      { time: '15:00', available: true, duration: 60 },
-      { time: '16:00', available: true, duration: 60 },
-    ]
+      { id: '13', time: '09:00', available: false, duration: 60 },
+      { id: '14', time: '10:00', available: true, duration: 60 },
+      { id: '15', time: '11:00', available: true, duration: 60 },
+      { id: '16', time: '14:00', available: false, duration: 60 },
+      { id: '17', time: '15:00', available: true, duration: 60 },
+      { id: '18', time: '16:00', available: true, duration: 60 },
+    ],
+    appointmentTypes: []
   }
 ];
 
@@ -70,8 +76,9 @@ export function AppointmentCalendar({
       setLoading(true);
       // Simular delay de API
       setTimeout(() => {
+        const dateString = date.toISOString().split('T')[0];
         const dayAvailability = mockAvailability.find(avail => 
-          isSameDay(avail.date, date)
+          avail.date === dateString
         );
         setAvailableSlots(dayAvailability?.timeSlots || []);
         setLoading(false);
@@ -96,8 +103,9 @@ export function AppointmentCalendar({
   };
 
   const getAvailableSlotsCount = (checkDate: Date) => {
+    const dateString = checkDate.toISOString().split('T')[0];
     const dayAvailability = mockAvailability.find(avail => 
-      isSameDay(avail.date, checkDate)
+      avail.date === dateString
     );
     return dayAvailability?.timeSlots.filter(slot => slot.available).length || 0;
   };

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { Notification } from "@/components/dashboard/notification-system"
+import { Notification } from "@/lib/notification-store"
 
 export function useNotifications() {
   const [notifications, setNotifications] = useState<Notification[]>([])
@@ -12,53 +12,69 @@ export function useNotifications() {
     const mockNotifications: Notification[] = [
       {
         id: '1',
-        type: 'urgent',
+        type: 'appointment',
+        priority: 'urgent',
         title: 'Consulta em 15 minutos',
         message: 'Maria Silva - Consulta Inicial às 14:30',
         timestamp: new Date(now.getTime() - 5 * 60 * 1000), // 5 min atrás
         read: false,
-        actionRequired: true,
-        appointmentId: 'apt-1',
-        clientName: 'Maria Silva',
-        appointmentTime: new Date(now.getTime() + 15 * 60 * 1000)
+        metadata: {
+          appointmentId: 'apt-1',
+          clientName: 'Maria Silva',
+          appointmentTime: new Date(now.getTime() + 15 * 60 * 1000)
+        }
       },
       {
         id: '2',
         type: 'appointment',
+        priority: 'medium',
         title: 'Novo agendamento',
         message: 'João Santos agendou uma consulta para amanhã',
         timestamp: new Date(now.getTime() - 30 * 60 * 1000), // 30 min atrás
         read: false,
-        appointmentId: 'apt-2',
-        clientName: 'João Santos',
-        appointmentTime: new Date(now.getTime() + 24 * 60 * 60 * 1000)
+        metadata: {
+          appointmentId: 'apt-2',
+          clientName: 'João Santos',
+          appointmentTime: new Date(now.getTime() + 24 * 60 * 60 * 1000)
+        }
       },
       {
         id: '3',
-        type: 'reminder',
+        type: 'warning',
+        priority: 'high',
         title: 'Lembrete de follow-up',
         message: 'Acompanhar caso de Ana Costa - prazo em 2 dias',
         timestamp: new Date(now.getTime() - 2 * 60 * 60 * 1000), // 2h atrás
         read: false,
-        clientName: 'Ana Costa'
+        metadata: {
+          clientName: 'Ana Costa'
+        }
       },
       {
         id: '4',
         type: 'system',
+        priority: 'low',
         title: 'Perfil atualizado',
         message: 'Suas informações de contato foram atualizadas com sucesso',
         timestamp: new Date(now.getTime() - 4 * 60 * 60 * 1000), // 4h atrás
-        read: true
+        read: true,
+        metadata: {
+          updateType: 'feature' as const
+        }
       },
       {
         id: '5',
         type: 'appointment',
+        priority: 'medium',
         title: 'Consulta confirmada',
         message: 'Pedro Oliveira confirmou a consulta de sexta-feira',
         timestamp: new Date(now.getTime() - 6 * 60 * 60 * 1000), // 6h atrás
         read: true,
-        appointmentId: 'apt-5',
-        clientName: 'Pedro Oliveira'
+        metadata: {
+          appointmentId: 'apt-5',
+          clientName: 'Pedro Oliveira',
+          appointmentTime: new Date(now.getTime() + 5 * 24 * 60 * 60 * 1000)
+        }
       }
     ]
     
@@ -99,10 +115,10 @@ export function useNotifications() {
 
   const handleNotificationAction = useCallback((notification: Notification) => {
     // Aqui você pode implementar ações específicas baseadas no tipo de notificação
-    if (notification.type === 'appointment' && notification.appointmentId) {
+    if (notification.type === 'appointment' && notification.metadata?.appointmentId) {
       // Navegar para detalhes do agendamento
-      console.log('Navegando para agendamento:', notification.appointmentId)
-    } else if (notification.type === 'urgent') {
+      console.log('Navegando para agendamento:', notification.metadata.appointmentId)
+    } else if (notification.priority === 'urgent') {
       // Ação urgente - talvez abrir modal de confirmação
       console.log('Ação urgente para:', notification.id)
     }

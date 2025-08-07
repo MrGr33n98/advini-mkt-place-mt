@@ -57,10 +57,13 @@ export interface AppointmentFormData {
   clientName: string;
   clientEmail: string;
   clientPhone: string;
+  clientCpf: string;
   appointmentType: string;
-  date: Date | undefined;
-  timeSlot: string;
-  location: string;
-  notes: string;
-  urgency: string;
+  description: string;
+  urgency: 'baixa' | 'media' | 'alta';
+  preferredContact: 'email' | 'telefone' | 'whatsapp';
+  hasDocuments: boolean;
+  documentsDescription?: string;
+  acceptTerms: boolean;
+  acceptPrivacy: boolean;
 }

@@ -197,7 +197,7 @@ export function EnhancedLawyerProfileCard({ lawyer }: EnhancedLawyerProfileCardP
                   )}
                   
                   <div className="h-96 rounded-lg overflow-hidden">
-                    <SingleLawyerMap lawyer={lawyer} />
+                    <SingleLawyerMap latitude={lawyer.latitude} longitude={lawyer.longitude} />
                   </div>
                 </div>
               </CardContent>

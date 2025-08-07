@@ -9,10 +9,15 @@ import { RecentActivities } from '@/components/dashboard/recent-activities'
 import { AppointmentBadges } from '@/components/dashboard/appointment-badges'
 import { AppointmentReminders } from '@/components/dashboard/appointment-reminders'
 import { ChatPreview } from '@/components/dashboard/chat-preview'
+import { PlanManagement } from '@/components/dashboard/plan-management'
+import { PremiumFeaturesPreview } from '@/components/dashboard/premium-features-preview'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
+import { FeatureGate, FeatureUsageIndicator } from '@/components/ui/feature-gate'
+import { LazySection } from '@/components/ui/lazy-component'
+import { NotificationToasts, useNotificationHelpers } from '@/components/ui/notification-system'
 import { 
   TrendingUp, 
   Target, 
@@ -22,14 +27,22 @@ import {
   MessageSquare,
   Star,
   BarChart3,
-  Zap
+  Zap,
+  Crown,
+  Settings
 } from 'lucide-react'
+import { PlanType } from '@/lib/plan-features'
 
 const mockUser = {
   name: "Dr. João da Silva",
   profileCompletion: 85,
-  planType: "Pro",
-  memberSince: "Janeiro 2023"
+  planType: "silver" as PlanType,
+  memberSince: "Janeiro 2023",
+  usage: {
+    chatMessages: 350,
+    monthlyAppointments: 75,
+    apiCalls: 8500
+  }
 }
 
 const achievements = [
@@ -38,7 +51,16 @@ const achievements = [
   { title: "Response Hero", description: "Resposta em menos de 2h", icon: MessageSquare }
 ]
 
-export default function DashboardPage() {
+function DashboardContent() {
+  const { notifySuccess, notifyWarning, notifyInfo } = useNotificationHelpers();
+
+  // Simular notificações de exemplo
+  const handleTestNotifications = () => {
+    notifySuccess("Perfil atualizado", "Suas informações foram salvas com sucesso!");
+    notifyWarning("Limite próximo", "Você usou 70% do seu limite de mensagens mensais");
+    notifyInfo("Nova funcionalidade", "Confira o novo sistema de relatórios avançados!");
+  };
+
   return (
     <div className="space-y-8">
       {/* Header com boas-vindas */}
@@ -57,13 +79,26 @@ export default function DashboardPage() {
           </p>
         </div>
         <div className="flex items-center space-x-2">
+          <FeatureUsageIndicator
+            feature="chatMessages"
+            userPlan={mockUser.planType}
+            currentUsage={mockUser.usage.chatMessages}
+          />
           <Badge variant="outline" className="text-sm">
-            <Award className="h-3 w-3 mr-1" />
-            Plano {mockUser.planType}
+            <Crown className="h-3 w-3 mr-1" />
+            Plano {mockUser.planType.charAt(0).toUpperCase() + mockUser.planType.slice(1)}
           </Badge>
           <Badge variant="secondary" className="text-sm">
             Membro desde {mockUser.memberSince}
           </Badge>
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={handleTestNotifications}
+            className="text-xs"
+          >
+            <Settings className="h-4 w-4" />
+          </Button>
         </div>
       </motion.div>
 
@@ -120,16 +155,51 @@ export default function DashboardPage() {
         <AppointmentReminders />
       </motion.div>
 
+      {/* Seção de Gerenciamento de Plano */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35, duration: 0.5 }}
+      >
+        <LazySection title="Gerenciamento de Plano" skeletonType="card">
+          <PlanManagement />
+        </LazySection>
+      </motion.div>
+
       {/* Grid principal com gráficos e ações */}
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Gráficos Analytics - 2 colunas */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.35, duration: 0.5 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
           className="lg:col-span-2"
         >
-          <AnalyticsCharts />
+          <FeatureGate
+            feature="advancedAnalytics"
+            userPlan={mockUser.planType}
+            fallback={
+              <LazySection skeletonType="chart">
+                <Card className="border-dashed">
+                  <CardContent className="p-8 text-center">
+                    <BarChart3 className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                    <h3 className="font-semibold mb-2">Analytics Avançado</h3>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Desbloqueie insights detalhados sobre seu desempenho
+                    </p>
+                    <Button className="flex items-center gap-2">
+                      <Crown className="h-4 w-4" />
+                      Upgrade para Silver
+                    </Button>
+                  </CardContent>
+                </Card>
+              </LazySection>
+            }
+          >
+            <LazySection skeletonType="chart">
+              <AnalyticsCharts />
+            </LazySection>
+          </FeatureGate>
         </motion.div>
 
         {/* Sidebar com ações rápidas */}
@@ -180,6 +250,17 @@ export default function DashboardPage() {
         </motion.div>
       </div>
 
+      {/* Seção de Features Premium */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.55, duration: 0.5 }}
+      >
+        <LazySection title="Funcionalidades Premium" skeletonType="card">
+          <PremiumFeaturesPreview />
+        </LazySection>
+      </motion.div>
+
       {/* Grid inferior com chat e atividades */}
       <div className="grid gap-6 lg:grid-cols-2">
         <motion.div
@@ -226,5 +307,14 @@ export default function DashboardPage() {
         </Card>
       </motion.div>
     </div>
+  )
+}
+
+export default function DashboardPage() {
+  return (
+    <>
+      <DashboardContent />
+      <NotificationToasts />
+    </>
   )
 }

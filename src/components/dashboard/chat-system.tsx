@@ -167,7 +167,7 @@ export function ChatSystem() {
 
   useEffect(() => {
     scrollToBottom()
-  }, [selectedConversation?.messages])
+  }, [activeConversationId ? getConversationMessages(activeConversationId) : []])
 
   const filteredConversations = conversations.filter(conv =>
     conv.participantName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -253,13 +253,13 @@ export function ChatSystem() {
                       {conversation.participantName}
                     </p>
                     <span className="text-xs text-muted-foreground">
-                      {conversation.lastMessageTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                      {conversation.lastMessage?.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
                   
                   <div className="flex items-center justify-between mt-1">
                     <p className="text-sm text-muted-foreground truncate">
-                      {conversation.lastMessage}
+                      {conversation.lastMessage?.content}
                     </p>
                     {conversation.unreadCount > 0 && (
                       <Badge variant="destructive" className="ml-2 h-5 w-5 p-0 text-xs">
@@ -356,7 +356,7 @@ export function ChatSystem() {
                         </span>
                         {message.senderId === 'lawyer1' && (
                           <div className="ml-2">
-                            {message.isRead ? (
+                            {message.status === 'read' ? (
                               <CheckCheck className="h-3 w-3 opacity-70" />
                             ) : (
                               <Check className="h-3 w-3 opacity-70" />

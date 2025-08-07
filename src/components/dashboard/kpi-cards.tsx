@@ -3,6 +3,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { motion } from 'framer-motion'
+import { ResponsiveGrid, useBreakpoint } from '@/components/ui/responsive'
+import { AccessibleButton, ScreenReaderAnnouncement, useReducedMotion } from '@/components/ui/accessibility'
+import { useMemoizedData } from '@/hooks/use-performance'
 import { 
   Eye, 
   Star, 
@@ -95,29 +98,79 @@ const colorClasses = {
 }
 
 export function KPICards() {
+  const { isMobile } = useBreakpoint()
+  const prefersReducedMotion = useReducedMotion()
+  
+  // Memoizar dados para otimização de performance
+  const memoizedKpiData = useMemoizedData(kpiData, [])
+  
+  // Configuração responsiva do grid
+  const gridConfig = {
+    cols: {
+      xs: 1,
+      sm: 2,
+      md: 2,
+      lg: 3,
+      xl: 3,
+      '2xl': 3
+    },
+    gap: {
+      xs: 3,
+      sm: 4,
+      md: 4,
+      lg: 4,
+      xl: 6,
+      '2xl': 6
+    }
+  }
+
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {kpiData.map((kpi, index) => (
-        <motion.div
-          key={kpi.title}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.1 }}
-        >
-          <Card className="relative overflow-hidden hover:shadow-lg transition-shadow duration-300">
+    <>
+      <ScreenReaderAnnouncement 
+        message={`Exibindo ${memoizedKpiData.length} indicadores de performance`}
+        priority="polite"
+      />
+      <ResponsiveGrid {...gridConfig}>
+        {memoizedKpiData.map((kpi, index) => (
+          <motion.div
+            key={kpi.title}
+            initial={prefersReducedMotion ? {} : { opacity: 0, y: 20 }}
+            animate={prefersReducedMotion ? {} : { opacity: 1, y: 0 }}
+            transition={prefersReducedMotion ? {} : { delay: index * 0.1 }}
+          >
+          <Card 
+            className="relative overflow-hidden hover:shadow-lg transition-shadow duration-300 focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2"
+            role="article"
+            aria-labelledby={`kpi-title-${index}`}
+            aria-describedby={`kpi-desc-${index}`}
+          >
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">
+              <CardTitle 
+                id={`kpi-title-${index}`}
+                className="text-sm font-medium text-muted-foreground"
+              >
                 {kpi.title}
               </CardTitle>
-              <div className={`p-2 rounded-lg ${colorClasses[kpi.color]}`}>
+              <div 
+                className={`p-2 rounded-lg ${colorClasses[kpi.color]}`}
+                aria-hidden="true"
+              >
                 <kpi.icon className="h-4 w-4" />
               </div>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-2xl font-bold">{kpi.value}</div>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <div 
+                    className="text-2xl font-bold"
+                    aria-label={`Valor atual: ${kpi.value}`}
+                  >
+                    {kpi.value}
+                  </div>
+                  <p 
+                    id={`kpi-desc-${index}`}
+                    className="text-xs text-muted-foreground mt-1"
+                  >
                     {kpi.description}
                   </p>
                 </div>
@@ -125,11 +178,12 @@ export function KPICards() {
                   <Badge 
                     variant={kpi.changeType === 'increase' ? 'default' : 'destructive'}
                     className="text-xs"
+                    aria-label={`${kpi.changeType === 'increase' ? 'Aumento' : 'Diminuição'} de ${Math.abs(kpi.change)} por cento`}
                   >
                     {kpi.changeType === 'increase' ? (
-                      <TrendingUp className="h-3 w-3 mr-1" />
+                      <TrendingUp className="h-3 w-3 mr-1" aria-hidden="true" />
                     ) : (
-                      <TrendingDown className="h-3 w-3 mr-1" />
+                      <TrendingDown className="h-3 w-3 mr-1" aria-hidden="true" />
                     )}
                     {Math.abs(kpi.change)}%
                   </Badge>
@@ -156,6 +210,7 @@ export function KPICards() {
           </Card>
         </motion.div>
       ))}
-    </div>
+    </ResponsiveGrid>
+    </>
   )
 }

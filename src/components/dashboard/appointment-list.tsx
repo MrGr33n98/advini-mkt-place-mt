@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { 
@@ -174,7 +174,7 @@ export function AppointmentList({ appointments = mockAppointments }: Appointment
   }
 
   // Aplicar filtros quando os valores mudarem
-  useState(() => {
+  useEffect(() => {
     applyFilters()
   }, [searchTerm, statusFilter, typeFilter, dateFilter])
 

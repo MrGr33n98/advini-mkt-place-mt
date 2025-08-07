@@ -171,7 +171,7 @@ export function ConversationList({ onSelectConversation, selectedConversationId 
     deleteConversation(conversationId)
   }
 
-  const getStatusColor = (conversation: ConversationSummary) => {
+  const getStatusColor = (conversation: any) => {
     if (conversation.unreadCount > 0) return 'text-primary'
     if (conversation.isOnline) return 'text-green-600'
     return 'text-muted-foreground'

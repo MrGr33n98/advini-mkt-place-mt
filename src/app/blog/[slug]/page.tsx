@@ -173,12 +173,36 @@ const relatedPosts = [
 ];
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
-export default function BlogPostPage({ params }: Props) {
+export async function generateMetadata({ params }: Props) {
+  const { slug } = await params;
+  const post = blogPosts.find(post => post.slug === slug);
+  
+  if (!post) {
+    return {
+      title: "Artigo não encontrado",
+    };
+  }
+
+  return {
+    title: `${post.title} - Blog JurisConnect`,
+    description: post.excerpt,
+    keywords: `${post.category}, ${post.tags.join(', ')}, advocacia, direito`,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      images: [post.image],
+    },
+  };
+}
+
+export default async function BlogPostPage({ params }: Props) {
+  const { slug } = await params;
+  
   // Encontrar o post pelo slug
-  const post = blogPosts.find(post => post.slug === params.slug);
+  const post = blogPosts.find(post => post.slug === slug);
   
   // Se o post não for encontrado, retornar 404
   if (!post) {

@@ -134,7 +134,6 @@ export function AppointmentConfirmation({
             </h3>
             <div className="pl-6 space-y-2">
               <p className="font-medium">{appointment.lawyerName}</p>
-              <p className="text-sm text-muted-foreground">{appointment.lawyerSpecialty}</p>
             </div>
           </div>
 
@@ -173,13 +172,13 @@ export function AppointmentConfirmation({
             </div>
           </div>
 
-          {appointment.description && (
+          {appointment.notes && (
             <>
               <Separator />
               <div className="space-y-3">
-                <h3 className="font-semibold">Descrição do Caso</h3>
+                <h3 className="font-semibold">Observações</h3>
                 <div className="pl-6">
-                  <p className="text-sm text-muted-foreground">{appointment.description}</p>
+                  <p className="text-sm text-muted-foreground">{appointment.notes}</p>
                 </div>
               </div>
             </>

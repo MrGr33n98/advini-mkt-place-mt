@@ -293,8 +293,8 @@ export function TimeBlocks() {
                 <Label>Recorrência</Label>
                 <Select
                   value={formData.recurring}
-                  onValueChange={(value: TimeBlock['recurring']) => 
-                    setFormData(prev => ({ ...prev, recurring: value }))
+                  onValueChange={(value) => 
+                    setFormData(prev => ({ ...prev, recurring: value as TimeBlock['recurring'] }))
                   }
                 >
                   <SelectTrigger>

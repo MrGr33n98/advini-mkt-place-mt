@@ -20,6 +20,10 @@ import {
   Legend
 } from 'recharts'
 import { motion } from 'framer-motion'
+import { ResponsiveContainer as ResponsiveWrapper, useBreakpoint } from '@/components/ui/responsive'
+import { ScreenReaderAnnouncement, useReducedMotion } from '@/components/ui/accessibility'
+import { useMemoizedData, useDebounce } from '@/hooks/use-performance'
+import { useState, useMemo } from 'react'
 
 // Dados mockados para demonstração
 const performanceData = [
@@ -57,32 +61,130 @@ const weeklyActivityData = [
 ]
 
 export function AnalyticsCharts() {
-  return (
-    <div className="space-y-6">
-      <Tabs defaultValue="performance" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="performance">Performance</TabsTrigger>
-          <TabsTrigger value="sources">Origem Clientes</TabsTrigger>
-          <TabsTrigger value="cases">Tipos de Casos</TabsTrigger>
-          <TabsTrigger value="activity">Atividade Semanal</TabsTrigger>
-        </TabsList>
+  const [activeTab, setActiveTab] = useState('performance')
+  const { isMobile, isTablet } = useBreakpoint()
+  const shouldReduceMotion = useReducedMotion()
+  
+  // Memoize data for performance
+  const memoizedPerformanceData = useMemoizedData(performanceData, [])
+  const memoizedClientSourceData = useMemoizedData(clientSourceData, [])
+  const memoizedCaseTypeData = useMemoizedData(caseTypeData, [])
+  const memoizedWeeklyActivityData = useMemoizedData(weeklyActivityData, [])
+  
+  // Debounce tab changes for better performance
+  const debouncedActiveTab = useDebounce(activeTab, 150)
+  
+  // Responsive chart height
+  const chartHeight = useMemo(() => {
+    if (isMobile) return 300
+    if (isTablet) return 350
+    return 400
+  }, [isMobile, isTablet])
+  
+  // Animation variants based on reduced motion preference
+  const animationVariants = useMemo(() => ({
+    initial: shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: shouldReduceMotion ? { duration: 0 } : { duration: 0.5 }
+  }), [shouldReduceMotion])
 
-        <TabsContent value="performance" className="space-y-4">
+  return (
+    <ResponsiveWrapper>
+      <ScreenReaderAnnouncement 
+        message="Gráficos de analytics carregados. Use as abas para navegar entre diferentes visualizações."
+      />
+      <div className="space-y-6">
+        
+        <Tabs 
+          value={debouncedActiveTab} 
+          onValueChange={setActiveTab}
+          className="space-y-4"
+        >
+          <TabsList 
+            className={`grid w-full ${isMobile ? 'grid-cols-2' : 'grid-cols-4'}`}
+            role="tablist"
+            aria-label="Visualizações de analytics"
+          >
+            <TabsTrigger 
+              value="performance"
+              aria-controls="performance-panel"
+              className={isMobile ? 'text-xs' : ''}
+            >
+              {isMobile ? 'Performance' : 'Performance'}
+            </TabsTrigger>
+            <TabsTrigger 
+              value="sources"
+              aria-controls="sources-panel"
+              className={isMobile ? 'text-xs' : ''}
+            >
+              {isMobile ? 'Origem' : 'Origem Clientes'}
+            </TabsTrigger>
+            {!isMobile && (
+              <>
+                <TabsTrigger 
+                  value="cases"
+                  aria-controls="cases-panel"
+                >
+                  Tipos de Casos
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="activity"
+                  aria-controls="activity-panel"
+                >
+                  Atividade Semanal
+                </TabsTrigger>
+              </>
+            )}
+          </TabsList>
+          
+          {isMobile && (
+            <TabsList className="grid w-full grid-cols-2 mt-2">
+              <TabsTrigger 
+                value="cases"
+                aria-controls="cases-panel"
+                className="text-xs"
+              >
+                Casos
+              </TabsTrigger>
+              <TabsTrigger 
+                value="activity"
+                aria-controls="activity-panel"
+                className="text-xs"
+              >
+                Atividade
+              </TabsTrigger>
+            </TabsList>
+          )}
+
+        <TabsContent 
+          value="performance" 
+          className="space-y-4"
+          id="performance-panel"
+          role="tabpanel"
+          aria-labelledby="performance-tab"
+        >
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            {...animationVariants}
           >
             <Card>
               <CardHeader>
-                <CardTitle>Performance Mensal</CardTitle>
+                <CardTitle id="performance-chart-title">Performance Mensal</CardTitle>
                 <CardDescription>
                   Evolução de visualizações, leads, clientes e receita
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={400}>
-                  <AreaChart data={performanceData}>
+                <div 
+                  role="img" 
+                  aria-labelledby="performance-chart-title"
+                  aria-describedby="performance-chart-desc"
+                >
+                  <div id="performance-chart-desc" className="sr-only">
+                    Gráfico de área mostrando a evolução mensal de visualizações, leads, clientes e receita. 
+                    Dados de Janeiro a Junho com tendência crescente em todos os indicadores.
+                  </div>
+                  <ResponsiveContainer width="100%" height={chartHeight}>
+                    <AreaChart data={memoizedPerformanceData}>
                     <defs>
                       <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
@@ -126,134 +228,178 @@ export function AnalyticsCharts() {
                     />
                   </AreaChart>
                 </ResponsiveContainer>
+                </div>
               </CardContent>
             </Card>
           </motion.div>
         </TabsContent>
 
-        <TabsContent value="sources" className="space-y-4">
+        <TabsContent 
+          value="sources" 
+          className="space-y-4"
+          id="sources-panel"
+          role="tabpanel"
+          aria-labelledby="sources-tab"
+        >
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            {...animationVariants}
           >
             <Card>
               <CardHeader>
-                <CardTitle>Origem dos Clientes</CardTitle>
+                <CardTitle id="sources-chart-title">Origem dos Clientes</CardTitle>
                 <CardDescription>
                   Distribuição dos canais de aquisição de clientes
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={400}>
-                  <PieChart>
-                    <Pie
-                      data={clientSourceData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      outerRadius={120}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {clientSourceData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.color} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
+                <div 
+                  role="img" 
+                  aria-labelledby="sources-chart-title"
+                  aria-describedby="sources-chart-desc"
+                >
+                  <div id="sources-chart-desc" className="sr-only">
+                    Gráfico de pizza mostrando a distribuição de origem dos clientes: 
+                    Busca Orgânica 45%, Indicações 30%, Redes Sociais 15%, Anúncios 10%.
+                  </div>
+                  <ResponsiveContainer width="100%" height={chartHeight}>
+                    <PieChart>
+                      <Pie
+                        data={clientSourceData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        outerRadius={120}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {clientSourceData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
                 </ResponsiveContainer>
+                </div>
               </CardContent>
             </Card>
           </motion.div>
         </TabsContent>
 
-        <TabsContent value="cases" className="space-y-4">
+        <TabsContent 
+          value="cases" 
+          className="space-y-4"
+          id="cases-panel"
+          role="tabpanel"
+          aria-labelledby="cases-tab"
+        >
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            {...animationVariants}
           >
             <Card>
               <CardHeader>
-                <CardTitle>Análise por Tipo de Caso</CardTitle>
+                <CardTitle id="cases-chart-title">Análise por Tipo de Caso</CardTitle>
                 <CardDescription>
                   Quantidade de casos e receita por área de atuação
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={400}>
-                  <BarChart data={caseTypeData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="type" />
-                    <YAxis yAxisId="left" />
-                    <YAxis yAxisId="right" orientation="right" />
-                    <Tooltip 
-                      formatter={(value, name) => [
-                        name === 'revenue' ? `R$ ${value.toLocaleString()}` : value,
-                        name === 'cases' ? 'Casos' : 'Receita'
-                      ]}
-                    />
-                    <Legend />
-                    <Bar yAxisId="left" dataKey="cases" fill="#3b82f6" name="Casos" />
-                    <Bar yAxisId="right" dataKey="revenue" fill="#10b981" name="Receita" />
-                  </BarChart>
+                <div 
+                  role="img" 
+                  aria-labelledby="cases-chart-title"
+                  aria-describedby="cases-chart-desc"
+                >
+                  <div id="cases-chart-desc" className="sr-only">
+                    Gráfico de barras mostrando quantidade de casos e receita por tipo: 
+                    Trabalhista, Civil, Criminal, Família e Empresarial.
+                  </div>
+                  <ResponsiveContainer width="100%" height={chartHeight}>
+                    <BarChart data={memoizedCaseTypeData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="type" />
+                      <YAxis yAxisId="left" />
+                      <YAxis yAxisId="right" orientation="right" />
+                      <Tooltip 
+                        formatter={(value, name) => [
+                          name === 'revenue' ? `R$ ${value.toLocaleString()}` : value,
+                          name === 'cases' ? 'Casos' : 'Receita'
+                        ]}
+                      />
+                      <Legend />
+                      <Bar yAxisId="left" dataKey="cases" fill="#3b82f6" name="Casos" />
+                      <Bar dataKey="revenue" fill="#8884d8" />
+                    </BarChart>
                 </ResponsiveContainer>
+                </div>
               </CardContent>
             </Card>
           </motion.div>
         </TabsContent>
 
-        <TabsContent value="activity" className="space-y-4">
+        <TabsContent 
+          value="activity" 
+          className="space-y-4"
+          id="activity-panel"
+          role="tabpanel"
+          aria-labelledby="activity-tab"
+        >
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            {...animationVariants}
           >
             <Card>
               <CardHeader>
-                <CardTitle>Atividade Semanal</CardTitle>
+                <CardTitle id="activity-chart-title">Atividade Semanal</CardTitle>
                 <CardDescription>
-                  Distribuição de atividades ao longo da semana
+                  Padrão de atividade dos usuários durante a semana
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <ResponsiveContainer width="100%" height={400}>
-                  <LineChart data={weeklyActivityData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="day" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Line 
-                      type="monotone" 
-                      dataKey="consultations" 
-                      stroke="#3b82f6" 
-                      strokeWidth={3}
-                      name="Consultas"
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="calls" 
-                      stroke="#10b981" 
-                      strokeWidth={3}
-                      name="Ligações"
-                    />
-                    <Line 
-                      type="monotone" 
-                      dataKey="emails" 
-                      stroke="#f59e0b" 
-                      strokeWidth={3}
-                      name="E-mails"
-                    />
-                  </LineChart>
+                <div 
+                  role="img" 
+                  aria-labelledby="activity-chart-title"
+                  aria-describedby="activity-chart-desc"
+                >
+                  <div id="activity-chart-desc" className="sr-only">
+                    Gráfico de linha mostrando o padrão de atividade semanal dos usuários, 
+                    com picos durante os dias úteis e menor atividade nos fins de semana.
+                  </div>
+                  <ResponsiveContainer width="100%" height={chartHeight}>
+                    <LineChart data={memoizedWeeklyActivityData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="day" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Line 
+                        type="monotone" 
+                        dataKey="consultations" 
+                        stroke="#3b82f6" 
+                        strokeWidth={3}
+                        name="Consultas"
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="calls" 
+                        stroke="#10b981" 
+                        strokeWidth={3}
+                        name="Ligações"
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="emails" 
+                        stroke="#f59e0b" 
+                        strokeWidth={3}
+                        name="E-mails"
+                      />
+                    </LineChart>
                 </ResponsiveContainer>
+                </div>
               </CardContent>
             </Card>
           </motion.div>
         </TabsContent>
-      </Tabs>
-    </div>
-  )
+        </Tabs>
+        </div>
+    </ResponsiveWrapper>
+  );
 }

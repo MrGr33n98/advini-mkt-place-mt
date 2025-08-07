@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { resetPasswordSchema } from '@/lib/auth-validation';
-import { validatePasswordResetToken, markTokenAsUsed } from '../forgot-password/route';
+import { validatePasswordResetToken, markTokenAsUsed } from '@/lib/password-reset';
 import { z } from 'zod';
 
 // Função para hash da senha (em produção, use bcrypt)
