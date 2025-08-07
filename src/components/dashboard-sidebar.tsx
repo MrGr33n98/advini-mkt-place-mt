@@ -14,7 +14,8 @@ import {
   LogOut,
   Menu,
   X,
-  History
+  History,
+  MessageSquare
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -52,6 +53,11 @@ const navItems: NavItem[] = [
     title: "Histórico",
     href: "/dashboard/history",
     icon: History,
+  },
+  {
+    title: "Chat",
+    href: "/dashboard/chat",
+    icon: MessageSquare,
   },
   {
     title: "Analytics",

@@ -9,6 +9,7 @@ import { RecentActivities } from '@/components/dashboard/recent-activities'
 import { NotificationSystem } from '@/components/dashboard/notification-system'
 import { AppointmentBadges } from '@/components/dashboard/appointment-badges'
 import { AppointmentReminders } from '@/components/dashboard/appointment-reminders'
+import { ChatPreview } from '@/components/dashboard/chat-preview'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -180,14 +181,22 @@ export default function DashboardPage() {
         </motion.div>
       </div>
 
-      {/* Grid inferior com notificações e atividades */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      {/* Grid inferior com notificações, chat e atividades */}
+      <div className="grid gap-6 lg:grid-cols-3">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.5 }}
         >
           <NotificationSystem />
+        </motion.div>
+        
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.65, duration: 0.5 }}
+        >
+          <ChatPreview />
         </motion.div>
         
         <motion.div
