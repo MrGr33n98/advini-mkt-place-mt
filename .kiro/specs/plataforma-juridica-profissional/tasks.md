@@ -100,14 +100,14 @@ O projeto já possui uma base sólida com:
   - Implementar shortcuts para ações frequentes
   - _Requisitos: 8.1, 8.6_
 
-- [ ] 4.2 Desenvolver seção de perfil no dashboard
+- [x] 4.2 Desenvolver seção de perfil no dashboard
   - Criar formulário de edição de perfil completo
   - Implementar upload de foto e banner
   - Adicionar preview do perfil público
   - Criar sistema de progresso de completude do perfil
   - _Requisitos: 6.1, 6.2_
 
-- [ ] 4.3 Implementar gestão de avaliações no dashboard
+- [x] 4.3 Implementar gestão de avaliações no dashboard
   - Criar interface para visualizar todas as avaliações
   - Implementar sistema de resposta às avaliações
   - Adicionar filtros e busca nas avaliações
