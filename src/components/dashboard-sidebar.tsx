@@ -15,7 +15,8 @@ import {
   Menu,
   X,
   History,
-  MessageSquare
+  MessageSquare,
+  Users
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -58,6 +59,11 @@ const navItems: NavItem[] = [
     title: "Chat",
     href: "/dashboard/chat",
     icon: MessageSquare,
+  },
+  {
+    title: "Leads",
+    href: "/dashboard/leads",
+    icon: Users,
   },
   {
     title: "Analytics",

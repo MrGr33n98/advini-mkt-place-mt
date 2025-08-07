@@ -1,12 +1,15 @@
 import { notFound } from 'next/navigation';
 import { EnhancedLawyerProfileCard } from '@/components/EnhancedLawyerProfileCard';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Link from 'next/link';
 import { ArrowLeft, Calendar } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import { Lawyer } from '@/types/lawyer';
 import { lawyers } from '@/data/lawyers';
 import { ReviewForm } from '@/components/ReviewForm';
+import { ContactForm } from '@/components/ContactForm';
+import { QuoteRequestForm } from '@/components/QuoteRequestForm';
 import type { Metadata } from 'next';
 
 function getLawyer(slug: string): Lawyer | undefined {
@@ -59,7 +62,7 @@ export default async function LawyerProfilePage({ params }: { params: Promise<{ 
         <main className="space-y-8">
           <EnhancedLawyerProfileCard lawyer={lawyer} />
           
-          <div className="max-w-3xl mx-auto space-y-8">
+          <div className="max-w-4xl mx-auto space-y-8">
             <div className="flex justify-center">
               <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
                 <Link href={`/agendar/${lawyer.id}`}>
@@ -69,7 +72,25 @@ export default async function LawyerProfilePage({ params }: { params: Promise<{ 
               </Button>
             </div>
             
-            <ReviewForm lawyerId={lawyer.id} />
+            <Tabs defaultValue="contact" className="w-full">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="contact">Contato Direto</TabsTrigger>
+                <TabsTrigger value="quote">Solicitar Orçamento</TabsTrigger>
+                <TabsTrigger value="review">Avaliar</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="contact" className="mt-6">
+                <ContactForm lawyer={lawyer} />
+              </TabsContent>
+              
+              <TabsContent value="quote" className="mt-6">
+                <QuoteRequestForm lawyer={lawyer} />
+              </TabsContent>
+              
+              <TabsContent value="review" className="mt-6">
+                <ReviewForm lawyerId={lawyer.id} />
+              </TabsContent>
+            </Tabs>
           </div>
         </main>
       </div>

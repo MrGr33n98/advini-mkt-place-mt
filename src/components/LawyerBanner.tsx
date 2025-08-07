@@ -2,33 +2,16 @@
 
 import { Lawyer } from "@/types/lawyer";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Star, MapPin, Phone, Mail, MessageCircle, Calendar, Award } from "lucide-react";
+import { Star, MapPin, Award } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { DirectContactButtons } from "@/components/DirectContactButtons";
 
 interface LawyerBannerProps {
   lawyer: Lawyer;
 }
 
 export function LawyerBanner({ lawyer }: LawyerBannerProps) {
-  const handleWhatsAppClick = () => {
-    if (lawyer.whatsapp_url) {
-      window.open(lawyer.whatsapp_url, '_blank');
-    }
-  };
-
-  const handleCallClick = () => {
-    if (lawyer.phone) {
-      window.open(`tel:${lawyer.phone}`, '_self');
-    }
-  };
-
-  const handleEmailClick = () => {
-    if (lawyer.email) {
-      window.open(`mailto:${lawyer.email}`, '_self');
-    }
-  };
 
   return (
     <div className="relative">
@@ -128,39 +111,11 @@ export function LawyerBanner({ lawyer }: LawyerBannerProps) {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col gap-2 min-w-[200px]">
-                <Button 
-                  onClick={handleWhatsAppClick}
-                  className="bg-green-600 hover:bg-green-700 text-white"
-                  disabled={!lawyer.whatsapp_url}
-                >
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  WhatsApp
-                </Button>
-                
-                <Button 
-                  variant="outline"
-                  onClick={handleCallClick}
-                  disabled={!lawyer.phone}
-                >
-                  <Phone className="w-4 h-4 mr-2" />
-                  Ligar
-                </Button>
-                
-                <Button 
-                  variant="outline"
-                  onClick={handleEmailClick}
-                  disabled={!lawyer.email}
-                >
-                  <Mail className="w-4 h-4 mr-2" />
-                  E-mail
-                </Button>
-                
-                <Button variant="outline">
-                  <Calendar className="w-4 h-4 mr-2" />
-                  Agendar Consulta
-                </Button>
-              </div>
+              <DirectContactButtons 
+                lawyer={lawyer} 
+                variant="default"
+                showAvailability={true}
+              />
             </div>
 
             {/* Pricing */}
