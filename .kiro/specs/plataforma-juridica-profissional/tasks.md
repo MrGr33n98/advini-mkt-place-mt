@@ -130,7 +130,7 @@ O projeto já possui uma base sólida com:
   - Criar lista de agendamentos com filtros
   - _Requisitos: 4.1, 4.3_
 
-- [ ] 5.3 Implementar notificações visuais de agendamento
+- [x] 5.3 Implementar notificações visuais de agendamento
   - Criar sistema de notificações no dashboard
   - Implementar badges de novos agendamentos
   - Adicionar lembretes visuais de consultas próximas

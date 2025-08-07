@@ -6,7 +6,6 @@ import { AnalyticsCharts } from '@/components/dashboard/analytics-charts'
 import { NotificationsCenter } from '@/components/dashboard/notifications-center'
 import { QuickActions } from '@/components/dashboard/quick-actions'
 import { RecentActivities } from '@/components/dashboard/recent-activities'
-import { NotificationSystem } from '@/components/dashboard/notification-system'
 import { AppointmentBadges } from '@/components/dashboard/appointment-badges'
 import { AppointmentReminders } from '@/components/dashboard/appointment-reminders'
 import { ChatPreview } from '@/components/dashboard/chat-preview'
@@ -181,20 +180,12 @@ export default function DashboardPage() {
         </motion.div>
       </div>
 
-      {/* Grid inferior com notificações, chat e atividades */}
-      <div className="grid gap-6 lg:grid-cols-3">
+      {/* Grid inferior com chat e atividades */}
+      <div className="grid gap-6 lg:grid-cols-2">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.5 }}
-        >
-          <NotificationSystem />
-        </motion.div>
-        
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.65, duration: 0.5 }}
         >
           <ChatPreview />
         </motion.div>
@@ -202,7 +193,7 @@ export default function DashboardPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7, duration: 0.5 }}
+          transition={{ delay: 0.65, duration: 0.5 }}
         >
           <RecentActivities />
         </motion.div>

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Calendar as CalendarIcon, Clock, User, MapPin, FileText, Check, X, Plus, Filter, ChevronLeft, ChevronRight, Mail, Phone } from 'lucide-react'
+import { Calendar as CalendarIcon, Clock, User, MapPin, FileText, Check, X, Plus, Filter, ChevronLeft, ChevronRight, Mail, Phone, History } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
@@ -18,6 +18,7 @@ import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { cn } from "@/lib/utils"
 import { AgendaCalendar } from "@/components/dashboard/agenda-calendar"
 import { AppointmentFilters, type AppointmentFilters as AppointmentFiltersType } from "@/components/dashboard/appointment-filters"
+import { AppointmentHistory } from "@/components/dashboard/appointment-history"
 
 // Componentes Dialog customizados
 const Dialog = DialogPrimitive.Root
@@ -394,7 +395,7 @@ export default function AppointmentsPage() {
         </div>
 
         <Tabs defaultValue="calendar" className="space-y-4">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
+          <TabsList className="grid w-full max-w-lg mx-auto grid-cols-3">
             <TabsTrigger value="calendar">
               <CalendarIcon className="mr-2 h-4 w-4" />
               Calendário
@@ -402,6 +403,10 @@ export default function AppointmentsPage() {
             <TabsTrigger value="list">
               <FileText className="mr-2 h-4 w-4" />
               Lista
+            </TabsTrigger>
+            <TabsTrigger value="history">
+              <History className="mr-2 h-4 w-4" />
+              Histórico
             </TabsTrigger>
           </TabsList>
           
@@ -541,6 +546,10 @@ export default function AppointmentsPage() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+          
+          <TabsContent value="history" className="space-y-4">
+            <AppointmentHistory />
           </TabsContent>
         </Tabs>
 

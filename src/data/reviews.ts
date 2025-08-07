@@ -12,6 +12,7 @@ export const reviews: Review[] = [
     is_pinned: true,
     case_type: "Direito de Família",
     helpful_votes: 12,
+    source: "website",
     lawyer_response: {
       message: "Muito obrigado pelo feedback, Pedro! Foi um prazer ajudá-lo neste momento importante. Desejo muito sucesso em sua nova fase!",
       created_at: "2024-03-16T09:30:00Z"
@@ -26,7 +27,8 @@ export const reviews: Review[] = [
     created_at: "2024-03-10T14:30:00Z",
     status: "approved",
     case_type: "Direito Civil",
-    helpful_votes: 8
+    helpful_votes: 8,
+    source: "google"
   },
   {
     id: "3",
@@ -39,6 +41,7 @@ export const reviews: Review[] = [
     is_pinned: true,
     case_type: "Direito Trabalhista",
     helpful_votes: 15,
+    source: "website",
     lawyer_response: {
       message: "Fico muito feliz em ter ajudado você, João Paulo! Casos trabalhistas exigem dedicação e estou satisfeita com o resultado alcançado.",
       created_at: "2024-03-13T11:20:00Z"
@@ -53,7 +56,8 @@ export const reviews: Review[] = [
     created_at: "2024-03-08T16:45:00Z",
     status: "approved",
     case_type: "Direito Empresarial",
-    helpful_votes: 6
+    helpful_votes: 6,
+    source: "facebook"
   },
   {
     id: "5",
@@ -64,7 +68,8 @@ export const reviews: Review[] = [
     created_at: "2024-02-28T11:20:00Z",
     status: "approved",
     case_type: "Direito do Consumidor",
-    helpful_votes: 9
+    helpful_votes: 9,
+    source: "google"
   },
   {
     id: "6",
@@ -76,6 +81,7 @@ export const reviews: Review[] = [
     status: "approved",
     case_type: "Direito Civil",
     helpful_votes: 3,
+    source: "manual",
     lawyer_response: {
       message: "Obrigada pelo feedback, Fernanda. Entendo sua preocupação com o tempo. Alguns processos realmente demandam mais tempo devido à complexidade, mas sempre me esforço para ser transparente sobre os prazos.",
       created_at: "2024-02-21T10:45:00Z"
@@ -90,7 +96,8 @@ export const reviews: Review[] = [
     created_at: "2024-02-15T16:30:00Z",
     status: "approved",
     case_type: "Direito de Família",
-    helpful_votes: 7
+    helpful_votes: 7,
+    source: "website"
   },
   {
     id: "8",
@@ -101,6 +108,7 @@ export const reviews: Review[] = [
     created_at: "2024-02-10T09:45:00Z",
     status: "approved",
     case_type: "Direito Civil",
-    helpful_votes: 5
+    helpful_votes: 5,
+    source: "google"
   }
 ];

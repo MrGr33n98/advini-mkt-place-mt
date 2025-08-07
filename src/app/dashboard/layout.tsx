@@ -5,6 +5,8 @@ import { toast } from 'sonner';
 import { DashboardSidebar } from '@/components/dashboard-sidebar';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { MadeWithDyad } from '@/components/made-with-dyad';
+import { NotificationSystem } from '@/components/dashboard/notification-system';
+import { useNotifications } from '@/hooks/use-notifications';
 
 // Dados mockados para o usuário
 const mockUser = {
@@ -19,6 +21,13 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const router = useRouter();
+  const {
+    notifications,
+    markAsRead,
+    markAllAsRead,
+    deleteNotification,
+    handleNotificationAction
+  } = useNotifications();
 
   const handleLogout = () => {
     toast.success('Logout realizado com sucesso!');
@@ -31,6 +40,13 @@ export default function DashboardLayout({
       
       <div className="md:pl-64 flex flex-col flex-1">
         <div className="sticky top-0 z-10 flex items-center justify-end gap-4 h-16 bg-background border-b px-4">
+          <NotificationSystem 
+            notifications={notifications}
+            onMarkAsRead={markAsRead}
+            onMarkAllAsRead={markAllAsRead}
+            onDeleteNotification={deleteNotification}
+            onNotificationAction={handleNotificationAction}
+          />
           <ThemeToggle />
         </div>
         
