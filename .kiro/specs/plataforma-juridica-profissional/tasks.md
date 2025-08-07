@@ -146,7 +146,7 @@ O projeto já possui uma base sólida com:
   - [x] Criar sistema de status online/offline
   - _Requisitos: 7.1, 7.2_
 
-- [ ] 6.2 Desenvolver sistema de contato direto
+- [x] 6.2 Desenvolver sistema de contato direto
   - Implementar botões de contato (WhatsApp, telefone, email)
   - Criar formulário de contato na página do advogado
   - Adicionar sistema de solicitação de orçamento
