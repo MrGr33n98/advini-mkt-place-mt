@@ -61,12 +61,12 @@ O projeto já possui uma base sólida com:
   - [x] Implementar botão de "avaliar" para clientes
   - _Requisitos: 5.1, 5.2, 5.3_
 
-- [ ] 2.3 Desenvolver página de escritórios
-  - Criar layout específico para escritórios
-  - Implementar listagem de advogados do escritório
-  - Adicionar informações de contato e localização
-  - Criar seção de áreas de atuação do escritório
-  - _Requisitos: 6.1, 6.2_
+- [x] 2.3 Desenvolver página de escritórios
+  [x] - Criar layout específico para escritórios
+  [x]  - Implementar listagem de advogados do escritório
+  [x] - Adicionar informações de contato e localização
+  [x] - Criar seção de áreas de atuação do escritório
+  [x] - _Requisitos: 6.1, 6.2_
 
 ### 3. Sistema de Autenticação e Registro
 
