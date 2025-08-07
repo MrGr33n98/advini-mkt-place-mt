@@ -1,12 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check, HelpCircle, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Check, Star, Crown, Award, HelpCircle, X } from "lucide-react";
 import Link from "next/link";
 import { NavigationMenu } from "../navigation-menu";
 import { MadeWithDyad } from "@/components/made-with-dyad";
 import { cn } from "@/lib/utils";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ROICalculator } from "@/components/ROICalculator";
+import { TestimonialsAndCases } from "@/components/TestimonialsAndCases";
+import { InteractiveFAQ } from "@/components/InteractiveFAQ";
+import { DetailedPlanComparison } from "@/components/DetailedPlanComparison";
 
 const plans = [
   {
@@ -105,148 +110,83 @@ export default function PlanosPage() {
     <div className="min-h-screen bg-background">
       <NavigationMenu />
       
-      <div className="container mx-auto px-4 py-16">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold tracking-tight mb-4">
-            Escolha o plano ideal para você
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Aumente sua visibilidade, gerencie sua reputação online e alcance mais clientes com nossos planos personalizados para advogados.
+      <main className="container mx-auto px-4 py-8 space-y-16">
+        {/* Hero Section */}
+        <div className="text-center space-y-6">
+          <h1 className="text-4xl md:text-5xl font-bold">Escolha o Plano Ideal</h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            Acelere o crescimento da sua carreira jurídica com as ferramentas certas. 
+            Mais de 10.000 advogados já transformaram suas práticas conosco.
           </p>
         </div>
 
-        <Tabs defaultValue="cards" className="w-full mb-16">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
-            <TabsTrigger value="cards">Planos</TabsTrigger>
-            <TabsTrigger value="comparison">Comparação Detalhada</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="cards" className="mt-8">
-            <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              {plans.map((plan) => (
-                <Card
-                  key={plan.name}
-                  className={cn(
-                    "flex flex-col",
-                    plan.highlight && "border-secondary shadow-lg md:scale-105 z-10"
-                  )}
-                >
-                  <CardHeader>
-                    <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                    <CardDescription className="text-lg">
-                      {plan.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-6 flex-grow">
-                    <div className="flex items-baseline text-2xl font-bold">
-                      {plan.price}
-                      {plan.period && (
-                        <span className="text-muted-foreground text-base font-normal">
-                          {plan.period}
-                        </span>
-                      )}
-                    </div>
-                    <ul className="space-y-3">
-                      {plan.features.map((feature) => (
-                        <li key={feature} className="flex items-center gap-2">
-                          <Check className="h-5 w-5 text-green-500 flex-shrink-0" />
-                          <span className="text-muted-foreground">{feature}</span>
-                        </li>
-                      ))}
-                      
-                      {plan.limitations && plan.limitations.map((limitation) => (
-                        <li key={limitation} className="flex items-center gap-2">
-                          <X className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                          <span className="text-muted-foreground line-through opacity-70">{limitation}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                  <CardFooter>
-                    <Button className="w-full" asChild variant={plan.highlight ? "secondary" : "outline"}>
-                      <Link href="/signup">
-                        {plan.name === "Basic" ? "Começar Agora" : `Escolher ${plan.name}`}
-                      </Link>
-                    </Button>
-                  </CardFooter>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="comparison" className="mt-8">
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse">
-                <thead>
-                  <tr>
-                    <th className="text-left p-3 border-b">Recursos</th>
-                    <th className="text-center p-3 border-b">Basic</th>
-                    <th className="text-center p-3 border-b bg-secondary/10">Silver</th>
-                    <th className="text-center p-3 border-b">Gold</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {comparisonFeatures.map((feature, index) => (
-                    <tr key={index} className={index % 2 === 0 ? "bg-muted/30" : ""}>
-                      <td className="p-3 border-b">{feature.name}</td>
-                      <td className="text-center p-3 border-b">
-                        {feature.free ? (
-                          <Check className="h-5 w-5 text-green-500 mx-auto" />
-                        ) : (
-                          <X className="h-5 w-5 text-muted-foreground mx-auto" />
-                        )}
-                      </td>
-                      <td className="text-center p-3 border-b bg-secondary/10">
-                        {feature.pro ? (
-                          <Check className="h-5 w-5 text-green-500 mx-auto" />
-                        ) : (
-                          <X className="h-5 w-5 text-muted-foreground mx-auto" />
-                        )}
-                      </td>
-                      <td className="text-center p-3 border-b">
-                        {feature.premium ? (
-                          <Check className="h-5 w-5 text-green-500 mx-auto" />
-                        ) : (
-                          <X className="h-5 w-5 text-muted-foreground mx-auto" />
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </TabsContent>
-        </Tabs>
+        {/* Calculadora de ROI */}
+        <section>
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-4">Calcule seu Retorno sobre Investimento</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Veja quanto você pode ganhar investindo em marketing digital jurídico
+            </p>
+          </div>
+          <ROICalculator />
+        </section>
 
-        <div className="max-w-3xl mx-auto mt-16">
-          <h2 className="text-2xl font-bold mb-6 text-center">Perguntas Frequentes</h2>
-          <Accordion type="single" collapsible className="w-full">
-            {faqItems.map((item, index) => (
-              <AccordionItem key={index} value={`item-${index}`}>
-                <AccordionTrigger className="text-left">
-                  <div className="flex items-center gap-2">
-                    <HelpCircle className="h-5 w-5 text-primary flex-shrink-0" />
-                    {item.question}
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground pl-7">
-                  {item.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
+        {/* Comparação Detalhada de Planos */}
+        <section>
+          <DetailedPlanComparison />
+        </section>
 
-        <div className="max-w-3xl mx-auto mt-16 text-center">
-          <h2 className="text-2xl font-bold mb-4">Ainda tem dúvidas?</h2>
-          <p className="text-muted-foreground mb-6">
-            Nossa equipe está pronta para ajudar você a escolher o plano ideal para suas necessidades.
-          </p>
-          <Button asChild>
-            <Link href="/contato">Fale Conosco</Link>
-          </Button>
-        </div>
-      </div>
+        {/* Depoimentos e Cases */}
+        <section>
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-4">Histórias de Sucesso</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Veja como nossos clientes transformaram suas carreiras e aumentaram sua receita
+            </p>
+          </div>
+          <TestimonialsAndCases />
+        </section>
+
+        {/* FAQ Interativo */}
+        <section>
+          <InteractiveFAQ />
+        </section>
+
+        {/* CTA Final */}
+        <section className="text-center">
+          <Card className="bg-gradient-to-r from-primary/10 to-secondary/10 border-none">
+            <CardContent className="py-12">
+              <h2 className="text-3xl font-bold mb-4">Comece sua Transformação Digital Hoje</h2>
+              <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+                Junte-se a mais de 10.000 advogados que já descobriram o poder do marketing digital jurídico. 
+                Teste grátis por 14 dias, sem compromisso.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+                <Button size="lg" className="px-8">
+                  Começar Teste Gratuito
+                </Button>
+                <Button size="lg" variant="outline" className="px-8">
+                  Agendar Demonstração
+                </Button>
+              </div>
+              <div className="flex items-center justify-center gap-8 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <Check className="h-4 w-4 text-green-600" />
+                  14 dias grátis
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="h-4 w-4 text-green-600" />
+                  Sem compromisso
+                </div>
+                <div className="flex items-center gap-2">
+                  <Check className="h-4 w-4 text-green-600" />
+                  Cancele quando quiser
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+      </main>
       
       <MadeWithDyad />
     </div>

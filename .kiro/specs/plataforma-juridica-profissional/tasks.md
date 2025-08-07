@@ -153,7 +153,7 @@ O projeto já possui uma base sólida com:
   - Implementar tracking de leads gerados
   - _Requisitos: 7.1, 7.5_
 
-- [ ] 6.3 Criar sistema de compartilhamento de perfis
+- [x] 6.3 Criar sistema de compartilhamento de perfis
   - Implementar botões de compartilhamento social
   - Criar links personalizados para perfis
   - Adicionar sistema de indicação de advogados
