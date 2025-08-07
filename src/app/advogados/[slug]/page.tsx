@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { EnhancedLawyerProfileCard } from '@/components/EnhancedLawyerProfileCard';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Calendar } from 'lucide-react';
 import { MadeWithDyad } from '@/components/made-with-dyad';
 import { Lawyer } from '@/types/lawyer';
 import { lawyers } from '@/data/lawyers';
@@ -59,7 +59,16 @@ export default async function LawyerProfilePage({ params }: { params: Promise<{ 
         <main className="space-y-8">
           <EnhancedLawyerProfileCard lawyer={lawyer} />
           
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-3xl mx-auto space-y-8">
+            <div className="flex justify-center">
+              <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
+                <Link href={`/agendar/${lawyer.id}`}>
+                  <Calendar className="mr-2 h-5 w-5" />
+                  Agendar Consulta
+                </Link>
+              </Button>
+            </div>
+            
             <ReviewForm lawyerId={lawyer.id} />
           </div>
         </main>
