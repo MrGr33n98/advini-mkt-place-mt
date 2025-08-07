@@ -6,6 +6,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star, MapPin, Award } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { DirectContactButtons } from "@/components/DirectContactButtons";
+import { SocialShareButtons } from "@/components/SocialShareButtons";
+import { CustomProfileLink } from "@/components/CustomProfileLink";
+import { ReferralSystem } from "@/components/ReferralSystem";
 
 interface LawyerBannerProps {
   lawyer: Lawyer;
@@ -111,11 +114,35 @@ export function LawyerBanner({ lawyer }: LawyerBannerProps) {
               </div>
 
               {/* Action Buttons */}
-              <DirectContactButtons 
-                lawyer={lawyer} 
-                variant="default"
-                showAvailability={true}
-              />
+              <div className="flex flex-col gap-3">
+                <DirectContactButtons 
+                  lawyer={lawyer} 
+                  variant="default"
+                  showAvailability={true}
+                />
+                
+                {/* Sharing and Referral Buttons */}
+                <div className="flex gap-2">
+                  <SocialShareButtons
+                    url={`${typeof window !== 'undefined' ? window.location.origin : ''}/advogados/${lawyer.slug}`}
+                    title={`Conheça ${lawyer.name} - Advogado especialista`}
+                    description={`${lawyer.name} - ${lawyer.specialties.join(', ')}. ${lawyer.years_of_experience} anos de experiência.`}
+                    profileId={lawyer.id}
+                    profileType="lawyer"
+                  />
+                  
+                  <CustomProfileLink
+                    profileId={lawyer.id}
+                    profileType="lawyer"
+                    profileName={lawyer.name}
+                  />
+                  
+                  <ReferralSystem
+                    lawyerId={lawyer.id}
+                    lawyerName={lawyer.name}
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Pricing */}
