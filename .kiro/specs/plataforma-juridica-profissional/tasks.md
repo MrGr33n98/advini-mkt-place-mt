@@ -139,11 +139,11 @@ O projeto já possui uma base sólida com:
 
 ### 6. Sistema de Comunicação - Interface
 
-- [ ] 6.1 Implementar chat básico na plataforma
-  - Criar interface de chat entre cliente e advogado
-  - Implementar lista de conversas ativas
-  - Adicionar indicadores de mensagens não lidas
-  - Criar sistema de status online/offline
+- [x] 6.1 Implementar chat básico na plataforma
+  - [x] Criar interface de chat entre cliente e advogado
+  - [x] Implementar lista de conversas ativas
+  - [x] Adicionar indicadores de mensagens não lidas
+  - [x] Criar sistema de status online/offline
   - _Requisitos: 7.1, 7.2_
 
 - [ ] 6.2 Desenvolver sistema de contato direto

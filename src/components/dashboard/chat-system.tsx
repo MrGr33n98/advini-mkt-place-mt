@@ -253,7 +253,7 @@ export function ChatSystem() {
                       {conversation.participantName}
                     </p>
                     <span className="text-xs text-muted-foreground">
-                      {conversation.lastMessageTime}
+                      {conversation.lastMessageTime.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
                   
@@ -270,7 +270,7 @@ export function ChatSystem() {
                   
                   {!conversation.isOnline && conversation.lastSeen && (
                     <p className="text-xs text-muted-foreground mt-1">
-                      Visto {conversation.lastSeen}
+                      Visto {conversation.lastSeen.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                     </p>
                   )}
                 </div>
@@ -304,7 +304,7 @@ export function ChatSystem() {
                   <div>
                     <h4 className="font-medium">{selectedConversation.participantName}</h4>
                     <p className="text-sm text-muted-foreground">
-                      {selectedConversation.isOnline ? 'Online' : `Visto ${selectedConversation.lastSeen}`}
+                      {selectedConversation.isOnline ? 'Online' : `Visto ${selectedConversation.lastSeen?.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`}
                     </p>
                   </div>
                 </div>
@@ -352,7 +352,7 @@ export function ChatSystem() {
                       <p className="text-sm">{message.content}</p>
                       <div className="flex items-center justify-between mt-1">
                         <span className="text-xs opacity-70">
-                          {message.timestamp}
+                          {message.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                         </span>
                         {message.senderId === 'lawyer1' && (
                           <div className="ml-2">

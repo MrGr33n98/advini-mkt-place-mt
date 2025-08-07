@@ -264,7 +264,7 @@ export function ConversationList({ onSelectConversation, selectedConversationId 
                       </p>
                       <div className="flex items-center space-x-2">
                         <span className="text-xs text-muted-foreground">
-                          {conversation.lastMessageTime}
+                          {conversation.lastMessage?.timestamp.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                         </span>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
@@ -330,7 +330,7 @@ export function ConversationList({ onSelectConversation, selectedConversationId 
                     
                     {!conversation.isOnline && conversation.lastSeen && (
                       <p className="text-xs text-muted-foreground mt-1">
-                        Visto {conversation.lastSeen}
+                        Visto {conversation.lastSeen.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                       </p>
                     )}
                   </div>
