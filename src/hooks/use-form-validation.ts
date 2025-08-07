@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { z } from 'zod'
 
 export interface ValidationRule {
@@ -25,10 +25,13 @@ export function useFormValidation({ rules, debounceMs = 300 }: UseFormValidation
   const [validation, setValidation] = useState<ValidationState>({})
   const [isFormValid, setIsFormValid] = useState(false)
 
+  // Memoize rules to prevent unnecessary re-renders
+  const memoizedRules = useMemo(() => rules, [JSON.stringify(rules)])
+
   // Initialize validation state
   useEffect(() => {
     const initialValidation: ValidationState = {}
-    rules.forEach(rule => {
+    memoizedRules.forEach(rule => {
       initialValidation[rule.field] = {
         isValid: false,
         error: null,
@@ -36,14 +39,14 @@ export function useFormValidation({ rules, debounceMs = 300 }: UseFormValidation
       }
     })
     setValidation(initialValidation)
-  }, [rules])
+  }, [memoizedRules])
 
   // Debounced validation
   useEffect(() => {
     const timeouts: Record<string, NodeJS.Timeout> = {}
 
     Object.keys(values).forEach(field => {
-      const rule = rules.find(r => r.field === field)
+      const rule = memoizedRules.find(r => r.field === field)
       if (!rule) return
 
       // Set validating state
@@ -87,31 +90,31 @@ export function useFormValidation({ rules, debounceMs = 300 }: UseFormValidation
     return () => {
       Object.values(timeouts).forEach(timeout => clearTimeout(timeout))
     }
-  }, [values, rules, debounceMs])
+  }, [values, memoizedRules, debounceMs])
 
   // Check if form is valid
   useEffect(() => {
-    const allFieldsValid = rules.every(rule => 
+    const allFieldsValid = memoizedRules.every(rule => 
       validation[rule.field]?.isValid === true
     )
-    const hasAllRequiredFields = rules.every(rule => 
+    const hasAllRequiredFields = memoizedRules.every(rule => 
       values[rule.field] !== undefined && values[rule.field] !== ''
     )
     
     setIsFormValid(allFieldsValid && hasAllRequiredFields)
-  }, [validation, values, rules])
+  }, [validation, values, memoizedRules])
 
-  const updateField = (field: string, value: any) => {
+  const updateField = useCallback((field: string, value: any) => {
     setValues(prev => ({ ...prev, [field]: value }))
-  }
+  }, [])
 
-  const getFieldValidation = (field: string) => {
+  const getFieldValidation = useCallback((field: string) => {
     return validation[field] || { isValid: false, error: null, isValidating: false }
-  }
+  }, [validation])
 
-  const resetValidation = () => {
+  const resetValidation = useCallback(() => {
     const resetValidation: ValidationState = {}
-    rules.forEach(rule => {
+    memoizedRules.forEach(rule => {
       resetValidation[rule.field] = {
         isValid: false,
         error: null,
@@ -120,7 +123,7 @@ export function useFormValidation({ rules, debounceMs = 300 }: UseFormValidation
     })
     setValidation(resetValidation)
     setValues({})
-  }
+  }, [memoizedRules])
 
   return {
     values,

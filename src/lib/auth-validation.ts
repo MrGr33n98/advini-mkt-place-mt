@@ -64,32 +64,45 @@ export const registerSchema = z.object({
   path: ['confirmPassword']
 })
 
-// Esquemas individuais para validação em tempo real
-export const emailValidation = z
-  .string()
-  .email('Email deve ter um formato válido')
+// Password recovery schemas
+export const forgotPasswordSchema = z.object({
+  email: z.string().email("Email inválido"),
+});
 
-export const passwordValidation = z
-  .string()
-  .min(8, 'Senha deve ter pelo menos 8 caracteres')
-  .regex(/[A-Z]/, 'Deve conter pelo menos uma letra maiúscula')
-  .regex(/[a-z]/, 'Deve conter pelo menos uma letra minúscula')
-  .regex(/[0-9]/, 'Deve conter pelo menos um número')
-  .regex(/[^A-Za-z0-9]/, 'Deve conter pelo menos um caractere especial')
+export const resetPasswordSchema = z.object({
+  token: z.string().min(1, "Token é obrigatório"),
+  password: z.string()
+    .min(8, "Senha deve ter pelo menos 8 caracteres")
+    .regex(/[A-Z]/, "Senha deve conter pelo menos uma letra maiúscula")
+    .regex(/[a-z]/, "Senha deve conter pelo menos uma letra minúscula")
+    .regex(/[0-9]/, "Senha deve conter pelo menos um número")
+    .regex(/[^A-Za-z0-9]/, "Senha deve conter pelo menos um caractere especial"),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Senhas não coincidem",
+  path: ["confirmPassword"],
+});
 
-export const nameValidation = z
-  .string()
-  .min(2, 'Nome deve ter pelo menos 2 caracteres')
-  .max(100, 'Nome deve ter no máximo 100 caracteres')
+// Individual field schemas for real-time validation
+export const emailSchema = z.string().email("Email inválido");
+export const passwordSchema = z.string()
+  .min(8, "Senha deve ter pelo menos 8 caracteres")
+  .regex(/[A-Z]/, "Senha deve conter pelo menos uma letra maiúscula")
+  .regex(/[a-z]/, "Senha deve conter pelo menos uma letra minúscula")
+  .regex(/[0-9]/, "Senha deve conter pelo menos um número")
+  .regex(/[^A-Za-z0-9]/, "Senha deve conter pelo menos um caractere especial");
 
-export const oabValidation = z
-  .string()
-  .regex(/^\d{4,6}$/, 'Número da OAB deve ter entre 4 e 6 dígitos')
+export const nameSchema = z.string().min(2, "Nome deve ter pelo menos 2 caracteres");
+export const oabNumberSchema = z.string().regex(/^\d{4,6}$/, "Número da OAB deve ter entre 4 e 6 dígitos");
+export const phoneSchema = z.string().regex(/^\(\d{2}\)\s\d{4,5}-\d{4}$/, "Telefone deve estar no formato (XX) XXXXX-XXXX");
+export const specialtiesSchema = z.array(z.string()).min(1, "Selecione pelo menos uma especialidade");
+export const addressSchema = z.string().min(5, "Endereço deve ter pelo menos 5 caracteres");
+export const citySchema = z.string().min(2, "Cidade deve ter pelo menos 2 caracteres");
+export const stateSchema = z.string().length(2, "Estado deve ter 2 caracteres");
+export const termsSchema = z.boolean().refine(val => val === true, "Você deve aceitar os termos de uso");
 
-export const phoneValidation = z
-  .string()
-  .regex(/^\(\d{2}\)\s\d{4,5}-\d{4}$/, 'Formato: (XX) XXXXX-XXXX')
-
-// Tipos TypeScript derivados dos esquemas
-export type LoginFormData = z.infer<typeof loginSchema>
-export type RegisterFormData = z.infer<typeof registerSchema>
+// Types
+export type LoginFormData = z.infer<typeof loginSchema>;
+export type RegisterFormData = z.infer<typeof registerSchema>;
+export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
+export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;

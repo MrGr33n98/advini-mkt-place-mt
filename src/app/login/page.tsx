@@ -12,7 +12,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { useFormValidation } from '@/hooks/use-form-validation'
-import { emailValidation, passwordValidation } from '@/lib/auth-validation'
+import { emailSchema, passwordSchema } from '@/lib/auth-validation'
 import { Eye, EyeOff, Scale } from 'lucide-react'
 
 export default function LoginPage() {
@@ -24,8 +24,8 @@ export default function LoginPage() {
 
   const { values, updateField, getFieldValidation, isFormValid } = useFormValidation({
     rules: [
-      { field: 'email', schema: emailValidation },
-      { field: 'password', schema: passwordValidation }
+      { field: 'email', schema: emailSchema },
+      { field: 'password', schema: passwordSchema }
     ]
   })
 
@@ -149,7 +149,7 @@ export default function LoginPage() {
                       {showPassword ? 'Ocultar' : 'Mostrar'} senha
                     </button>
                   </div>
-                  <Link href="/forgot-password" className="text-sm text-blue-600 hover:text-blue-800">
+                  <Link href="/esqueci-senha" className="text-sm text-blue-600 hover:text-blue-800">
                     Esqueceu a senha?
                   </Link>
                 </div>

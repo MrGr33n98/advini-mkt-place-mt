@@ -15,11 +15,11 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { useFormValidation } from '@/hooks/use-form-validation'
 import { 
-  nameValidation, 
-  emailValidation, 
-  passwordValidation, 
-  oabValidation, 
-  phoneValidation 
+  nameSchema, 
+  emailSchema, 
+  passwordSchema, 
+  oabNumberSchema, 
+  phoneSchema 
 } from '@/lib/auth-validation'
 import { Eye, EyeOff, Scale, CheckCircle, ArrowLeft, ArrowRight } from 'lucide-react'
 
@@ -77,11 +77,11 @@ export default function RegisterPage() {
 
   const { values, updateField, getFieldValidation, isFormValid } = useFormValidation({
     rules: [
-      { field: 'name', schema: nameValidation },
-      { field: 'email', schema: emailValidation },
-      { field: 'password', schema: passwordValidation },
-      { field: 'oab', schema: oabValidation },
-      { field: 'phone', schema: phoneValidation }
+      { field: 'name', schema: nameSchema },
+      { field: 'email', schema: emailSchema },
+      { field: 'password', schema: passwordSchema },
+      { field: 'oab', schema: oabNumberSchema },
+      { field: 'phone', schema: phoneSchema }
     ]
   })
 

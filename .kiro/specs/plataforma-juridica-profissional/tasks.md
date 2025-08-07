@@ -70,12 +70,12 @@ O projeto já possui uma base sólida com:
 
 ### 3. Sistema de Autenticação e Registro
 
-- [ ] 3.1 Aprimorar páginas de login e registro
-  - Melhorar design das páginas de autenticação
-  - Implementar validação em tempo real nos formulários
-  - Adicionar opções de login social (Google, LinkedIn)
-  - Criar fluxo de onboarding para novos usuários
-  - _Requisitos: 1.1, 1.2_
+- [X] 3.1 Aprimorar páginas de login e registro
+  [X]- Melhorar design das páginas de autenticação
+  [X] - Implementar validação em tempo real nos formulários
+  [X] - Adicionar opções de login social (Google, LinkedIn)
+  [X]- Criar fluxo de onboarding para novos usuários
+  [X]- _Requisitos: 1.1, 1.2_
 
 - [ ] 3.2 Desenvolver sistema de registro específico para advogados
   - Criar formulário de cadastro com validação de OAB
