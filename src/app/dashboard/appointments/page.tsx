@@ -138,6 +138,9 @@ export default function AppointmentsPage() {
   const [selectedAppointment, setSelectedAppointment] = useState<any>(null)
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
   const [isNewAppointmentOpen, setIsNewAppointmentOpen] = useState(false)
+  const [showNewAppointmentDialog, setShowNewAppointmentDialog] = useState(false)
+  const [showAppointmentDetails, setShowAppointmentDetails] = useState(false)
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date())
   const [filter, setFilter] = useState('all')
   const [calendarView, setCalendarView] = useState<'month' | 'week' | 'day'>('month')
   const [filters, setFilters] = useState<AppointmentFiltersType>({
@@ -650,6 +653,7 @@ export default function AppointmentsPage() {
             )}
           </DialogContent>
         </Dialog>
+      </div>
     </div>
   )
 }
