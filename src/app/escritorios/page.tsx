@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { offices } from "@/data/offices";
-import NavigationMenu from "@/components/NavigationMenu";
+import { NavigationMenu } from "@/app/navigation-menu";
 import EnhancedOfficeFilters from "@/components/EnhancedOfficeFilters";
 import EnhancedOfficeListCard from "@/components/EnhancedOfficeListCard";
 import Pagination from "@/components/Pagination";
