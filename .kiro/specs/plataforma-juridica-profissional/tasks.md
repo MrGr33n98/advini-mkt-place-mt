@@ -116,14 +116,14 @@ O projeto já possui uma base sólida com:
 
 ### 5. Sistema de Agendamento - Interface
 
-- [ ] 5.1 Criar interface de agendamento para clientes
+- [x] 5.1 Criar interface de agendamento para clientes
   - Implementar calendário interativo para seleção de horários
   - Adicionar formulário de dados do cliente
   - Criar confirmação visual do agendamento
   - Implementar sistema de cancelamento pelo cliente
   - _Requisitos: 4.1, 4.4_
 
-- [ ] 5.2 Desenvolver gestão de agenda no dashboard do advogado
+- [x] 5.2 Desenvolver gestão de agenda no dashboard do advogado
   - Criar calendário de visualização de agendamentos
   - Implementar interface para definir disponibilidade
   - Adicionar sistema de bloqueio de horários

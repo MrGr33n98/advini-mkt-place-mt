@@ -16,6 +16,8 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { cn } from "@/lib/utils"
+import { AgendaCalendar } from "@/components/dashboard/agenda-calendar"
+import { AppointmentFilters, type AppointmentFilters as AppointmentFiltersType } from "@/components/dashboard/appointment-filters"
 
 // Componentes Dialog customizados
 const Dialog = DialogPrimitive.Root
@@ -128,23 +130,7 @@ const mockAppointments = [
   }
 ];
 
-// Tipos de agendamento
-const appointmentTypes = [
-  "Consulta Inicial",
-  "Acompanhamento",
-  "Assinatura de Documentos",
-  "Audiência",
-  "Reunião"
-];
 
-// Locais de agendamento
-const appointmentLocations = [
-  "Escritório",
-  "Online (Zoom)",
-  "Online (Google Meet)",
-  "Fórum",
-  "Outro"
-];
 
 export default function AppointmentsPage() {
   const [date, setDate] = useState<Date | undefined>(new Date())
@@ -153,6 +139,17 @@ export default function AppointmentsPage() {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
   const [isNewAppointmentOpen, setIsNewAppointmentOpen] = useState(false)
   const [filter, setFilter] = useState('all')
+  const [calendarView, setCalendarView] = useState<'month' | 'week' | 'day'>('month')
+  const [filters, setFilters] = useState<AppointmentFiltersType>({
+    search: "",
+    status: "all",
+    type: "all",
+    location: "all"
+  })
+
+  // Extrair tipos e locais únicos dos agendamentos
+  const appointmentTypesFromData = [...new Set(appointments.map(apt => apt.type))]
+  const appointmentLocationsFromData = [...new Set(appointments.map(apt => apt.location))]
 
   // Formatador de data
   const formatDate = (dateString: string) => {
@@ -178,10 +175,38 @@ export default function AppointmentsPage() {
     });
   };
 
-  // Filtrar agendamentos por status
+  // Filtrar agendamentos
   const getFilteredAppointments = () => {
-    if (filter === 'all') return appointments;
-    return appointments.filter(appointment => appointment.status === filter);
+    return appointments.filter(appointment => {
+      // Filtro básico por status (mantido para compatibilidade)
+      if (filter !== 'all' && appointment.status !== filter) return false
+      
+      // Filtros avançados
+      if (filters.search && !appointment.clientName.toLowerCase().includes(filters.search.toLowerCase())) {
+        return false
+      }
+      
+      if (filters.status !== 'all' && appointment.status !== filters.status) {
+        return false
+      }
+      
+      if (filters.type !== 'all' && appointment.type !== filters.type) {
+        return false
+      }
+      
+      if (filters.location !== 'all' && appointment.location !== filters.location) {
+        return false
+      }
+      
+      // Filtro por data
+      if (filters.startDate || filters.endDate) {
+        const appointmentDate = new Date(appointment.date)
+        if (filters.startDate && appointmentDate < filters.startDate) return false
+        if (filters.endDate && appointmentDate > filters.endDate) return false
+      }
+      
+      return true
+    })
   };
 
   // Manipular confirmação de agendamento
@@ -255,13 +280,14 @@ export default function AppointmentsPage() {
             <p className="text-muted-foreground mt-2">Gerencie seus agendamentos de forma eficiente</p>
           </div>
           <div className="flex gap-3">
-            <Dialog open={isNewAppointmentOpen} onOpenChange={setIsNewAppointmentOpen}>
-              <DialogTrigger asChild>
-                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
-                  <Plus className="mr-2 h-4 w-4" />
-                  Novo Agendamento
-                </Button>
-              </DialogTrigger>
+            <Button 
+              onClick={() => setShowNewAppointmentDialog(true)}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Novo Agendamento
+            </Button>
+            <Dialog open={showNewAppointmentDialog} onOpenChange={setShowNewAppointmentDialog}>
               <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
                   <DialogTitle>Novo Agendamento</DialogTitle>
@@ -293,7 +319,7 @@ export default function AppointmentsPage() {
                           <SelectValue placeholder="Selecione um tipo" />
                         </SelectTrigger>
                         <SelectContent>
-                          {appointmentTypes.map(type => (
+                          {appointmentTypesFromData.map(type => (
                             <SelectItem key={type} value={type}>{type}</SelectItem>
                           ))}
                         </SelectContent>
@@ -343,7 +369,7 @@ export default function AppointmentsPage() {
                         <SelectValue placeholder="Selecione um local" />
                       </SelectTrigger>
                       <SelectContent>
-                        {appointmentLocations.map(location => (
+                        {appointmentLocationsFromData.map(location => (
                           <SelectItem key={location} value={location}>{location}</SelectItem>
                         ))}
                       </SelectContent>
@@ -377,121 +403,31 @@ export default function AppointmentsPage() {
           </TabsList>
           
           <TabsContent value="calendar" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="md:col-span-1">
-                <CardHeader>
-                  <CardTitle>Calendário</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Calendar
-                    mode="single"
-                    selected={date}
-                    onSelect={setDate}
-                    className="rounded-md border"
-                  />
-                </CardContent>
-              </Card>
-              
-              <Card className="md:col-span-2">
-                <CardHeader>
-                  <CardTitle>
-                    Agendamentos para {date ? format(date, "d 'de' MMMM 'de' yyyy", { locale: ptBR }) : "Hoje"}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {getAppointmentsForDate(date).length > 0 ? (
-                    <div className="space-y-4">
-                      {getAppointmentsForDate(date).map(appointment => (
-                        <Card key={appointment.id} className="overflow-hidden">
-                          <CardContent className="p-0">
-                            <div className="flex flex-col md:flex-row">
-                              <div className={`w-full md:w-2 h-2 md:h-auto ${
-                                appointment.status === 'confirmed' ? 'bg-primary' :
-                                appointment.status === 'pending' ? 'bg-yellow-500' :
-                                'bg-destructive'
-                              }`} />
-                              <div className="p-4 flex-grow">
-                                <div className="flex justify-between items-start mb-2">
-                                  <div>
-                                    <h3 className="font-medium">{appointment.clientName}</h3>
-                                    <p className="text-sm text-muted-foreground">{appointment.type}</p>
-                                  </div>
-                                  <Badge variant={getStatusBadgeVariant(appointment.status)}>
-                                    {getStatusText(appointment.status)}
-                                  </Badge>
-                                </div>
-                                <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 text-sm">
-                                  <div className="flex items-center">
-                                    <Clock className="h-4 w-4 mr-1 text-muted-foreground" />
-                                    {formatTime(appointment.date)}
-                                  </div>
-                                  <div className="flex items-center">
-                                    <MapPin className="h-4 w-4 mr-1 text-muted-foreground" />
-                                    {appointment.location}
-                                  </div>
-                                </div>
-                                {appointment.notes && (
-                                  <p className="text-sm text-muted-foreground mt-2 line-clamp-1">
-                                    {appointment.notes}
-                                  </p>
-                                )}
-                                <div className="flex justify-end mt-4 gap-2">
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm"
-                                    onClick={() => {
-                                      setSelectedAppointment(appointment);
-                                      setIsDetailsOpen(true);
-                                    }}
-                                  >
-                                    Detalhes
-                                  </Button>
-                                  {appointment.status === 'pending' && (
-                                    <Button 
-                                      size="sm"
-                                      onClick={() => handleConfirmAppointment(appointment.id)}
-                                    >
-                                      <Check className="mr-1 h-4 w-4" />
-                                      Confirmar
-                                    </Button>
-                                  )}
-                                  {appointment.status !== 'cancelled' && (
-                                    <Button 
-                                      variant="destructive" 
-                                      size="sm"
-                                      onClick={() => handleCancelAppointment(appointment.id)}
-                                    >
-                                      <X className="mr-1 h-4 w-4" />
-                                      Cancelar
-                                    </Button>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-8">
-                      <CalendarIcon className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                      <h3 className="text-lg font-medium mb-2">Nenhum agendamento</h3>
-                      <p className="text-muted-foreground">
-                        Não há agendamentos para esta data.
-                      </p>
-                      <Button className="mt-4" onClick={() => setIsNewAppointmentOpen(true)}>
-                        <Plus className="mr-2 h-4 w-4" />
-                        Criar Agendamento
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
+            <AgendaCalendar
+              appointments={getFilteredAppointments()}
+              selectedDate={selectedDate}
+              onDateSelect={setSelectedDate}
+              onAppointmentClick={(appointment) => {
+                setSelectedAppointment(appointment)
+                setShowAppointmentDetails(true)
+              }}
+              onNewAppointment={(date, time) => {
+                setSelectedDate(date)
+                setShowNewAppointmentDialog(true)
+              }}
+              view={calendarView}
+              onViewChange={setCalendarView}
+            />
           </TabsContent>
           
           <TabsContent value="list" className="space-y-4">
-            <Card>
+              <AppointmentFilters
+                filters={filters}
+                onFiltersChange={setFilters}
+                appointmentTypes={appointmentTypesFromData}
+                appointmentLocations={appointmentLocationsFromData}
+              />
+              <Card>
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <CardTitle>Todos os Agendamentos</CardTitle>
@@ -560,7 +496,7 @@ export default function AppointmentsPage() {
                                   size="sm"
                                   onClick={() => {
                                     setSelectedAppointment(appointment);
-                                    setIsDetailsOpen(true);
+                                    setShowAppointmentDetails(true);
                                   }}
                                 >
                                   Detalhes
@@ -606,7 +542,7 @@ export default function AppointmentsPage() {
         </Tabs>
 
         {/* Dialog de Detalhes do Agendamento */}
-        <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
+        <Dialog open={showAppointmentDetails} onOpenChange={setShowAppointmentDetails}>
           <DialogContent className="sm:max-w-[500px]">
             {selectedAppointment && (
               <>
@@ -689,7 +625,7 @@ export default function AppointmentsPage() {
                       <Button 
                         onClick={() => {
                           handleConfirmAppointment(selectedAppointment.id);
-                          setIsDetailsOpen(false);
+                          setShowAppointmentDetails(false);
                         }}
                       >
                         <Check className="mr-1 h-4 w-4" />
@@ -701,7 +637,7 @@ export default function AppointmentsPage() {
                         variant="destructive"
                         onClick={() => {
                           handleCancelAppointment(selectedAppointment.id);
-                          setIsDetailsOpen(false);
+                          setShowAppointmentDetails(false);
                         }}
                       >
                         <X className="mr-1 h-4 w-4" />
