@@ -13,7 +13,8 @@ import {
   User,
   LogOut,
   Menu,
-  X
+  X,
+  History
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -46,6 +47,11 @@ const navItems: NavItem[] = [
     title: "Agendamentos",
     href: "/dashboard/appointments",
     icon: Calendar,
+  },
+  {
+    title: "Histórico",
+    href: "/dashboard/history",
+    icon: History,
   },
   {
     title: "Analytics",

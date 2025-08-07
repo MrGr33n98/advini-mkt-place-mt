@@ -6,6 +6,9 @@ import { AnalyticsCharts } from '@/components/dashboard/analytics-charts'
 import { NotificationsCenter } from '@/components/dashboard/notifications-center'
 import { QuickActions } from '@/components/dashboard/quick-actions'
 import { RecentActivities } from '@/components/dashboard/recent-activities'
+import { NotificationSystem } from '@/components/dashboard/notification-system'
+import { AppointmentBadges } from '@/components/dashboard/appointment-badges'
+import { AppointmentReminders } from '@/components/dashboard/appointment-reminders'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -90,13 +93,31 @@ export default function DashboardPage() {
         </Card>
       </motion.div>
 
-      {/* KPI Cards */}
+      {/* Badges de Agendamentos */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.5 }}
       >
+        <AppointmentBadges />
+      </motion.div>
+
+      {/* KPI Cards */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25, duration: 0.5 }}
+      >
         <KPICards />
+      </motion.div>
+
+      {/* Lembretes de Agendamentos */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+      >
+        <AppointmentReminders />
       </motion.div>
 
       {/* Grid principal com gráficos e ações */}
@@ -105,7 +126,7 @@ export default function DashboardPage() {
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
+          transition={{ delay: 0.35, duration: 0.5 }}
           className="lg:col-span-2"
         >
           <AnalyticsCharts />
@@ -166,7 +187,7 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.5 }}
         >
-          <NotificationsCenter />
+          <NotificationSystem />
         </motion.div>
         
         <motion.div
