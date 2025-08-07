@@ -93,7 +93,7 @@ O projeto já possui uma base sólida com:
 
 ### 4. Dashboard do Advogado - Melhorias
 
-- [ ] 4.1 Aprimorar dashboard principal
+- [x] 4.1 Aprimorar dashboard principal
   - Implementar métricas visuais com gráficos interativos
   - Adicionar widgets de atividades recentes
   - Criar sistema de notificações no dashboard
