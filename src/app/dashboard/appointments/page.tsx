@@ -257,7 +257,7 @@ export default function AppointmentsPage() {
           <div className="flex gap-3">
             <Dialog open={isNewAppointmentOpen} onOpenChange={setIsNewAppointmentOpen}>
               <DialogTrigger asChild>
-                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300">
+                <Button>
                   <Plus className="mr-2 h-4 w-4" />
                   Novo Agendamento
                 </Button>
