@@ -1,0 +1,1311 @@
+{
+  "project": "JurisConnect Admin",
+  "generated_at": "2025-08-08T23:42:32Z",
+  "version": 1,
+  "notes": "Auto-generated from the user's Markdown checklist. Tasks are grouped into epics with dependencies, labels, and suggested commands. Adjust as needed.",
+  "globals": {
+    "env_files": [
+      ".env",
+      ".env.example"
+    ],
+    "package_scripts_expected": [
+      "dev",
+      "build",
+      "start",
+      "codegen",
+      "db:seed",
+      "db:rls",
+      "test",
+      "test:e2e"
+    ],
+    "docker": {
+      "files": [
+        "Dockerfile",
+        "docker-compose.dev.yml",
+        "docker-compose.prod.yml",
+        ".dockerignore"
+      ],
+      "images": {
+        "node": "node:20-alpine",
+        "postgres": "postgres:16-alpine",
+        "minio": "minio/minio:latest",
+        "meilisearch": "getmeili/meilisearch:v1.7",
+        "mailhog": "mailhog/mailhog:latest"
+      }
+    }
+  },
+  "epics": [
+    {
+      "id": "E0",
+      "title": "Preparação & Convenções",
+      "tasks": [
+        {
+          "id": "T0.1",
+          "title": "Revisar estrutura atual do projeto",
+          "description": "Mapear reutilização em components/*, hooks/* e app/* para o admin.",
+          "labels": [
+            "prep",
+            "arch"
+          ],
+          "files": [
+            "components/*",
+            "hooks/*",
+            "app/*"
+          ],
+          "commands": [],
+          "depends_on": [],
+          "checklist": [
+            "Listar componentes admin/aproveitáveis",
+            "Listar gaps por feature",
+            "Documentar decisões no README-admin.md"
+          ]
+        },
+        {
+          "id": "T0.2",
+          "title": "Criar pastas base",
+          "description": "Criar estrutura mínima para admin, GraphQL, libs e testes.",
+          "labels": [
+            "fs",
+            "scaffold"
+          ],
+          "files": [
+            "app/admin/*",
+            "app/api/graphql/route.ts",
+            "lib/*",
+            "generated/graphql.ts",
+            "prisma/*",
+            "tests/*"
+          ],
+          "commands": [],
+          "depends_on": [],
+          "checklist": [
+            "app/admin (rotas do painel)",
+            "app/api/graphql/route.ts (GraphQL Yoga)",
+            "lib/{auth,tenant,entitlements,audit,db,gqlClient,session}.ts",
+            "generated/graphql.ts (codegen output)",
+            "prisma/{schema.prisma,seed.ts,rls.sql}",
+            "tests/{unit,e2e}/*"
+          ]
+        },
+        {
+          "id": "T0.3",
+          "title": "Padronizar import aliases",
+          "description": "Configurar paths no tsconfig.json para @/components, @/lib, etc.",
+          "labels": [
+            "dx"
+          ],
+          "files": [
+            "tsconfig.json"
+          ],
+          "commands": [],
+          "depends_on": [],
+          "checklist": [
+            "Adicionar baseUrl",
+            "Adicionar paths",
+            "Validar builds e TS Server"
+          ]
+        },
+        {
+          "id": "T0.4",
+          "title": "Adicionar scripts ao package.json",
+          "description": "Scripts: codegen, db:seed, db:rls, test:e2e, dev:all.",
+          "labels": [
+            "dx"
+          ],
+          "files": [
+            "package.json"
+          ],
+          "commands": [
+            "pnpm run codegen",
+            "pnpm run db:seed",
+            "pnpm run db:rls",
+            "pnpm run test:e2e",
+            "pnpm run dev:all"
+          ],
+          "depends_on": [],
+          "checklist": []
+        }
+      ]
+    },
+    {
+      "id": "EC",
+      "title": "Containerização (DEV & PROD)",
+      "tasks": [
+        {
+          "id": "TC.1",
+          "title": "Arquivos de containerização",
+          "description": "Adicionar Dockerfile, docker-compose.dev.yml, docker-compose.prod.yml, .dockerignore e scripts/migrate-and-rls.cjs.",
+          "labels": [
+            "container",
+            "devops"
+          ],
+          "files": [
+            "Dockerfile",
+            "docker-compose.dev.yml",
+            "docker-compose.prod.yml",
+            ".dockerignore",
+            "scripts/migrate-and-rls.cjs"
+          ],
+          "commands": [],
+          "depends_on": [],
+          "checklist": []
+        },
+        {
+          "id": "TC.2",
+          "title": "Configurar serviços auxiliares",
+          "description": "MinIO, Meilisearch, MailHog; volumes e portas.",
+          "labels": [
+            "container",
+            "devops"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "TC.1"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "TC.3",
+          "title": "Subir ambiente DEV via compose",
+          "description": "docker compose -f docker-compose.dev.yml up -d --build",
+          "labels": [
+            "container",
+            "dev"
+          ],
+          "files": [],
+          "commands": [
+            "docker compose -f docker-compose.dev.yml up -d --build"
+          ],
+          "depends_on": [
+            "TC.2"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "TC.4",
+          "title": "Build & deploy PROD via compose",
+          "description": "Build/push imagem e subir docker-compose.prod.yml.",
+          "labels": [
+            "container",
+            "prod"
+          ],
+          "files": [],
+          "commands": [
+            "docker build -t your-registry/jurisconnect-web:TAG .",
+            "docker push your-registry/jurisconnect-web:TAG",
+            "docker compose -f docker-compose.prod.yml --env-file .env up -d"
+          ],
+          "depends_on": [
+            "TC.1"
+          ],
+          "checklist": []
+        }
+      ]
+    },
+    {
+      "id": "E1",
+      "title": "Banco & Prisma",
+      "tasks": [
+        {
+          "id": "T1.1",
+          "title": "Atualizar prisma/schema.prisma",
+          "description": "Adicionar modelos multi-tenant e enums.",
+          "labels": [
+            "db",
+            "prisma"
+          ],
+          "files": [
+            "prisma/schema.prisma"
+          ],
+          "commands": [],
+          "depends_on": [],
+          "checklist": [
+            "Models: Tenant, User, Plan, Subscription, Office, Lawyer, Lead, Banner, ButtonAction, FeatureFlag, Entitlement, Review, AuditLog",
+            "Enums: Role, TenantStatus, Period, LeadStatus, TargetType, FeatureScope, ButtonType, BannerPosition, Provider",
+            "Garantir tenantId + @@index([tenantId]) onde aplicável"
+          ]
+        },
+        {
+          "id": "T1.2",
+          "title": "Gerar migrations",
+          "description": "Criar migrations iniciais multi-tenant.",
+          "labels": [
+            "db",
+            "prisma"
+          ],
+          "files": [],
+          "commands": [
+            "pnpm prisma migrate dev -n \"init-multitenant\""
+          ],
+          "depends_on": [
+            "T1.1"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T1.3",
+          "title": "Configurar Prisma Client singleton",
+          "description": "Criar lib/db.ts para evitar múltiplas instâncias.",
+          "labels": [
+            "db",
+            "prisma"
+          ],
+          "files": [
+            "lib/db.ts"
+          ],
+          "commands": [],
+          "depends_on": [],
+          "checklist": []
+        },
+        {
+          "id": "T1.4",
+          "title": "Criar seed realista",
+          "description": "Popular banco com SUPER_ADMIN, tenants (gold, silver, freemium), plans, offices, lawyers, leads, banners, buttons, reviews e usuários por role.",
+          "labels": [
+            "db",
+            "seed"
+          ],
+          "files": [
+            "prisma/seed.ts"
+          ],
+          "commands": [
+            "pnpm prisma db seed"
+          ],
+          "depends_on": [
+            "T1.2"
+          ],
+          "checklist": [
+            "Criar SUPER_ADMIN (admin@demo.local)",
+            "Criar tenants: gold-co, silver-co, freemium-co",
+            "Plans com limits JSON (incluir viewFullLeadData)",
+            "Por tenant: 1 Office, 2 Lawyers, 10 Leads, 2 Banners, 2 Buttons, 5 Reviews PENDING",
+            "Usuários: 1 OFFICE_ADMIN por tenant, 1 LAWYER por lawyer"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E2",
+      "title": "Postgres Row-Level Security (RLS)",
+      "tasks": [
+        {
+          "id": "T2.1",
+          "title": "Criar helpers RLS",
+          "description": "prisma/rls.sql com funções app_is_super_admin() e app_tenant_id() e ENABLE RLS nas tabelas.",
+          "labels": [
+            "db",
+            "security"
+          ],
+          "files": [
+            "prisma/rls.sql"
+          ],
+          "commands": [],
+          "depends_on": [],
+          "checklist": [
+            "ALTER TABLE ... ENABLE ROW LEVEL SECURITY para tabelas multi-tenant",
+            "Funções current_setting para role/tenant"
+          ]
+        },
+        {
+          "id": "T2.2",
+          "title": "Policies por tabela",
+          "description": "Policies padrão (SELECT/ALL) por tenant e exclusivas para Tenant e User.",
+          "labels": [
+            "db",
+            "security"
+          ],
+          "files": [
+            "prisma/rls.sql"
+          ],
+          "commands": [],
+          "depends_on": [
+            "T2.1"
+          ],
+          "checklist": [
+            "Modelo padrão: app_is_super_admin() OR tenantId = app_tenant_id()",
+            "Tenant: apenas SUPER_ADMIN",
+            "User: SUPER_ADMIN e usuários do mesmo tenant"
+          ]
+        },
+        {
+          "id": "T2.3",
+          "title": "Aplicar RLS",
+          "description": "Executar SQL de RLS pós-migrate.",
+          "labels": [
+            "db",
+            "security"
+          ],
+          "files": [],
+          "commands": [
+            "psql -f prisma/rls.sql"
+          ],
+          "depends_on": [
+            "T2.2",
+            "T1.2"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T2.4",
+          "title": "Setar variáveis de sessão por request",
+          "description": "No servidor GraphQL, setar app.current_tenant e app.current_role via Prisma.",
+          "labels": [
+            "security",
+            "gql"
+          ],
+          "files": [
+            "app/api/graphql/route.ts",
+            "lib/db.ts"
+          ],
+          "commands": [],
+          "depends_on": [
+            "T3.1",
+            "T5.1"
+          ],
+          "checklist": [
+            "SET app.current_tenant = ctx.tenantId",
+            "SET app.current_role = ctx.role"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E3",
+      "title": "Autenticação (NextAuth + JWT)",
+      "tasks": [
+        {
+          "id": "T3.1",
+          "title": "Implementar NextAuth (JWT)",
+          "description": "Credentials/Email; JWT com { sub, role, tenantId }; callbacks.",
+          "labels": [
+            "auth"
+          ],
+          "files": [
+            "lib/auth.ts"
+          ],
+          "commands": [],
+          "depends_on": [],
+          "checklist": [
+            "JWT com role/tenantId",
+            "Callbacks token/session"
+          ]
+        },
+        {
+          "id": "T3.2",
+          "title": "Helper de sessão server-side",
+          "description": "getSessionUser() em lib/session.ts.",
+          "labels": [
+            "auth"
+          ],
+          "files": [
+            "lib/session.ts"
+          ],
+          "commands": [],
+          "depends_on": [
+            "T3.1"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T3.3",
+          "title": "Guarda de rota do admin",
+          "description": "Proteger app/admin/layout.tsx (auth + RBAC).",
+          "labels": [
+            "auth",
+            "ui"
+          ],
+          "files": [
+            "app/admin/layout.tsx"
+          ],
+          "commands": [],
+          "depends_on": [
+            "T3.2"
+          ],
+          "checklist": [
+            "Redirect para /admin/login se não autenticado",
+            "Validar role mínima",
+            "Selector de tenant p/ SUPER_ADMIN (x-tenant-id)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E4",
+      "title": "Entitlements & Feature Flags",
+      "tasks": [
+        {
+          "id": "T4.1",
+          "title": "Criar lib/entitlements.ts",
+          "description": "mergeEntitlements(planLimits, flags, overrides) e tipos.",
+          "labels": [
+            "product",
+            "gating"
+          ],
+          "files": [
+            "lib/entitlements.ts"
+          ],
+          "commands": [],
+          "depends_on": [],
+          "checklist": [
+            "Chave obrigatória: viewFullLeadData",
+            "Outras: featuredSlots, leadsPerMonth, banner, buttons[], analytics"
+          ]
+        },
+        {
+          "id": "T4.2",
+          "title": "Contexto de entitlements",
+          "description": "Construir ctx.entitlements a partir de Plan.limits, FeatureFlag e Entitlement.",
+          "labels": [
+            "product",
+            "gating",
+            "gql"
+          ],
+          "files": [
+            "app/api/graphql/route.ts",
+            "lib/entitlements.ts"
+          ],
+          "commands": [],
+          "depends_on": [
+            "T4.1",
+            "T5.1"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T4.3",
+          "title": "Integrar FeatureGate",
+          "description": "Usar components/ui/feature-gate.tsx com useEntitlements().",
+          "labels": [
+            "ui",
+            "gating"
+          ],
+          "files": [
+            "components/ui/feature-gate.tsx"
+          ],
+          "commands": [],
+          "depends_on": [
+            "T4.2"
+          ],
+          "checklist": []
+        }
+      ]
+    },
+    {
+      "id": "E5",
+      "title": "GraphQL Server (Yoga)",
+      "tasks": [
+        {
+          "id": "T5.1",
+          "title": "Criar GraphQL Yoga",
+          "description": "Servidor em app/api/graphql/route.ts com SDL, resolvers base e directives.",
+          "labels": [
+            "gql",
+            "server"
+          ],
+          "files": [
+            "app/api/graphql/route.ts"
+          ],
+          "commands": [],
+          "depends_on": [
+            "T3.1",
+            "T1.3"
+          ],
+          "checklist": [
+            "SDL com Tenant, Plan, Office, Lawyer, Lead{isObfuscated}, Banner, ButtonAction, Review, AuditLog",
+            "Connections cursor-based",
+            "Directives @hasRole e @withinTenant",
+            "DataLoaders: Office, Lawyer, Tenant",
+            "Wrapper de mutations para AuditLog"
+          ]
+        },
+        {
+          "id": "T5.2",
+          "title": "Implementar Queries",
+          "description": "me, tenants, plans, offices, lawyers, leads, banners, buttons, reviews, auditLogs.",
+          "labels": [
+            "gql"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T5.1"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T5.3",
+          "title": "Implementar Mutations",
+          "description": "setPlan, toggleFeaturedLawyer, updateFeature, moveLead, createBanner, createButtonAction, moderateReview, upsertEntitlement.",
+          "labels": [
+            "gql"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T5.1",
+            "T4.2"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T5.4",
+          "title": "Subscriptions (opcional)",
+          "description": "leadCreated(tenantId) via WebSocket.",
+          "labels": [
+            "gql",
+            "realtime"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T5.1"
+          ],
+          "checklist": []
+        }
+      ]
+    },
+    {
+      "id": "E6",
+      "title": "Obfuscação de Leads (Freemium)",
+      "tasks": [
+        {
+          "id": "T6.1",
+          "title": "Back-end: obfuscação de leads",
+          "description": "Aplicar obfuscatedLead(lead, ctx.entitlements.viewFullLeadData) nos resolvers.",
+          "labels": [
+            "privacy",
+            "product",
+            "gql"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T4.2",
+            "T5.1"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T6.2",
+          "title": "Front: exibir blur/overlay",
+          "description": "Nos cards de /admin/leads e dashboard/leads, aplicar blur + CTA de upgrade.",
+          "labels": [
+            "ui",
+            "product"
+          ],
+          "files": [
+            "components/admin/LeadsDashboard.tsx",
+            "app/dashboard/leads/page.tsx"
+          ],
+          "commands": [],
+          "depends_on": [
+            "T6.1",
+            "T8.1"
+          ],
+          "checklist": [
+            "Adicionar overlay 🔒",
+            "Link para /dashboard/subscription",
+            "CSV export respeita obfuscação"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E7",
+      "title": "Apollo Client + Codegen (Client)",
+      "tasks": [
+        {
+          "id": "T7.1",
+          "title": "Instalar dependências GraphQL client",
+          "description": "@apollo/client, graphql, @graphql-codegen/*.",
+          "labels": [
+            "client",
+            "gql"
+          ],
+          "files": [],
+          "commands": [
+            "pnpm add @apollo/client graphql",
+            "pnpm add -D @graphql-codegen/cli @graphql-codegen/typescript @graphql-codegen/typescript-operations @graphql-codegen/typescript-react-apollo"
+          ],
+          "depends_on": [],
+          "checklist": []
+        },
+        {
+          "id": "T7.2",
+          "title": "Configurar codegen.ts",
+          "description": "Apontar schema para /api/graphql, coletar documents e gerar hooks.",
+          "labels": [
+            "client",
+            "gql"
+          ],
+          "files": [
+            "codegen.ts"
+          ],
+          "commands": [
+            "pnpm codegen"
+          ],
+          "depends_on": [
+            "T5.1"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T7.3",
+          "title": "Provider Apollo",
+          "description": "Adicionar ApolloProvider em components/providers.tsx com Bearer token.",
+          "labels": [
+            "client",
+            "gql"
+          ],
+          "files": [
+            "components/providers.tsx"
+          ],
+          "commands": [],
+          "depends_on": [
+            "T3.1",
+            "T7.2"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T7.4",
+          "title": "Trocar hooks para hooks tipados",
+          "description": "Usar hooks gerados (useLeadsQuery, useMoveLeadMutation etc.).",
+          "labels": [
+            "client",
+            "dx"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T7.3"
+          ],
+          "checklist": []
+        }
+      ]
+    },
+    {
+      "id": "E8",
+      "title": "Admin UI (shadcn)",
+      "tasks": [
+        {
+          "id": "T8.1",
+          "title": "Layout base do admin",
+          "description": "Criar app/admin/layout.tsx com sidebar, header (tenant selector), command palette opcional.",
+          "labels": [
+            "ui"
+          ],
+          "files": [
+            "app/admin/layout.tsx",
+            "components/dashboard-sidebar.tsx"
+          ],
+          "commands": [],
+          "depends_on": [],
+          "checklist": []
+        },
+        {
+          "id": "T8.2",
+          "title": "Páginas do admin",
+          "description": "Implementar páginas CRUD e dashboards: login, dashboard, tenants, plans, offices, lawyers, leads, banners, buttons, reviews, audit, settings.",
+          "labels": [
+            "ui",
+            "crud"
+          ],
+          "files": [
+            "app/admin/login/page.tsx",
+            "app/admin/page.tsx",
+            "app/admin/tenants/page.tsx",
+            "app/admin/plans/page.tsx",
+            "app/admin/offices/page.tsx",
+            "app/admin/lawyers/page.tsx",
+            "app/admin/leads/page.tsx",
+            "app/admin/banners/page.tsx",
+            "app/admin/buttons/page.tsx",
+            "app/admin/reviews/page.tsx",
+            "app/admin/audit/page.tsx",
+            "app/admin/settings/page.tsx"
+          ],
+          "commands": [],
+          "depends_on": [
+            "T8.1",
+            "T7.3",
+            "T5.2",
+            "T5.3"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T8.3",
+          "title": "DataTables com TanStack",
+          "description": "Listagens com busca, filtro, ordenação, paginação, bulk actions, empty states.",
+          "labels": [
+            "ui",
+            "datatable"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T8.2"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T8.4",
+          "title": "Forms com RHF + Zod",
+          "description": "Criar/editar entidades com validação.",
+          "labels": [
+            "ui",
+            "forms"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T8.2"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T8.5",
+          "title": "Uploads S3 (MinIO)",
+          "description": "Componente <ImageUpload /> com presigned URLs.",
+          "labels": [
+            "ui",
+            "storage"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T8.2"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T8.6",
+          "title": "Toasters de feedback",
+          "description": "Integrar ui/sonner.tsx para sucesso/erros.",
+          "labels": [
+            "ui",
+            "dx"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T8.2"
+          ],
+          "checklist": []
+        }
+      ]
+    },
+    {
+      "id": "E9",
+      "title": "Billing & Planos",
+      "tasks": [
+        {
+          "id": "T9.1",
+          "title": "Modelos e CRUD de planos",
+          "description": "Plan/Subscription com editor de limits (JSON → UI).",
+          "labels": [
+            "billing",
+            "product"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T1.1",
+            "T5.3"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T9.2",
+          "title": "Troca de plano (setPlan)",
+          "description": "Mutation setPlan(tenantId, planId) registrando AuditLog.",
+          "labels": [
+            "billing",
+            "gql"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T9.1"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T9.3",
+          "title": "Gating visual/funcional por entitlements",
+          "description": "Restringir recursos conforme useEntitlements().",
+          "labels": [
+            "billing",
+            "gating"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T4.3"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T9.4",
+          "title": "Preparar integração Stripe/Pagar.me",
+          "description": "Interfaces e provider placeholders.",
+          "labels": [
+            "billing",
+            "future"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T9.2"
+          ],
+          "checklist": []
+        }
+      ]
+    },
+    {
+      "id": "E10",
+      "title": "Banners & Buttons (CTAs)",
+      "tasks": [
+        {
+          "id": "T10.1",
+          "title": "CRUD Banners",
+          "description": "Título, imagem, link, posição, agendamento, isActive.",
+          "labels": [
+            "ui",
+            "product"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T8.4",
+            "T8.5",
+            "T5.3"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T10.2",
+          "title": "CRUD Buttons/CTAs",
+          "description": "Label, tipo (WHATSAPP|EMAIL|LINK|CTA), config validada por Zod.",
+          "labels": [
+            "ui",
+            "product"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T8.4",
+            "T5.3"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T10.3",
+          "title": "Feature gate Banners/Buttons",
+          "description": "Checar permissões do plano antes de permitir ativar/usar.",
+          "labels": [
+            "gating",
+            "product"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T9.3"
+          ],
+          "checklist": []
+        }
+      ]
+    },
+    {
+      "id": "E11",
+      "title": "Reviews (Moderação)",
+      "tasks": [
+        {
+          "id": "T11.1",
+          "title": "Lista e filtros de reviews",
+          "description": "Filtrar por status; DataTable.",
+          "labels": [
+            "ui"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T8.3",
+            "T5.2"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T11.2",
+          "title": "Aprovar/Rejeitar com motivo",
+          "description": "Registrar no AuditLog; bulk approve/reject.",
+          "labels": [
+            "ui",
+            "gql"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T11.1",
+            "T5.3"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T11.3",
+          "title": "Notificações (opcional)",
+          "description": "Placeholder provider para notificar autor quando rejeitado.",
+          "labels": [
+            "notifications",
+            "future"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T11.2"
+          ],
+          "checklist": []
+        }
+      ]
+    },
+    {
+      "id": "E12",
+      "title": "Auditoria",
+      "tasks": [
+        {
+          "id": "T12.1",
+          "title": "Helper de auditoria",
+          "description": "lib/audit.ts para registrar ações em mutations.",
+          "labels": [
+            "audit",
+            "server"
+          ],
+          "files": [
+            "lib/audit.ts"
+          ],
+          "commands": [],
+          "depends_on": [
+            "T5.1"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T12.2",
+          "title": "Tela de AuditLog",
+          "description": "/admin/audit com DataTable e filtros.",
+          "labels": [
+            "ui",
+            "audit"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T12.1",
+            "T8.3",
+            "T5.2"
+          ],
+          "checklist": []
+        },
+        {
+          "id": "T12.3",
+          "title": "Proteção de acesso ao audit",
+          "description": "Permitir apenas SUPER_ADMIN e OFFICE_ADMIN do próprio tenant.",
+          "labels": [
+            "security",
+            "rbac"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T3.3"
+          ],
+          "checklist": []
+        }
+      ]
+    },
+    {
+      "id": "E13",
+      "title": "Testes",
+      "tasks": [
+        {
+          "id": "T13.1",
+          "title": "Unit tests",
+          "description": "Entitlements, obfuscação, directives, resolvers de Lead.",
+          "labels": [
+            "test",
+            "unit"
+          ],
+          "files": [
+            "tests/unit/*"
+          ],
+          "commands": [],
+          "depends_on": [],
+          "checklist": []
+        },
+        {
+          "id": "T13.2",
+          "title": "E2E Playwright",
+          "description": "Login, RBAC cross-tenant, leads borrados freemium, CSV obfuscado.",
+          "labels": [
+            "test",
+            "e2e"
+          ],
+          "files": [
+            "tests/e2e/*"
+          ],
+          "commands": [],
+          "depends_on": [
+            "T8.2",
+            "T6.2"
+          ],
+          "checklist": []
+        }
+      ]
+    },
+    {
+      "id": "E14",
+      "title": "CI/CD",
+      "tasks": [
+        {
+          "id": "T14.1",
+          "title": "Workflow CI",
+          "description": ".github/workflows/ci.yml com install, migrate, seed, rls, codegen, build, tests.",
+          "labels": [
+            "ci"
+          ],
+          "files": [
+            ".github/workflows/ci.yml"
+          ],
+          "commands": [],
+          "depends_on": [],
+          "checklist": [
+            "pnpm i",
+            "pnpm prisma migrate deploy",
+            "pnpm prisma db seed",
+            "pnpm db:rls",
+            "pnpm codegen",
+            "pnpm build",
+            "pnpm test",
+            "pnpm test:e2e"
+          ]
+        },
+        {
+          "id": "T14.2",
+          "title": "Artefatos de testes",
+          "description": "Publicar relatórios e coverage.",
+          "labels": [
+            "ci",
+            "reports"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [
+            "T14.1"
+          ],
+          "checklist": []
+        }
+      ]
+    },
+    {
+      "id": "E15",
+      "title": "Env & Config",
+      "tasks": [
+        {
+          "id": "T15.1",
+          "title": "Validar envs",
+          "description": "Usar @t3-oss/env-nextjs + Zod para validar variáveis.",
+          "labels": [
+            "env",
+            "dx"
+          ],
+          "files": [
+            "env.mjs",
+            "next.config.js"
+          ],
+          "commands": [],
+          "depends_on": [],
+          "checklist": [
+            "DATABASE_URL",
+            "NEXTAUTH_SECRET",
+            "JWT_ISSUER, JWT_AUDIENCE",
+            "S3_ACCESS_KEY, S3_SECRET_KEY, S3_BUCKET"
+          ]
+        },
+        {
+          "id": "T15.2",
+          "title": "Doc de setup",
+          "description": "README-admin.md com setup, envs, credenciais demo, fluxo de login e troca de tenant.",
+          "labels": [
+            "docs"
+          ],
+          "files": [
+            "README-admin.md"
+          ],
+          "commands": [],
+          "depends_on": [],
+          "checklist": []
+        }
+      ]
+    },
+    {
+      "id": "E16",
+      "title": "Execução local (Runbook)",
+      "tasks": [
+        {
+          "id": "T16.1",
+          "title": "Runbook dev",
+          "description": "Comandos para subir ambiente local.",
+          "labels": [
+            "runbook",
+            "dev"
+          ],
+          "files": [],
+          "commands": [
+            "pnpm prisma migrate dev",
+            "pnpm prisma db seed",
+            "psql -f prisma/rls.sql || pnpm db:rls",
+            "pnpm codegen",
+            "pnpm dev"
+          ],
+          "depends_on": [],
+          "checklist": [
+            "Login: admin@demo.local / Passw0rd!",
+            "Trocar tenant via header x-tenant-id (SUPER_ADMIN)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "E17",
+      "title": "Qualidade & Observabilidade",
+      "tasks": [
+        {
+          "id": "T17.1",
+          "title": "Logs estruturados",
+          "description": "Adicionar Pino nos resolvers/mutações críticos.",
+          "labels": [
+            "quality",
+            "observability"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [],
+          "checklist": []
+        },
+        {
+          "id": "T17.2",
+          "title": "Rate limit básico",
+          "description": "Aplicar rate limit em mutations sensíveis (opcional).",
+          "labels": [
+            "security",
+            "quality"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [],
+          "checklist": []
+        },
+        {
+          "id": "T17.3",
+          "title": "Health check",
+          "description": "Criar /api/health e configurar healthchecks.",
+          "labels": [
+            "ops"
+          ],
+          "files": [
+            "app/api/health/route.ts"
+          ],
+          "commands": [],
+          "depends_on": [],
+          "checklist": []
+        },
+        {
+          "id": "T17.4",
+          "title": "SLO interno",
+          "description": "Garantir p95 < 300ms para listas até 50 itens.",
+          "labels": [
+            "perf",
+            "quality"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [],
+          "checklist": []
+        }
+      ]
+    },
+    {
+      "id": "E18",
+      "title": "Roadmap (Pós-MVP)",
+      "tasks": [
+        {
+          "id": "T18.1",
+          "title": "Integração Stripe/Pagar.me",
+          "description": "Cobrança com webhooks, invoices e portal.",
+          "labels": [
+            "roadmap",
+            "billing"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [],
+          "checklist": []
+        },
+        {
+          "id": "T18.2",
+          "title": "Meilisearch",
+          "description": "Busca de advogados/escritórios.",
+          "labels": [
+            "roadmap",
+            "search"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [],
+          "checklist": []
+        },
+        {
+          "id": "T18.3",
+          "title": "Subscriptions GraphQL",
+          "description": "Tempo real para leads.",
+          "labels": [
+            "roadmap",
+            "realtime"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [],
+          "checklist": []
+        },
+        {
+          "id": "T18.4",
+          "title": "Webhooks externos",
+          "description": "Integração com CRMs.",
+          "labels": [
+            "roadmap",
+            "integrations"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [],
+          "checklist": []
+        },
+        {
+          "id": "T18.5",
+          "title": "Auditoria avançada",
+          "description": "Diff de payload com mask de PII.",
+          "labels": [
+            "roadmap",
+            "security"
+          ],
+          "files": [],
+          "commands": [],
+          "depends_on": [],
+          "checklist": []
+        }
+      ]
+    }
+  ]
+}
