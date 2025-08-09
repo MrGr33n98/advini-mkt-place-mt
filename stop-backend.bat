@@ -1,0 +1,3 @@
+@echo off
+echo Parando backend Rails...
+docker-compose down

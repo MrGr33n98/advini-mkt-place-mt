@@ -8,8 +8,8 @@
  * - SEO optimization
  */
 
+import React, { useCallback, useMemo } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import { useCallback, useMemo } from 'react'
 
 // ===== TYPES =====
 export interface RouteConfig {
@@ -175,6 +175,58 @@ export const ROUTES: RouteConfig[] = [
         description: 'Relatórios clínicos',
         icon: 'Stethoscope',
         permissions: ['reports.clinical']
+      }
+    ]
+  },
+  {
+    path: '/admin',
+    title: 'Administração',
+    description: 'Painel administrativo',
+    icon: 'Shield',
+    permissions: ['admin.access'],
+    roles: ['admin', 'super_admin'],
+    children: [
+      {
+        path: '/admin/dashboard',
+        title: 'Dashboard Admin',
+        description: 'Painel administrativo principal',
+        icon: 'LayoutDashboard',
+        permissions: ['admin.dashboard']
+      },
+      {
+        path: '/admin/users',
+        title: 'Usuários',
+        description: 'Gerenciar usuários',
+        icon: 'Users',
+        permissions: ['admin.users']
+      },
+      {
+        path: '/admin/lawyers',
+        title: 'Advogados',
+        description: 'Gerenciar advogados',
+        icon: 'Scale',
+        permissions: ['admin.lawyers']
+      },
+      {
+        path: '/admin/appointments',
+        title: 'Agendamentos',
+        description: 'Gerenciar agendamentos',
+        icon: 'Calendar',
+        permissions: ['admin.appointments']
+      },
+      {
+        path: '/admin/reviews',
+        title: 'Avaliações',
+        description: 'Moderar avaliações',
+        icon: 'Star',
+        permissions: ['admin.reviews']
+      },
+      {
+        path: '/admin/settings',
+        title: 'Configurações Admin',
+        description: 'Configurações administrativas',
+        icon: 'Settings',
+        permissions: ['admin.settings']
       }
     ]
   },
@@ -521,7 +573,7 @@ export const RouteGuard: React.FC<{
     return null // or loading component
   }
   
-  return <>{children}</>
+  return React.createElement(React.Fragment, null, children)
 }
 
 // ===== EXPORTS =====
@@ -537,6 +589,3 @@ export {
   useRouteMetadata,
   RouteGuard
 }
-
-// React import
-import React from 'react'

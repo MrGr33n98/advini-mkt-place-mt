@@ -2,6 +2,8 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+### Frontend (Next.js)
+
 First, run the development server:
 
 ```bash
@@ -14,7 +16,57 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3001](http://localhost:3001) with your browser to see the result.
+
+### Backend (Rails with Docker)
+
+Para executar o backend Rails, você precisa ter Docker instalado e rodando. 
+
+#### Pré-requisitos:
+1. **Instalar Docker Desktop:** [Download aqui](https://www.docker.com/products/docker-desktop/)
+2. **Iniciar Docker Desktop:** Certifique-se que o Docker Desktop está rodando (ícone na bandeja do sistema)
+
+#### Executar o Backend:
+
+1. **Verificar se Docker está rodando:**
+   ```bash
+   docker info
+   ```
+
+2. **Iniciar o backend:**
+   ```bash
+   # Windows
+   start-backend.bat
+   
+   # Ou manualmente
+   docker-compose up --build backend
+   ```
+
+3. **Parar o backend:**
+   ```bash
+   # Windows
+   stop-backend.bat
+   
+   # Ou manualmente
+   docker-compose down
+   ```
+
+4. **Acessar o Admin:**
+   - URL: [http://localhost:3002/admin](http://localhost:3002/admin)
+   - O banco de dados PostgreSQL será criado automaticamente
+   - As migrações serão executadas automaticamente
+
+#### Troubleshooting:
+- Se aparecer erro "The system cannot find the file specified", inicie o Docker Desktop
+- Se o build falhar, tente: `docker-compose down && docker-compose up --build --force-recreate`
+
+### Vantagens do Docker
+
+- ✅ Resolve problemas de compatibilidade do Windows
+- ✅ Ambiente isolado e consistente
+- ✅ Fácil setup para novos desenvolvedores
+- ✅ Banco PostgreSQL incluído
+- ✅ Todas as dependências gerenciadas automaticamente
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 

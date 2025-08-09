@@ -1,0 +1,3 @@
+@echo off
+echo Iniciando backend Rails com Docker...
+docker-compose up --build backend

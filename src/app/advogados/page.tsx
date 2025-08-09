@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -22,195 +22,83 @@ import {
   Clock,
   DollarSign,
   Users,
-  Award
+  Award,
+  Loader2,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Lawyer } from '@/types/lawyer'
-
-// Mock data para demonstração
-const mockLawyers: Lawyer[] = [
-  {
-    id: "1",
-    name: "Dr. João Silva",
-    specialties: ["Direito Civil", "Direito de Família"],
-    latitude: -15.6014,
-    longitude: -56.0979,
-    slug: "joao-silva",
-    bio: "Advogado especialista em Direito Civil e de Família com mais de 10 anos de experiência.",
-    oab: "MT-12345",
-    phone: "(65) 99999-9999",
-    email: "joao@email.com",
-    status: "approved",
-    profile_image_url: "/placeholder-lawyer.jpg",
-    average_rating: 4.8,
-    total_reviews: 127,
-    hourly_rate: 200,
-    consultation_fee: 150,
-    plan: "gold",
-    is_featured: true,
-    years_of_experience: 12,
-    office_address: "Rua das Flores, 123 - Centro, Cuiabá - MT",
-    languages: ["Português", "Inglês"],
-    working_hours: [
-      { day: "Segunda", start: "08:00", end: "18:00", isOpen: true },
-      { day: "Terça", start: "08:00", end: "18:00", isOpen: true },
-      { day: "Quarta", start: "08:00", end: "18:00", isOpen: true },
-      { day: "Quinta", start: "08:00", end: "18:00", isOpen: true },
-      { day: "Sexta", start: "08:00", end: "17:00", isOpen: true },
-      { day: "Sábado", start: "08:00", end: "12:00", isOpen: true },
-      { day: "Domingo", start: "", end: "", isOpen: false }
-    ]
-  },
-  {
-    id: "2",
-    name: "Dra. Maria Santos",
-    specialties: ["Direito Trabalhista", "Direito Previdenciário"],
-    latitude: -15.6014,
-    longitude: -56.0979,
-    slug: "maria-santos",
-    bio: "Especialista em Direito Trabalhista e Previdenciário, com foco em defesa dos direitos dos trabalhadores.",
-    oab: "MT-67890",
-    phone: "(65) 88888-8888",
-    email: "maria@email.com",
-    status: "approved",
-    profile_image_url: "/placeholder-lawyer-2.jpg",
-    average_rating: 4.9,
-    total_reviews: 89,
-    hourly_rate: 180,
-    consultation_fee: 120,
-    plan: "silver",
-    is_featured: false,
-    years_of_experience: 8,
-    office_address: "Av. Getúlio Vargas, 456 - Centro, Cuiabá - MT",
-    languages: ["Português"],
-    working_hours: [
-      { day: "Segunda", start: "09:00", end: "17:00", isOpen: true },
-      { day: "Terça", start: "09:00", end: "17:00", isOpen: true },
-      { day: "Quarta", start: "09:00", end: "17:00", isOpen: true },
-      { day: "Quinta", start: "09:00", end: "17:00", isOpen: true },
-      { day: "Sexta", start: "09:00", end: "16:00", isOpen: true },
-      { day: "Sábado", start: "", end: "", isOpen: false },
-      { day: "Domingo", start: "", end: "", isOpen: false }
-    ]
-  },
-  {
-    id: "3",
-    name: "Dr. Carlos Oliveira",
-    specialties: ["Direito Empresarial", "Direito Tributário"],
-    latitude: -15.6014,
-    longitude: -56.0979,
-    slug: "carlos-oliveira",
-    bio: "Advogado empresarial com vasta experiência em consultoria jurídica para empresas de todos os portes.",
-    oab: "MT-11111",
-    phone: "(65) 77777-7777",
-    email: "carlos@email.com",
-    status: "approved",
-    profile_image_url: "/placeholder-lawyer-3.jpg",
-    average_rating: 4.7,
-    total_reviews: 156,
-    hourly_rate: 250,
-    consultation_fee: 200,
-    plan: "gold",
-    is_featured: true,
-    years_of_experience: 15,
-    office_address: "Rua do Comércio, 789 - Centro, Cuiabá - MT",
-    languages: ["Português", "Inglês", "Espanhol"],
-    working_hours: [
-      { day: "Segunda", start: "08:00", end: "19:00", isOpen: true },
-      { day: "Terça", start: "08:00", end: "19:00", isOpen: true },
-      { day: "Quarta", start: "08:00", end: "19:00", isOpen: true },
-      { day: "Quinta", start: "08:00", end: "19:00", isOpen: true },
-      { day: "Sexta", start: "08:00", end: "18:00", isOpen: true },
-      { day: "Sábado", start: "", end: "", isOpen: false },
-      { day: "Domingo", start: "", end: "", isOpen: false }
-    ]
-  }
-]
-
-const specialties = [
-  "Direito Civil",
-  "Direito de Família",
-  "Direito Trabalhista",
-  "Direito Previdenciário",
-  "Direito Empresarial",
-  "Direito Tributário",
-  "Direito Criminal",
-  "Direito Imobiliário",
-  "Direito do Consumidor",
-  "Direito Ambiental"
-]
+import { Lawyer } from '@/lib/api'
+import { useLawyers, useSpecializations } from '@/hooks/useApi'
 
 export default function LawyersPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   
-  const [lawyers, setLawyers] = useState<Lawyer[]>(mockLawyers)
-  const [filteredLawyers, setFilteredLawyers] = useState<Lawyer[]>(mockLawyers)
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '')
   const [selectedSpecialty, setSelectedSpecialty] = useState(searchParams.get('specialty') || '')
   const [selectedPlan, setSelectedPlan] = useState('')
   const [sortBy, setSortBy] = useState('rating')
-  const [isLoading, setIsLoading] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
 
-  // Filtrar e ordenar advogados
+  // API hooks
+  const { 
+    lawyers, 
+    pagination, 
+    loading: lawyersLoading, 
+    error: lawyersError, 
+    fetchLawyers 
+  } = useLawyers({
+    search: searchQuery || undefined,
+    specialization: selectedSpecialty && selectedSpecialty !== 'all' ? selectedSpecialty : undefined,
+    sort_by: sortBy,
+    page: currentPage,
+    per_page: 10
+  })
+
+  const { 
+    specializations, 
+    loading: specializationsLoading 
+  } = useSpecializations()
+
+  // Atualizar página quando filtros mudarem
   useEffect(() => {
-    let filtered = [...lawyers]
-
-    // Filtro por busca
-    if (searchQuery) {
-      filtered = filtered.filter(lawyer => 
-        lawyer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        lawyer.specialties.some(specialty => 
-          specialty.toLowerCase().includes(searchQuery.toLowerCase())
-        ) ||
-        lawyer.office_address?.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    }
-
-    // Filtro por especialidade
-    if (selectedSpecialty && selectedSpecialty !== 'all') {
-      filtered = filtered.filter(lawyer => 
-        lawyer.specialties.includes(selectedSpecialty)
-      )
-    }
-
-    // Filtro por plano
-    if (selectedPlan && selectedPlan !== 'all') {
-      filtered = filtered.filter(lawyer => lawyer.plan === selectedPlan)
-    }
-
-    // Ordenação
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'rating':
-          return (b.average_rating || 0) - (a.average_rating || 0)
-        case 'reviews':
-          return (b.total_reviews || 0) - (a.total_reviews || 0)
-        case 'price':
-          return (a.consultation_fee || 0) - (b.consultation_fee || 0)
-        case 'experience':
-          return (b.years_of_experience || 0) - (a.years_of_experience || 0)
-        default:
-          return 0
-      }
+    setCurrentPage(1)
+    fetchLawyers({
+      search: searchQuery || undefined,
+      specialization: selectedSpecialty && selectedSpecialty !== 'all' ? selectedSpecialty : undefined,
+      sort_by: sortBy,
+      page: 1,
+      per_page: 10
     })
+  }, [searchQuery, selectedSpecialty, sortBy, fetchLawyers])
 
-    setFilteredLawyers(filtered)
-  }, [lawyers, searchQuery, selectedSpecialty, selectedPlan, sortBy])
-
-  const handleScheduleAppointment = (lawyerId: string) => {
+  const handleScheduleAppointment = (lawyerId: number) => {
     router.push(`/agendar/${lawyerId}`)
   }
 
-  const handleViewProfile = (lawyerSlug: string) => {
-    router.push(`/advogados/${lawyerSlug}`)
+  const handleViewProfile = (lawyerId: number) => {
+    // Implementar navegação para o perfil do advogado
+    console.log('Ver perfil do advogado:', lawyerId)
+    // router.push(`/advogados/${lawyerId}`)
   }
 
   const clearFilters = () => {
     setSearchQuery('')
-    setSelectedSpecialty('all')
-    setSelectedPlan('all')
+    setSelectedSpecialty('')
+    setSelectedPlan('')
     setSortBy('rating')
+  }
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    fetchLawyers({
+      search: searchQuery || undefined,
+      specialization: selectedSpecialty && selectedSpecialty !== 'all' ? selectedSpecialty : undefined,
+      sort_by: sortBy,
+      page,
+      per_page: 10
+    })
   }
 
   return (
@@ -229,8 +117,17 @@ export default function LawyersPage() {
             </div>
             
             <div className="flex items-center gap-2 text-sm text-gray-500">
-              <Users className="w-4 h-4" />
-              {filteredLawyers.length} advogados encontrados
+              {lawyersLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Carregando...
+                </>
+              ) : (
+                <>
+                  <Users className="w-4 h-4" />
+                  {pagination?.total_count || 0} advogados encontrados
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -280,12 +177,19 @@ export default function LawyersPage() {
                       <SelectValue placeholder="Todas as especialidades" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">Todas as especialidades</SelectItem>
-                      {specialties.map((specialty) => (
-                        <SelectItem key={specialty} value={specialty}>
-                          {specialty}
+                      <SelectItem value="">Todas as especialidades</SelectItem>
+                      {specializationsLoading ? (
+                        <SelectItem value="" disabled>
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                          Carregando...
                         </SelectItem>
-                      ))}
+                      ) : (
+                        specializations.map((specialization) => (
+                          <SelectItem key={specialization.id} value={specialization.name}>
+                            {specialization.name} ({specialization.lawyers_count})
+                          </SelectItem>
+                        ))
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
@@ -298,7 +202,7 @@ export default function LawyersPage() {
                       <SelectValue placeholder="Todos os planos" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="all">Todos os planos</SelectItem>
+                      <SelectItem value="">Todos os planos</SelectItem>
                       <SelectItem value="basic">Básico</SelectItem>
                       <SelectItem value="silver">Prata</SelectItem>
                       <SelectItem value="gold">Ouro</SelectItem>
@@ -327,136 +231,168 @@ export default function LawyersPage() {
 
           {/* Lista de Advogados */}
           <div className="lg:col-span-3">
+            {lawyersError && (
+              <Card className="mb-6">
+                <CardContent className="text-center py-6">
+                  <div className="text-red-500 mb-2">Erro ao carregar advogados</div>
+                  <p className="text-sm text-gray-600">{lawyersError}</p>
+                  <Button 
+                    onClick={() => window.location.reload()} 
+                    variant="outline" 
+                    className="mt-4"
+                  >
+                    Tentar novamente
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+            
             <div className="space-y-6">
-              {filteredLawyers.map((lawyer) => (
-                <Card key={lawyer.id} className="hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex flex-col lg:flex-row gap-6">
-                      {/* Avatar e Info Básica */}
-                      <div className="flex items-start gap-4">
-                        <Avatar className="w-20 h-20">
-                          <AvatarImage src={lawyer.profile_image_url} alt={lawyer.name} />
-                          <AvatarFallback className="text-lg">
-                            {lawyer.name.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between mb-2">
-                            <div>
-                              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                {lawyer.name}
-                              </h3>
-                              <p className="text-sm text-gray-600 dark:text-gray-400">
-                                {lawyer.oab}
-                              </p>
-                            </div>
-                            
-                            <div className="flex items-center gap-2">
-                              {lawyer.is_featured && (
-                                <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
-                                  <Award className="w-3 h-3 mr-1" />
-                                  Destaque
-                                </Badge>
-                              )}
-                              <Badge 
-                                variant="outline" 
-                                className={cn(
-                                  lawyer.plan === 'gold' && "border-yellow-500 text-yellow-700",
-                                  lawyer.plan === 'silver' && "border-gray-500 text-gray-700",
-                                  lawyer.plan === 'basic' && "border-blue-500 text-blue-700"
+              {lawyersLoading && lawyers.length === 0 ? (
+                // Loading skeleton
+                Array.from({ length: 3 }).map((_, index) => (
+                  <Card key={index} className="animate-pulse">
+                    <CardContent className="p-6">
+                      <div className="flex gap-6">
+                        <div className="w-20 h-20 bg-gray-200 rounded-full"></div>
+                        <div className="flex-1 space-y-3">
+                          <div className="h-6 bg-gray-200 rounded w-1/3"></div>
+                          <div className="h-4 bg-gray-200 rounded w-1/4"></div>
+                          <div className="h-4 bg-gray-200 rounded w-full"></div>
+                          <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                lawyers.map((lawyer) => (
+                  <Card key={lawyer.id} className="hover:shadow-lg transition-shadow">
+                    <CardContent className="p-6">
+                      <div className="flex flex-col lg:flex-row gap-6">
+                        {/* Avatar e Info Básica */}
+                        <div className="flex items-start gap-4">
+                          <Avatar className="w-20 h-20">
+                            <AvatarImage src={lawyer.profile_image_url || undefined} alt={lawyer.name} />
+                            <AvatarFallback className="text-lg">
+                              {lawyer.name.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                          
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between mb-2">
+                              <div>
+                                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                                  {lawyer.name}
+                                </h3>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                  OAB: {lawyer.oab_number}
+                                </p>
+                              </div>
+                              
+                              <div className="flex items-center gap-2">
+                                {lawyer.is_featured && (
+                                  <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+                                    <Award className="w-3 h-3 mr-1" />
+                                    Destaque
+                                  </Badge>
                                 )}
-                              >
-                                {lawyer.plan === 'gold' && 'Ouro'}
-                                {lawyer.plan === 'silver' && 'Prata'}
-                                {lawyer.plan === 'basic' && 'Básico'}
-                              </Badge>
+                                {lawyer.status === 'approved' && (
+                                  <Badge variant="outline" className="border-green-500 text-green-700">
+                                    Verificado
+                                  </Badge>
+                                )}
+                              </div>
                             </div>
-                          </div>
 
-                          {/* Avaliação */}
-                          <div className="flex items-center gap-2 mb-3">
-                            <div className="flex items-center gap-1">
-                              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                              <span className="font-medium">{lawyer.average_rating}</span>
+                            {/* Avaliação */}
+                            <div className="flex items-center gap-2 mb-3">
+                              <div className="flex items-center gap-1">
+                                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                                <span className="font-medium">{lawyer.average_rating?.toFixed(1) || 'N/A'}</span>
+                              </div>
+                              <span className="text-sm text-gray-500">
+                                ({lawyer.reviews_count || 0} avaliações)
+                              </span>
+                              {lawyer.status === 'approved' && (
+                                <>
+                                  <CheckCircle className="w-4 h-4 text-green-500" />
+                                  <span className="text-sm text-green-600">Verificado</span>
+                                </>
+                              )}
                             </div>
-                            <span className="text-sm text-gray-500">
-                              ({lawyer.total_reviews} avaliações)
-                            </span>
-                            <CheckCircle className="w-4 h-4 text-green-500" />
-                            <span className="text-sm text-green-600">Verificado</span>
-                          </div>
 
-                          {/* Especialidades */}
-                          <div className="flex flex-wrap gap-2 mb-3">
-                            {lawyer.specialties.map((specialty) => (
-                              <Badge key={specialty} variant="secondary" className="text-xs">
-                                {specialty}
-                              </Badge>
-                            ))}
-                          </div>
+                            {/* Especialidades */}
+                            <div className="flex flex-wrap gap-2 mb-3">
+                              {lawyer.specializations?.map((specialization) => (
+                                <Badge key={specialization.id} variant="secondary" className="text-xs">
+                                  {specialization.name}
+                                </Badge>
+                              ))}
+                            </div>
 
-                          {/* Bio */}
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
-                            {lawyer.bio}
-                          </p>
+                            {/* Bio */}
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+                              {lawyer.bio || 'Advogado experiente e qualificado.'}
+                            </p>
 
-                          {/* Informações Adicionais */}
-                          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
-                            <div className="flex items-center gap-2">
-                              <Clock className="w-4 h-4 text-gray-400" />
-                              <span>{lawyer.years_of_experience} anos</span>
-                            </div>
-                            
-                            <div className="flex items-center gap-2">
-                              <DollarSign className="w-4 h-4 text-gray-400" />
-                              <span>R$ {lawyer.consultation_fee}</span>
-                            </div>
-                            
-                            <div className="flex items-center gap-2">
-                              <MapPin className="w-4 h-4 text-gray-400" />
-                              <span className="truncate">Cuiabá - MT</span>
-                            </div>
-                            
-                            <div className="flex items-center gap-2">
-                              <Phone className="w-4 h-4 text-gray-400" />
-                              <span>Disponível</span>
+                            {/* Informações Adicionais */}
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                              <div className="flex items-center gap-2">
+                                <Clock className="w-4 h-4 text-gray-400" />
+                                <span>{lawyer.years_of_experience || 0} anos</span>
+                              </div>
+                              
+                              <div className="flex items-center gap-2">
+                                <DollarSign className="w-4 h-4 text-gray-400" />
+                                <span>R$ {lawyer.hourly_rate || 'Consultar'}</span>
+                              </div>
+                              
+                              <div className="flex items-center gap-2">
+                                <MapPin className="w-4 h-4 text-gray-400" />
+                                <span className="truncate">{lawyer.city || 'N/A'}</span>
+                              </div>
+                              
+                              <div className="flex items-center gap-2">
+                                <Phone className="w-4 h-4 text-gray-400" />
+                                <span>{lawyer.phone ? 'Disponível' : 'Indisponível'}</span>
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
 
-                      {/* Ações */}
-                      <div className="flex flex-col gap-3 lg:w-48">
-                        <Button 
-                          onClick={() => handleScheduleAppointment(lawyer.id)}
-                          className="w-full"
-                        >
-                          <Calendar className="w-4 h-4 mr-2" />
-                          Agendar Consulta
-                        </Button>
-                        
-                        <Button 
-                          variant="outline" 
-                          onClick={() => handleViewProfile(lawyer.slug)}
-                          className="w-full"
-                        >
-                          Ver Perfil
-                        </Button>
-                        
-                        <div className="text-center">
-                          <p className="text-sm text-gray-500">Consulta inicial</p>
-                          <p className="text-lg font-semibold text-green-600">
-                            R$ {lawyer.consultation_fee}
-                          </p>
+                        {/* Ações */}
+                        <div className="flex flex-col gap-3 lg:w-48">
+                          <Button 
+                            onClick={() => handleScheduleAppointment(lawyer.id)}
+                            className="w-full"
+                          >
+                            <Calendar className="w-4 h-4 mr-2" />
+                            Agendar Consulta
+                          </Button>
+                          
+                          <Button 
+                            variant="outline" 
+                            onClick={() => handleViewProfile(lawyer.id)}
+                            className="w-full"
+                          >
+                            Ver Perfil
+                          </Button>
+                          
+                          <div className="text-center">
+                            <p className="text-sm text-gray-500">Taxa por hora</p>
+                            <p className="text-lg font-semibold text-green-600">
+                              R$ {lawyer.hourly_rate || 'Consultar'}
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                ))
+              )}
 
-              {filteredLawyers.length === 0 && (
+              {!lawyersLoading && lawyers.length === 0 && (
                 <Card>
                   <CardContent className="text-center py-12">
                     <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -473,6 +409,61 @@ export default function LawyersPage() {
                     </Button>
                   </CardContent>
                 </Card>
+              )}
+
+              {/* Paginação */}
+              {pagination && pagination.total_pages > 1 && (
+                <div className="flex items-center justify-between mt-8">
+                  <div className="text-sm text-gray-500">
+                    Mostrando {((pagination.current_page - 1) * pagination.per_page) + 1} a {Math.min(pagination.current_page * pagination.per_page, pagination.total_count)} de {pagination.total_count} advogados
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(pagination.current_page - 1)}
+                      disabled={pagination.current_page === 1}
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                      Anterior
+                    </Button>
+                    
+                    <div className="flex items-center gap-1">
+                      {Array.from({ length: pagination.total_pages }, (_, i) => i + 1)
+                        .filter(page => 
+                          page === 1 || 
+                          page === pagination.total_pages || 
+                          Math.abs(page - pagination.current_page) <= 1
+                        )
+                        .map((page, index, array) => (
+                          <React.Fragment key={page}>
+                            {index > 0 && array[index - 1] !== page - 1 && (
+                              <span className="px-2 text-gray-400">...</span>
+                            )}
+                            <Button
+                              variant={pagination.current_page === page ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => handlePageChange(page)}
+                              className="w-8 h-8 p-0"
+                            >
+                              {page}
+                            </Button>
+                          </React.Fragment>
+                        ))}
+                    </div>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(pagination.current_page + 1)}
+                      disabled={pagination.current_page === pagination.total_pages}
+                    >
+                      Próxima
+                      <ChevronRight className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
               )}
             </div>
           </div>

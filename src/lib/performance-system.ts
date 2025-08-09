@@ -11,6 +11,7 @@
  * - Debouncing/Throttling
  */
 
+import React from 'react'
 import { create } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 
@@ -585,7 +586,7 @@ export const createVirtualScroller = <T>(
 // Code splitting utility
 export const createAsyncComponent = <T extends React.ComponentType<any>>(
   importFunc: () => Promise<{ default: T }>,
-  fallback: React.ComponentType = () => <div>Loading...</div>
+  fallback: React.ComponentType = () => React.createElement('div', null, 'Loading...')
 ) => {
   return React.lazy(importFunc)
 }
@@ -723,6 +724,3 @@ export {
   measureCoreWebVitals,
   PERFORMANCE_THRESHOLDS
 }
-
-// React import
-import React from 'react'

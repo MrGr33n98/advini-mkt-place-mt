@@ -61,17 +61,44 @@ async function getAdminConfig(): Promise<AdminConfig> {
     return adminConfigCache
   }
   
+  // Configuração padrão (modo desenvolvimento)
+  const defaultConfig: AdminConfig = {
+    redirects: [],
+    featureFlags: [],
+    maintenance: {
+      enabled: false,
+      allowedPaths: ['/admin', '/api'],
+      message: 'Site em manutenção. Voltamos em breve!'
+    },
+    accessControl: [],
+    abTests: []
+  }
+  
+  // Se não tiver URL da API configurada, retorna configuração padrão
+  if (!process.env.NEXT_PUBLIC_API_URL || !process.env.ADMIN_API_TOKEN) {
+    console.log('API URL or token not configured, using default config')
+    adminConfigCache = defaultConfig
+    lastConfigFetch = now
+    return defaultConfig
+  }
+  
   try {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 segundos timeout
+    
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/middleware_config`, {
       headers: {
         'Authorization': `Bearer ${process.env.ADMIN_API_TOKEN}`,
         'Content-Type': 'application/json',
       },
+      signal: controller.signal,
       next: { revalidate: 60 } // Cache por 60 segundos
     })
     
+    clearTimeout(timeoutId)
+    
     if (!response.ok) {
-      throw new Error('Failed to fetch admin config')
+      throw new Error(`Failed to fetch admin config: ${response.status}`)
     }
     
     const config = await response.json()
@@ -80,20 +107,12 @@ async function getAdminConfig(): Promise<AdminConfig> {
     
     return config
   } catch (error) {
-    console.error('Error fetching admin config:', error)
+    console.log('Using default config due to API error:', error instanceof Error ? error.message : 'Unknown error')
     
     // Retorna configuração padrão em caso de erro
-    return {
-      redirects: [],
-      featureFlags: [],
-      maintenance: {
-        enabled: false,
-        allowedPaths: ['/admin', '/api'],
-        message: 'Site em manutenção. Voltamos em breve!'
-      },
-      accessControl: [],
-      abTests: []
-    }
+    adminConfigCache = defaultConfig
+    lastConfigFetch = now
+    return defaultConfig
   }
 }
 
